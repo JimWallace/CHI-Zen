@@ -1,0 +1,679 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  HOW TO USE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Include this line at the top of your TeX  File: 
+%
+% \input{IDEA_Plots.tex}
+%
+%
+% Then, add graphs to your paper using the following template: 
+%
+%\begin{tikzpicture}
+%\begin{axis}[<GRAPH TYPE>,
+%	% X Axis options (xmin, xmax, xtick={})
+%	% Y Axis options (ymin, ymax, ytick={})
+%       ]
+%
+%    % DATA GOES IN HERE
+%
+%\end{axis}
+%\end{tikzpicture}
+%
+%
+% OR, for multiple plots use this template:
+%
+%\begin{tikzpicture}
+%\begin{groupplot}[
+%   group style={
+%       group size= <COL> by <ROW>,
+%       x descriptions at=edge bottom,
+%       y descriptions at=edge left,
+%       vertical sep=0pt,
+%       horizontal sep=0pt},
+%  <GRAPH TYPE>, 
+%	% X Axis options (xmin, xmax, xtick={})
+%	% Y Axis options (ymin, ymax, ytick={})
+%      ]
+%
+%    % DATA GOES IN HERE
+%
+%\end{groupplot}
+%\end{tikzpicture}
+%
+%
+%
+% The following graph types are defined in this library:
+%
+% IDEA bar - A clustered bar graph, similar to Excel
+% IDEA tufte panel - a bare-bones bar graph, suitable for stacked panel graphs in Tufte's style
+% .. more that aren't listed here
+%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Common Includes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepgfplotslibrary{dateplot}
+\usepgfplotslibrary{groupplots}
+
+
+%\usetikzlibrary{external}
+%\tikzexternalize[prefix=tikz/] % Must be in main .tex file?
+
+\usetikzlibrary{pgfplots.statistics}
+\usetikzlibrary{matrix}
+
+\usepackage{bbding}
+
+\pgfplotsset{compat=newest}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Colour Definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{RYB1}{RGB}{141, 211, 199}
+\definecolor{RYB2}{RGB}{255, 255, 179}
+\definecolor{RYB3}{RGB}{190, 186, 218}
+\definecolor{RYB4}{RGB}{251, 128, 114}
+\definecolor{RYB5}{RGB}{128, 177, 211}
+\definecolor{RYB6}{RGB}{253, 180, 98}
+\definecolor{RYB7}{RGB}{179, 222, 105}
+
+\pgfplotscreateplotcyclelist{colorbrewer-RYB}{
+{RYB1!50!black,fill=RYB1},
+{RYB2!50!black,fill=RYB2},
+{RYB3!50!black,fill=RYB3},
+{RYB4!50!black,fill=RYB4},
+{RYB5!50!black,fill=RYB5},
+{RYB6!50!black,fill=RYB6},
+{RYB7!50!black,fill=RYB7},
+}
+
+\pgfplotscreateplotcyclelist{colorbrewer-RYB-plain}{
+{RYB1},
+{RYB2},
+{RYB3},
+{RYB4},
+{RYB5},
+{RYB6},
+{RYB7},
+}
+
+%%%%%%%%%%%%%%%%%%%%
+% WATERLOO PALETTES - DIGITAL
+%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{AHSLight}{RGB}{0, 154, 166}
+\definecolor{AHSDark}{RGB}{0, 127, 138}
+
+\definecolor{ArtsLight}{RGB}{233, 131, 0}
+\definecolor{ArtsDark}{RGB}{172, 97, 0}
+
+\definecolor{EngineeringLight}{RGB}{204, 170, 255}
+\definecolor{EngineeringDark}{RGB}{87, 6, 140}
+
+\definecolor{EnvironmentLight}{RGB}{182, 191, 0}
+\definecolor{EnvironmentDark}{RGB}{116, 120, 0}
+
+\definecolor{MathLight}{RGB}{255, 136, 221}
+\definecolor{MathDark}{RGB}{224, 36, 154}
+ 
+\definecolor{ScienceLight}{RGB}{119, 187, 225}
+\definecolor{ScienceDark}{RGB}{0, 115, 207}
+
+
+\definecolor{SchoolRedLight}{RGB}{247, 119, 119}
+\definecolor{SchoolRedDark}{RGB}{150, 23, 46}
+
+
+
+\pgfplotscreateplotcyclelist{waterloo-light}{
+{AHSLight!50!black,fill=AHSLight},
+{ArtsLight!50!black,fill=ArtsLight},
+{EngineeringLight!50!black,fill=EngineeringLight},
+{EnvironmentLight!50!black,fill=EnvironmentLight},
+{MathLight!50!black,fill=MathLight},
+{ScienceLight!50!black,fill=ScienceLight},
+{SchoolRedLight!50!black,fill=SchoolRedLight},
+}
+
+\pgfplotscreateplotcyclelist{waterloo-dark}{
+{AHSDark!50!black,fill=AHSDark},
+{ArtsDark!50!black,fill=ArtsDark},
+{EngineeringDark!50!black,fill=EngineeringDark},
+{EnvironmentDark!50!black,fill=EnvironmentDark},
+{MathDark!50!black,fill=MathDark},
+{ScienceDark!50!black,fill=ScienceDark},
+{SchoolRedDark!50!black,fill=SchoolRedDark},
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%
+% WATERLOO  PALETTES - PRINT
+%%%%%%%%%%%%%%%%%%%%
+
+% FIX: CMYK is conflicting with other colour definitions in SIGCHI template
+
+%\definecolor{AHSPrint}{CMYK}{100, 0, 30, 2}
+%\definecolor{ArtsPrint}{CMYK}{0, 52, 100, 0}
+%\definecolor{EngineeringPrint}{CMYK}{24, 0, 98, 8}
+%\definecolor{EnvironmentPrint}{CMYK}{78, 94, 0, 0}
+%\definecolor{MathPrint}{CMYK}{5, 90, 0, 0}
+%\definecolor{SciencePrint}{CMYK}{90, 48, 0, 0}
+%\definecolor{SchoolRedPrint}{CMYK}{3, 100, 66, 12}
+
+%\pgfplotscreateplotcyclelist{waterloo-print}{
+%{AHSPrint!50!black,fill=AHSPrint},
+%{ArtsPrint!50!black,fill=ArtsPrint},
+%{EngineeringPrint!50!black,fill=EngineeringPrint},
+%{EnvironmentPrint!50!black,fill=EnvironmentPrint},
+%{MathPrint!50!black,fill=MathPrint},
+%{SciencePrint!50!black,fill=SciencePrint},
+%{SchoolRedPrint!50!black,fill=SchoolRedPrint},
+%}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%
+% 5-Point DIVERGENT PALETTES - From ColorBrewer2
+%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{Likert5_SD}{RGB}{166,97,26}
+\definecolor{Likert5_D}{RGB}{223,194,125}
+\definecolor{Likert5_N}{RGB}{245,245,245}
+\definecolor{Likert5_A}{RGB}{128,205,193}
+\definecolor{Likert5_SA}{RGB}{1,133,113}
+
+\definecolor{Likert5_1_SD}{RGB}{166,97,26}
+\definecolor{Likert5_1_D}{RGB}{223,194,125}
+\definecolor{Likert5_1_N}{RGB}{245,245,245}
+\definecolor{Likert5_1_A}{RGB}{128,205,193}
+\definecolor{Likert5_1_SA}{RGB}{1,133,113}
+
+\definecolor{Likert5_2_SD}{RGB}{123,50,148}
+\definecolor{Likert5_2_D}{RGB}{194,165,207}
+\definecolor{Likert5_2_N}{RGB}{247,247,247}
+\definecolor{Likert5_2_A}{RGB}{166,219,160}
+\definecolor{Likert5_2_SA}{RGB}{0,136,55}
+
+
+
+%%%%%%%%%%%%%%%%%%%%
+% 7-Point DIVERGENT PALETTES - From ColorBrewer2
+%%%%%%%%%%%%%%%%%%%%
+
+% Purple -> Green
+\definecolor{Likert7_0}{RGB}{118,42,131}
+\definecolor{Likert7_1}{RGB}{175,141,195}
+\definecolor{Likert7_2}{RGB}{231,212,232}
+\definecolor{Likert7_3}{RGB}{229,229,229}
+\definecolor{Likert7_4}{RGB}{217,240,211}
+\definecolor{Likert7_5}{RGB}{127,191,123}
+\definecolor{Likert7_6}{RGB}{27,120,55}
+
+% Orange/Brown -> Blue
+\definecolor{Likert7_2_0}{RGB}{140,81,10}
+\definecolor{Likert7_2_1}{RGB}{216,179,101}
+\definecolor{Likert7_2_2}{RGB}{246,232,195}
+\definecolor{Likert7_2_3}{RGB}{229,229,229}
+\definecolor{Likert7_2_4}{RGB}{199,234,229}
+\definecolor{Likert7_2_5}{RGB}{90,180,172}
+\definecolor{Likert7_2_6}{RGB}{1,102,94}
+
+% Orange -> Purple
+\definecolor{Likert7_3_0}{RGB}{179,88,6}
+\definecolor{Likert7_3_1}{RGB}{241,163,64}
+\definecolor{Likert7_3_2}{RGB}{254,224,182}
+\definecolor{Likert7_3_3}{RGB}{229,229,229}
+\definecolor{Likert7_3_4}{RGB}{216,218,235}
+\definecolor{Likert7_3_5}{RGB}{153,142,195}
+\definecolor{Likert7_3_6}{RGB}{84,39,136}
+
+% Blue -> Red
+\definecolor{Likert7_4_0}{RGB}{33,102,172}
+\definecolor{Likert7_4_1}{RGB}{103,169,207}
+\definecolor{Likert7_4_2}{RGB}{209,229,240}
+\definecolor{Likert7_4_3}{RGB}{229,229,229}
+\definecolor{Likert7_4_4}{RGB}{253,219,199}
+\definecolor{Likert7_4_5}{RGB}{239,138,98}
+\definecolor{Likert7_4_6}{RGB}{178,24,43}
+
+
+%%%%%%%%%%%%%%%%%%%%
+% 7-Point DIVERGENT PALETTES - Jim for Avatar Paper
+%%%%%%%%%%%%%%%%%%%%
+
+% Blue -> Green to match Cleric
+\definecolor{Cleric_0}{RGB}{33,102,172}
+\definecolor{Cleric_1}{RGB}{103,169,207}
+\definecolor{Cleric_2}{RGB}{209,229,240}
+\definecolor{Cleric_3}{RGB}{229,229,229}
+\definecolor{Cleric_4}{RGB}{217,240,211}
+\definecolor{Cleric_5}{RGB}{127,191,123}
+\definecolor{Cleric_6}{RGB}{27,120,55}
+
+% Orange -> Red
+\definecolor{Monster_0}{RGB}{178,24,43}
+\definecolor{Monster_1}{RGB}{239,138,98}
+\definecolor{Monster_2}{RGB}{253,219,199}
+\definecolor{Monster_3}{RGB}{229,229,229}
+\definecolor{Monster_4}{RGB}{216,218,235}
+\definecolor{Monster_5}{RGB}{153,142,195}
+\definecolor{Monster_6}{RGB}{84,39,136}
+
+
+\pgfplotscreateplotcyclelist{avatar}{Cleric_0, Monster_0}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Outer South Legend Hack
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\pgfplotsset{
+    every axis x label/.append style={
+        alias=current axis xlabel
+    },
+    legend pos/outer south/.style={
+        /pgfplots/legend style={
+            at={%
+                (%
+                \@ifundefined{pgf@sh@ns@current axis xlabel}%
+                {xticklabel cs:0.5}%
+                {current axis xlabel.south}%
+                )%
+            },
+            anchor=north
+        }
+    }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Grid Figures Label Hack
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pgfplotsset{
+    groupplot xlabel/.initial={},
+    every groupplot x label/.style={
+        at={($({\pgfplots@group@name\space c1r\pgfplots@group@rows.west}|-{\pgfplots@group@name\space c1r\pgfplots@group@rows.outer south})!0.5!({\pgfplots@group@name\space c\pgfplots@group@columns r\pgfplots@group@rows.east}|-{\pgfplots@group@name\space c\pgfplots@group@columns r\pgfplots@group@rows.outer south})$)},
+        anchor=north,
+    },
+    groupplot ylabel/.initial={},
+    every groupplot y label/.style={
+            rotate=90,
+        at={($({\pgfplots@group@name\space c1r1.north}-|{\pgfplots@group@name\space c1r1.outer
+west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplots@group@name\space c1r\pgfplots@group@rows.outer west})$)},
+        anchor=south
+    },
+    execute at end groupplot/.code={%
+      \node [/pgfplots/every groupplot x label]
+{\pgfkeysvalueof{/pgfplots/groupplot xlabel}};  
+      \node [/pgfplots/every groupplot y label] 
+{\pgfkeysvalueof{/pgfplots/groupplot ylabel}};  
+    }
+}
+
+\def\endpgfplots@environment@groupplot{%
+    \endpgfplots@environment@opt%
+    \pgfkeys{/pgfplots/execute at end groupplot}%
+    \endgroup%
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   IDEA Line
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfplotsset{
+  IDEA line/.style={
+ 	cycle list name = avatar,
+        width  = \columnwidth,
+        height = 6cm,
+        line width=10pt,
+        	axis line style = very thin,
+        font = \sffamily,
+        % X Axis
+        %major x tick style = transparent,
+        xlabel style={name=xlabel},
+	% Y Axis
+        ymajorgrids = true,
+        scaled y ticks = false,
+        separate axis lines,
+	axis lines* = left,
+        ymajorgrids = true,
+        major tick length = -5,
+        %Legend
+        legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        	%legend image code/.code={%
+            %        \draw[#1,fill] circle (0.075cm);
+            %    },
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   IDEA Bar / A Clustered Bar Graph
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfplotsset{
+  IDEA bar/.style={
+  	cycle list name = waterloo-light,
+	ybar = 0pt,
+        width  = \columnwidth,
+        height = 6cm,
+        	axis line style = very thin,
+       	bar width=25pt,
+        font = \sffamily,
+        	% X Axis
+        	major x tick style = transparent,
+        	enlarge x limits = {abs=1.5cm},
+	xlabel={a},
+        	xlabel style={name=xlabel},
+	% Y Axis
+        	ymajorgrids = true,
+        	ylabel = {Selection Time (s)},
+        	scaled y ticks = false,
+        	separate axis lines,
+	axis lines* = left,
+        	ymajorgrids = true,
+        	major tick length = 0,
+        %Legend
+        	legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        	legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);}
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   IDEA StackedBar / A Clustered Bar Graph
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfplotsset{
+  IDEA stacked bar/.style={
+  	ybar stacked,
+  	cycle list name = waterloo-light,
+        width  = \columnwidth,
+        height = 6cm,
+        	axis line style = very thin,
+       	bar width=25pt,
+       	font = \sffamily,
+        	% X Axis
+        	major x tick style = transparent,
+        	enlarge x limits = {abs=1.5cm},
+	xlabel={a},
+        	xlabel style={name=xlabel},
+	% Y Axis
+        	ymajorgrids = true,
+        	ylabel = {Selection Time (s)},
+        	scaled y ticks = false,
+        	separate axis lines,
+	axis lines* = left,
+        	ymajorgrids = true,
+        	major tick length = 0,
+        %Legend
+        	legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        	legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);}
+	}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   IDEA Likhert / Divergent Bar
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfplotsset{
+  IDEA Likert/.style={
+ 	xbar stacked,
+        	axis line style = very thin,
+       	bar width=5pt,
+        	% X Axis
+        	%major x tick style = transparent,
+	xlabel={a},
+        	xlabel style={name=xlabel},
+	xtick = {},
+	font = \sffamily,
+	% Y Axis
+	        %axis y line=none,
+	        major y tick style = transparent,
+        	%ymajorgrids = true,
+        	scaled y ticks = false,
+        	separate axis lines,
+	axis lines* = left,
+        	major tick length = -2,
+        %Legend
+        	legend style={at={(xlabel.south)},yshift=-2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        	legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);}
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Tufte Stacked Panel 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfplotsset{
+  IDEA tufte panel/.style={
+  cycle list name = waterloo-light,
+ ybar, 
+	% Generic Bar Graph Options
+        width = 1.1\columnwidth,
+        height = .325\columnwidth,
+        font = \sffamily,
+	% X Axis
+	enlarge x limits = {abs=.35cm},
+	axis line style = very thin,
+	% Y Axis
+	yticklabel=\empty,
+        separate axis lines,
+	y axis line style= { draw opacity=0 },
+	axis lines* = left,
+        axis on top,
+        ymajorgrids = true,
+        major tick length = 0,
+        grid style = {white},
+	% Legend Formatting
+	title style = {yshift=-.75cm,font=\tiny}
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Tufte Range Frame
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfplotsset{
+range frame/.style={
+    tick align=outside,
+    axis line style={opacity=0},
+    after end axis/.code={
+      \draw ({rel axis cs:0,0}
+          -|{axis cs:\pgfplotsdataxmin,0})
+        -- ({rel axis cs:0,0}
+          -|{axis cs:\pgfplotsdataxmax,0});
+      \draw ({rel axis cs:0,0}
+          |-{axis cs:0,\pgfplotsdataymin})
+        -- ({rel axis cs:0,0}
+          |-{axis cs:0,\pgfplotsdataymax});
+} }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Tufte Dot Dash 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pgfplotsset{
+  dot dash plot/.style={
+    tufte scatter
+    axis line style={opacity=0},
+    tick style={thin, black},
+    major tick length=0.15cm,
+    xtick=data,
+    xticklabels={},
+    ytick=data,
+    yticklabels={},
+    extra x ticks={
+      \pgfplotsdataxmin,
+      \pgfplotsdataxmax
+    },
+    extra y ticks={
+      \pgfplotsdataymin,
+      \pgfplotsdataymax
+    },
+    extra tick style={
+      xticklabel={\pgfmathprintnumber[
+        fixed,
+        fixed zerofill,
+        precision=1
+      ]{\tick}},
+      yticklabel={\pgfmathprintnumber[
+        fixed,
+        fixed zerofill,
+        precision=1
+]{\tick}} }
+} }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Tufte Box Plot 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfplotsset{
+  IDEA tufte box/.style={
+	% Colour Options
+	cycle list name = waterloo-light,
+	ybar = 0pt,
+        width  = \columnwidth,
+        height = 6cm,
+        	axis line style = very thin,
+       	bar width=25pt,
+       	font = \sffamily,
+        	% X Axis
+        	major x tick style = transparent,
+        	enlarge x limits = {abs=1.5cm},
+        	xlabel style={name=xlabel},
+	% Y Axis
+        	ymajorgrids = true,
+        	scaled y ticks = false,
+        	separate axis lines,
+	axis lines* = left,
+        	ymajorgrids = true,
+        	major tick length = 0,
+        %Legend
+        	legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        	legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);}
+ 	% Boxplot specific options
+	boxplot,
+	boxplot/draw direction=y, 
+    	%clip = false,
+    	every axis plot/.style={
+      	mark=o,
+      	boxplot/draw direction=y,
+      	boxplot/whisker extend=0,
+      	boxplot/draw/box/.code={ },
+	boxplot/draw/median/.code={%
+	 \draw[mark size=2pt,/pgfplots/boxplot/every median/.try]
+          \pgfextra
+          \pgftransformshift{
+            \pgfplotsboxplotpointabbox
+              {\pgfplotsboxplotvalue{median}}
+              {0.5}
+          }
+          \pgfsetfillcolor{black}
+          \pgfuseplotmark{*}
+          \endpgfextra
+        	;
+      	},
+      }
+  },
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   IDEA Box Plot 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pgfplotsset{
+    IDEA box/.style={
+    	% Colour Options
+	cycle list name = waterloo-light,
+	ybar = 0pt,
+        width  = \columnwidth,
+        height = 6cm,
+        axis line style = very thin,
+        font = \sffamily,
+        	% X Axis
+        	major x tick style = transparent,
+        	enlarge x limits = {abs=1cm},
+        	xlabel style={name=xlabel},
+	% Y Axis
+        	ymajorgrids = true,
+        	scaled y ticks = false,
+        	separate axis lines,
+	axis lines* = left,
+        	ymajorgrids = true,
+        	major tick length = 0,
+        %Legend
+        	legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        	legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);}
+        % draw whiskers as a single line:
+        boxplot/draw/whisker/.code 2 args={%
+            \draw[/pgfplots/boxplot/every whisker/.try]
+                (boxplot cs:##1) -- (boxplot cs:##2)
+            ;
+        },%
+        %
+        % fill the boxes:
+        boxplot/every box/.style={
+            fill,
+        },
+        % 
+        % the median should be visualized as a thick white line:
+        boxplot/every median/.style={
+        		ultra thick,
+		fill=white, draw=white,
+        },
+        %boxplot/draw/median/.code={%
+        %    \draw[fill=white]
+        %        (boxplot cs:\pgfplotsboxplotvalue{median}) circle (3pt)
+        %    ;
+        %},
+        % draw the average as a circle
+        boxplot/average=auto,
+        boxplot/draw/average/.code={%
+	   \draw[fill=white,draw=gray]
+            	(boxplot cs:\pgfplotsboxplotvalue{average}) circle (2pt)
+            ;
+        },
+        %
+        % do not clip to avoid problems with the median:
+        clip=false,
+        %
+        boxplot/draw direction=y,
+        boxplot/whisker extend=0,
+        boxplot/every whisker/.style = very thick,
+        %
+        %
+        % width of boxes:
+        boxplot/box extend=0.15,
+    },
+    %
+    %
+    rshift/.style={
+        xshift=\pgfkeysvalueof{/pgfplots/rshift scale},
+        legend image post style={xshift=-\pgfkeysvalueof{/pgfplots/rshift scale}},
+    },
+    lshift/.style={
+        xshift=-\pgfkeysvalueof{/pgfplots/lshift scale},
+        legend image post style={xshift=\pgfkeysvalueof{/pgfplots/lshift scale}},
+    },
+    rshift scale/.initial=1em,
+    lshift scale/.initial=1em,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% allows multiple lines for the same Y variable in stacked plots
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand\resetstackedplots{
+\makeatletter
+\pgfplots@stacked@isfirstplottrue
+\makeatother
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EOF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatother

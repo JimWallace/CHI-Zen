@@ -1,0 +1,503 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Showing Your Data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+- Figures and Tables in your results section often provide reviewers a first look at your results
+- can also make the often dense results section more accessible to readers who are unfamiliar with your research area
+- for readers with specific experience, particularly in replicated experimental settings such as a Fitts's Law study, can be the most important summary of research results in the paper 
+
+
+Some rules of thumb from Munzer \cite{munzner2014visualization}:
+\begin{enumerate}
+	\item No unjustified 3D
+	\item No unjustified 2D
+	\item Eyes beat memory
+	\item Get it right in Black and White
+	\item Function first, form next
+\end{enumerate}
+
+
+Munzer \cite{munzner2014visualization}, and in particular Chapter 5, is a useful resource for determining which Marks and Channels to use in a graph, and lists them in order of effectiveness
+
+- the style suggested in this document is informed and inspired by Tufte \cite{tufte1983visual}, who emphasizes minimalist presentation of quantitative data. Tufte's principles of information visualization 
+
+ 
+ 
+ For example, some good examples:
+Bartneck and Hu \cite{Bartneck:2009:SAC:1518701.1518810}
+
+
+Senellart \cite{Senellart:2013:DYR:2513166.2514938} discusses some useful cases of `bad' style, which superficially may appear to be picky but offer important guidance towards submitting polished papers. 
+ 
+ 
+Munzer \cite{Munzner:2008:PPW:1422919.1422927} 
+- some good advice in general, but more focused on info vis research
+
+- text is large and legible
+- all axes are labelled, including units of measure
+- axes start at 0, unless explicitly justified (for a good reason!)
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Comparing Performance: Bar Charts and Box Plots}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+- common to compare performance, efficiency, error rate, or other dependent measures between two study groups. For example, our new technique for 3D pointing, compared to a computer mouse. 
+
+- most simple way of doing so is to show the means and standard error in a bar graph, and this is commonly accepted throughout the ACM. 
+- For example, Figure \ref{bargraph} is an example drawn from a UIST publication \cite{REF}.
+
+
+\begin{figure}
+\begin{tikzpicture}
+\begin{axis}[IDEA bar,
+        symbolic x coords={non-occluded,occluded},
+        xtick = {non-occluded,occluded},
+        enlarge x limits=0.5,
+	    ymin = 0, ymax = 10,
+        ylabel = {Selection Time (s)},
+        width=\columnwidth,
+        height = 5cm,
+]
+
+%Depth Ray
+\addplot[style={draw=none,fill=AHSLight},error bars/.cd, y dir = both, y explicit, error bar style={black}]
+coordinates {(occluded, 6.8)  +- (1.7,1.7)};
+\addlegendentry{Depth Cursor}
+
+%Tiltcasting
+\addplot+[style={draw=none, fill=SchoolRedLight,line width = 0pt},error bars/.cd, y dir = both, y explicit, error bar style={black}]
+coordinates {(non-occluded,3.24) +- (.712,.712)
+		    (occluded,4)  +- (.922,.922)};
+\addlegendentry{Tiltcasting}
+
+%Smartcasting
+\addplot+[style={draw=none, fill=EnvironmentLight},error bars/.cd, y dir = both, y explicit, error bar style={black}]
+coordinates {(non-occluded, 2.10)  +- (.42,.42)};
+\addlegendentry{Smartcasting}
+
+\end{axis}
+\end{tikzpicture}
+\caption{An example bar graph with error bars. Data is specified in the latex file.}
+\label{bargraph}
+\end{figure}
+
+
+- to be more accurate and descriptive, box plots are often used
+- similar to a bar graph with error bars, but also indicate quartiles and outliers 
+- typically, better practice to include a box plot when possible -- but can be substantially more difficult to create in Microsoft Word. 
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Questionnaire Responses}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+- Common to want to show questionnaire respones, particularly to, e.g., Likert scale questions
+- Jim's preference: stacked divergent bar graph
+
+\begin{figure}
+\begin{tikzpicture}
+\pgfplotstableread[col sep = comma]{submission/data/Cleric_AvatarIdentificationStacked.csv}\ClericIdentificationData
+\pgfplotstableread[col sep = comma]{submission/data/Monster_AvatarIdentificationStacked.csv}\MonsterIdentificationData
+
+\begin{axis}[
+    IDEA Likert,
+    height = 6.5cm,
+    width = .75\columnwidth,
+    % Y AXIS
+    symbolic y coords = {Ava_Conn,	Ava_WE,	AvavsPhys,	AvaVsPers,	AvaVsPhysIdeal,	AvaVsPersIdeal},
+    ytick={Ava_Conn, Ava_WE, AvavsPhys, AvaVsPers, AvaVsPhysIdeal, AvaVsPersIdeal},
+    yticklabels={Connectedness, Refer to \\ Avatar as ``We'', Physical \\ Similarity, Personality\\ Similarity, Physical Ideal, Ideal Personality},
+    yticklabel style={align=right,font={\sffamily\small}},
+    y axis line style={draw=none},
+    y dir = reverse,
+    ymajorgrids = false,
+    % X AXIS
+    xmin=-100, xmax=100,
+    xlabel={\% of Responses},
+    xlabel style = {font=\small\sffamily},
+    xticklabel style = {font=\small\sffamily},
+    xtick = {-100,-50,0,50,100},
+    xticklabels = {100, 50, 0, 50, 100},
+    extra x ticks = {-75, 75},
+    extra x tick labels = {$\leftarrow$ Disagree, Agree $\rightarrow$},
+    every extra x tick/.style={major tick length=0,yshift={-8pt}},
+    ]
+    \addplot[draw=none,fill=none, forget plot] coordinates {(0,Ava_Conn)(0,Ava_WE)(0,AvavsPhys)(0,AvaVsPers)(0,AvaVsPhysIdeal)(0,AvaVsPersIdeal)};
+    \addplot[draw=none,fill=Cleric_3, forget plot, bar shift=.1cm] table [x expr={\thisrow{4}*-0.5},y=Measure] {\ClericIdentificationData};
+    \addplot[draw=none,fill=Cleric_2, forget plot, bar shift=.1cm] table [x expr={\thisrow{3}*-1},y=Measure] {\ClericIdentificationData};
+    \addplot[draw=none,fill=Cleric_1, forget plot, bar shift=.1cm] table [x expr={\thisrow{2}*-1}, y=Measure ] {\ClericIdentificationData};
+    \addplot[draw=none,fill=Cleric_0, forget plot, bar shift=.1cm] table [x expr={\thisrow{1}*-1}, y=Measure ] {\ClericIdentificationData};
+    \resetstackedplots
+    \addplot[draw=none,fill=none, forget plot] coordinates {(0,Ava_Conn)(0,Ava_WE)(0,AvavsPhys)(0,AvaVsPers)(0,AvaVsPhysIdeal)(0,AvaVsPersIdeal)};
+    \addplot[draw=none,fill=Monster_3, forget plot, bar shift=-.1cm] table [x expr={\thisrow{4}*-0.5},y=Measure] {\MonsterIdentificationData};
+    \addplot[draw=none,fill=Monster_2, forget plot, bar shift=-.1cm] table [x expr={\thisrow{3}*-1},y=Measure] {\MonsterIdentificationData};
+    \addplot[draw=none,fill=Monster_1, forget plot, bar shift=-.1cm] table [x expr={\thisrow{2}*-1}, y=Measure ] {\MonsterIdentificationData};
+    \addplot[draw=none,fill=Monster_0, forget plot, bar shift=-.1cm] table [x expr={\thisrow{1}*-1}, y=Measure ] {\MonsterIdentificationData};
+\end{axis}
+
+\begin{axis}[
+    IDEA Likert,
+    height = 6.5cm,
+    width = .75\columnwidth,
+    % Y AXIS
+    symbolic y coords = {Ava_Conn,	Ava_WE,	AvavsPhys,	AvaVsPers,	AvaVsPhysIdeal,	AvaVsPersIdeal},
+    ytick={Ava_Conn, Ava_WE, AvavsPhys, AvaVsPers, AvaVsPhysIdeal, AvaVsPersIdeal},
+    yticklabels={Connectedness, Refer to \\ Avatar as ``We'', Physical \\ Similarity, Personality\\ Similarity, Physical Ideal, Ideal Personality},
+    yticklabel style={align=right,font={\sffamily\small}},
+    y axis line style={draw=none},
+    y dir = reverse,
+    ymajorgrids = false,
+    % X AXIS
+    xmin=-100, xmax=100,
+    xlabel={\% of Responses},
+    xlabel style = {font=\small\sffamily},
+    xticklabel style = {font=\small\sffamily},
+    xtick = {-100,-50,0,50,100},
+    xticklabels = {100, 50, 0, 50, 100},
+    extra x ticks = {-75, 75},
+    extra x tick labels = {$\leftarrow$ Disagree, Agree $\rightarrow$ },
+    every extra x tick/.style={major tick length=0,yshift={-8pt}},
+    ]
+    \addplot[draw=none,fill=none, forget plot] coordinates {(0,Ava_Conn)(0,Ava_WE)(0,AvavsPhys)(0,AvaVsPers)(0,AvaVsPhysIdeal)(0,AvaVsPersIdeal)};
+    
+    \addplot[draw=none,fill=Cleric_3, forget plot, bar shift=.1cm] table [x expr={\thisrow{4}*0.5}, y=Measure ] {\ClericIdentificationData};
+    \addplot[draw=none,fill=Cleric_4, forget plot, bar shift=.1cm] table [x expr={\thisrow{5}}, y=Measure ] {\ClericIdentificationData};
+    \addplot[draw=none,fill=Cleric_5, forget plot, bar shift=.1cm] table [x expr={\thisrow{6}}, y=Measure ] {\ClericIdentificationData};
+    \addplot[draw=none,fill=Cleric_6, forget plot, bar shift=.1cm] table [x expr={\thisrow{7}}, y=Measure ] {\ClericIdentificationData}; \label{plot:cleric6}
+    \resetstackedplots
+    \addplot[draw=none,fill=none, forget plot] coordinates {(0,Ava_Conn)(0,Ava_WE)(0,AvavsPhys)(0,AvaVsPers)(0,AvaVsPhysIdeal)(0,AvaVsPersIdeal)};
+    \addplot[draw=none,fill=Monster_3, forget plot, bar shift=-.1cm] table [x expr={\thisrow{4}*0.5}, y=Measure ] {\MonsterIdentificationData};
+    \addplot[draw=none,fill=Monster_4, forget plot, bar shift=-.1cm] table [x expr={\thisrow{5}}, y=Measure ] {\MonsterIdentificationData};
+    \addplot[draw=none,fill=Monster_5, forget plot, bar shift=-.1cm] table [x expr={\thisrow{6}}, y=Measure ] {\MonsterIdentificationData};
+    \addplot[draw=none,fill=Monster_6, forget plot, bar shift=-.1cm] table [x expr={\thisrow{7}}, y=Measure ] {\MonsterIdentificationData};
+    %\addlegendimage{only marks, mark=o}
+    %\addlegendimage{only marks, mark=o}
+    %\legend{Neutral, Agree, Strongly Agree, Disagree,Strongly Disagree}
+    after end axis/.code={
+        \node at (axis cs:80,Ava_Conn) [anchor=east, ,font=\tiny] {\AsteriskBold};
+        \node at (axis cs:80,Ava_WE) [anchor=east, font=\tiny] {\AsteriskBold};
+        %\draw [white] (axis cs:0,AvaVsPersIdeal) -- (axis cs:0,Ava_Conn);
+        %\draw [white] (axis cs:-50,AvaVsPersIdeal) -- (axis cs:-50,Ava_Conn);
+        %\draw [white] (axis cs:50,AvaVsPersIdeal) -- (axis cs:50,Ava_Conn);
+    }
+    \coordinate (legend) at (axis description cs:1.15,.85);
+\end{axis}
+
+% this is a dummy `axis' environment only to create the legend
+\matrix [
+    matrix of nodes, 
+    every node/.style={anchor=center}, 
+    ] at (legend) {
+        |[fill=Cleric_0]| & |[fill=Cleric_1]| & |[fill=Cleric_2]| & |[fill=Cleric_3]| & |[fill=Cleric_4]| & |[fill=Cleric_5]| & |[fill=Cleric_6]| & |[font=\small\sffamily]|Cleric \\
+        |[fill=Monster_0]| & |[fill=Monster_1]| & |[fill=Monster_2]| & |[fill=Monster_3]| & |[fill=Monster_4]| & |[fill=Monster_5]| & |[fill=Monster_6]| & |[font=\small\sffamily]|Monster \\
+    };
+\end{tikzpicture}
+    
+\caption{Summary of avatar identification responses, based on 7-point Likert scales. Mann Whitney U tests revealed significant differences between \textsc{Avatar} groups for `Connectness' and `Refer to Avatar as We'. }
+\label{fig:avatar_identification}
+\end{figure}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Showing Trends over Time}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{figure}[t!]
+\begin{tikzpicture}[baseline]
+\begin{axis}[IDEA line,
+	% Graph Options
+	width=.475*\columnwidth,
+	height=4cm,
+	title=\texttt{r/stop\-drinking},
+	% X Axis Options
+	%date coordinates in=x,
+	%date ZERO=2014-01-01,
+    %xticklabel=\year,
+    %xmin=2014-01-01,
+    %xmax=2018-01-01,
+    xlabel=Year,
+	xtick={1,13,25,37,49},                              %% Jim: apologies... this is a hack
+    xticklabels={2014,2015,2016,2017,2018},             %%      will figure out what's going on here if we have time later
+	%xtick ={1,2,3,4,5,6,7,8,9},
+	% Y Axis Options
+	ylabel = Distinct Users / Active Threads,
+	ylabel style = {font=\tiny},
+	ymin = 0, ymax = 6000,
+	ytick = {0,2000,4000,6000},
+	ytick style = {font=\tiny},
+    %legend image code/.code={\draw[#1] circle (0.1cm);}
+]
+
+\pgfplotstableread[col sep = comma]{submission/data/stopdrinking-usagebymonth.csv}\mydata;
+\addplot+[draw=ScienceDark,fill=none,thick] table[x=index,y=users] {\mydata};
+\addplot+[draw=ArtsLight,fill=none,thick] table[x=index,y=threads] {\mydata};
+
+\end{axis}
+\end{tikzpicture}%
+%
+\begin{tikzpicture}[baseline]
+\begin{axis}[IDEA line,
+	% Graph Options
+	width=.475*\columnwidth,	
+	height=4cm,
+	title=\texttt{r/Opiates\-Recovery},
+	% X Axis Options
+	xtick={1,13,25,37,49},                              %% Jim: apologies... this is a hack
+    xticklabels={2014,2015,2016,2017,2018},             %%      will figure out what's going on here if we have time later
+	%date coordinates in=x,
+	%date ZERO=2014-01-01,
+    %xticklabel=\year,
+    %xmin=2014-01-01,
+    %xmax=2018-01-01,
+	xlabel = Year,
+	%xtick ={1,2,3,4,5,6,7,8,9},
+	% Y Axis Options
+	ylabel = Distinct Users / Active Threads,
+	ylabel style = {font=\tiny},
+	ymin = 0, ymax = 800,
+	ytick = {0,200,400,600,800},
+	ytick style = {font=\tiny},
+	legend style={at={(0.5,-1)},anchor=south}
+    %legend image code/.code={\draw[#1] circle (0.1cm);}
+]
+
+\pgfplotstableread[col sep = comma]{submission/data/opiaterecovery-usagebymonth.csv}\mydata;
+\addplot+[draw=ScienceDark,fill=none,thick] table[x=index,y=users] {\mydata};
+\addlegendentry{Distinct Users}
+\addplot+[draw=ArtsLight,fill=none,thick] table[x=index,y=threads] {\mydata};
+\addlegendentry{Active Threads}
+
+\end{axis}
+\end{tikzpicture}
+%\setlength{\belowcaptionskip}{-20pt}
+\caption{Distinct users and active threads for \texttt{r/stop\-drinking} (top) and \texttt{r/Opiates\-Recovery} (bottom) showing that both counts are experiencing an upwards trend over time for both subreddits.} 
+
+\label{fig:activity}
+\end{figure}
+
+
+
+\begin{figure*}[tb!]
+\begin{center}
+\begin{tikzpicture}
+\begin{groupplot}[
+   group style={
+       group size=1 by 5,
+       x descriptions at=edge bottom,
+       y descriptions at=edge left,
+       vertical sep=1pt,
+       horizontal sep=0pt},
+  IDEA tufte panel, 
+	% X Axis
+	width=\columnwidth,
+	xmin = 1990, xmax = 2015,
+	xtick = {1990,1994,1998,2002,2006,2010,2015},
+	x tick label style={font=\small,rotate=90, /pgf/number format/1000 sep=},
+	axis line style={thick},
+	% Y Axis
+	ytick={10,20,30,40,50,60,70,80,90},
+        ymin = 0,
+        ymax = 50,
+      ]
+
+
+% Bibliographic
+\nextgroupplot[bar width=7pt, height = 2.25cm, ymax = 25, title={Bibliographic}]
+\addplot+[draw=none, fill=black!50] 
+ coordinates {(1990,20) (1992,4) (1994,0) (1996,0) (1998,2) (2000,0) (2002,0) (2004,2) (2006,2) (2008,1) (2010,0) (2011,0) (2012,0) (2013,1) (2014,0) (2015,1) };       
+  
+% Not Empirical      
+\nextgroupplot[bar width=7pt, height = 3.5cm, ymax=70, title={Not Empirical}]
+\addplot+[draw=none, fill=black!50] 
+coordinates {(1990,37) (1992,55) (1994,33) (1996,38) (1998,54) (2000,35) (2002,20) (2004,18) (2006,24) (2008,13) (2010,5) (2011,31) (2012,9) (2013,4) (2014,6) (2015,7) };
+
+% Explanatory
+\nextgroupplot[bar width=7pt, height = 3cm, title={Explanatory}]
+\addplot+[draw=none, fill=black!50]  
+coordinates {(1990,3) (1992,4) (1994,5) (1996,0) (1998,0) (2000,5) (2002,15) (2004,16) (2006,29) (2008,25) (2010,21) (2011,16) (2012,8) (2013,14) (2014,15) (2015,12) };
+
+% D & E
+\nextgroupplot[bar width=7pt, ymax=60, height = 3.5cm, title={Design and Evaluation}]
+\addplot+[draw=none, fill=blue!50] 
+coordinates {(1990,17) (1992,13) (1994,26) (1996,22) (1998,15) (2000,27) (2002,39) (2004,35) (2006,23) (2008,19) (2010,21) (2011,10) (2012,28) (2013,26) (2014,24) (2015,22) };
+
+% Descriptive
+\nextgroupplot[bar width=7pt, ymax = 70, height = 3.5cm, title={Descriptive}]
+\addplot+[draw=none,fill=black!50]
+coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,27) (2004,29) (2006,23) (2008,42) (2010,53) (2011,42) (2012,55) (2013,55) (2014,55) (2015,58) };
+
+
+\end{groupplot}
+\end{tikzpicture}
+\caption{An example of Tufte's stacked panel graph, which presents the same information as a stacked bar graph but better enables comparisons across each vertical dimension. Best practice is to use black and white when possible, with sparing colour for emphasis where appropriate. }
+\label{stackedpanel}
+\end{center}
+\end{figure*}
+
+
+
+
+\begin{figure}
+\begin{tikzpicture}
+\begin{groupplot}[
+   group style={
+       group size=1 by 5,
+       x descriptions at=edge bottom,
+       y descriptions at=edge left,
+       vertical sep=10pt,
+       horizontal sep=0pt},
+  IDEA line,
+	% Graph Options
+	height=3cm,
+	 separate axis lines,
+	% X Axis Options
+	xmin=0, xmax= 35,
+	xtick={1,5,10,15,20,25,30, 35},
+	%date coordinates in=x,
+	%date ZERO=2014-01-01,
+    %xticklabel=\year,
+    %xmin=2014-01-01,
+    %xmax=2018-01-01,
+	xlabel = Number of NPC Requests,
+	xlabel style = {font=\small\sffamily},
+    xticklabel style = {font=\small\sffamily},
+	%xtick ={1,2,3,4,5,6,7,8,9},
+	% Y Axis Options
+	%ylabel = Proportion of Responses,
+	ymajorgrids = false,
+	ylabel shift = -.3cm,
+	ymin = 0, ymax = 1,
+	ytick = {0, 1.00},
+	ylabel style = {font=\small\sffamily},
+    yticklabel style = {font=\small\sffamily},
+	%ytick style = {font=\tiny},
+	title style = {yshift=-.75cm,font=\sffamily\small}
+]
+\pgfplotstableread[col sep = comma]{submission/data/CBT_PropOverTime.csv}\cbtovertimedata;
+
+\nextgroupplot[xtick style = {white}, title style = {yshift=+.35cm,font=\sffamily\small}, title={Not Damaging}]
+\addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=NotDamaging] {\cbtovertimedata};
+\addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=NotDamaging}}] {\cbtovertimedata};
+%\addlegendentry{Not Damaging}
+
+\nextgroupplot[xtick style = {white}, title={Empathize}]
+\addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=Empathize] {\cbtovertimedata};
+\addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=Empathize}}] {\cbtovertimedata};
+%\addlegendentry{Empathize}
+
+\nextgroupplot[xtick style = {white}, title style = {yshift=+.25cm,font=\sffamily\small}, title={Reframe}]
+\addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=Reframe] {\cbtovertimedata};
+\addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=Reframe}}] {\cbtovertimedata};
+%\addlegendentry{Reframe}
+
+\nextgroupplot[xtick style = {white}, title={Encourage}]
+\addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=Encourage] {\cbtovertimedata};
+\addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=Encourage}}] {\cbtovertimedata};
+%\addlegendentry{Encourage}
+
+\nextgroupplot[title={Solution}]
+\addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=Solution] {\cbtovertimedata};
+\addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=Solution}}] {\cbtovertimedata};
+%\addlegendentry{Solution}
+
+
+%\addplot+[mark=x, only marks,draw=Monster_0,fill=none,semithick] table[x=Query,y=Proportion, y error plus=CI-upper, y error minus=CI-lower] {\barbariansolutiondata};
+%\addlegendentry{Monster}
+%\addplot [draw=Monster_0, fill=none,ultra thick] table[y={create col/linear regression={y=Proportion}}] {\barbariansolutiondata};
+
+\end{groupplot}
+\end{tikzpicture}
+
+%\setlength{\belowcaptionskip}{-20pt}
+\caption{The proportion of responses that were classified as meeting five criteria: Empathize, Reframe, Encourage, Solution, and Not Damaging. The three categories related to CBT, Empathize, Reframe, and Encourage, were found to decrease over time ($p=0.05$). However, we did not find these changes for Solution and Not Damaging. 
+%decreased over time for all participants, however responses by participants in the \textsc{Cleric} group decreased more quickly than those in the \textsc{Monster} group.
+} 
+
+\label{fig:SolutionsOverQueryNumber}
+\end{figure}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Tables}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+- remove vertical lines
+- minimize horizontal lines
+
+\begin{center}
+\begin{table*}[htbp!]
+\small
+\begin{center}
+\begin{tabular}{l l l l l}
+\toprule
+Condition & \multicolumn{4}{l}{Teamwork Measures}\\
+\cmidrule(r){2-5}
+& \multicolumn{2}{l}{Measure 1} & Measure 2 & Measure 3 \\
+\cmidrule(r){2-3} 
+&  Sub 1 & Sub 2 &  \\ 
+
+
+\midrule
+
+
+Condition 1 & .478 & .468 & 1.68 & 12.3  \\
+                  & (.0259) & (.031) & (.703) & (5.93) \\
+\\
+
+Condition 2 & .444 & .451 & 1.32 & 18.4 \\
+                              & (.0478) & (.0585) & (.319) & (2.76) \\
+\\
+
+Condition 3 & --- & .410 &  2.857 & --- \\
+                     &        & (.0384)  & (.350) & \\
+\\
+
+
+ANOVA Results & $F_{(1,12)} = 2.27,$ & $F_{(2,18)} = 2.76,$  & $F_{(2,18)} = 16.16,$ & $F_{(1,12)} = 6.16,$ \\
+                          & $p = .158$ & $p = .090  $ &  $p < .0001$* &  $p = 0.029$ * \\
+\bottomrule
+\end{tabular}
+
+\caption[a]{Mean values and standard deviations (in parentheses) for teamwork measures, and ANOVA results for comparisons between experimental conditions. Significant results denoted by *.}
+\label{tab:bpf_teamwork_results}
+\end{center}
+\end{table*}
+\end{center}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
