@@ -1,16 +1,24 @@
+
+
+\newpage
+\vspace{2em}
+\begin{center}
+    \emph{If you define the problem correctly, you almost have the solution. --- Steve Jobs}
+\end{center}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Tables}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+As a rule of thumb, if you can show your data with a table, consider doing that first. Tables are quite effective for showing real data, and usually easy to interpret. The Vis literature even says that tables might be more convincing for a skeptical audience \cite{pandey2014persuasive}!
 
-- if you can show it with a table, consider that first
-- shows your real data, usually easy to interpret
-- literature says it might even be more convincing for a skeptical audience! \cite{pandey2014persuasive}
+In general, I suggest the following guidelines for formatting: 
+\begin{enumerate}
+    \item Remove vertical lines
+    \item Only use horizontal lines where necessary
+    \item Use \texttt{ \textbackslash toprule}, \texttt{ \textbackslash midrule}, and \texttt{ \textbackslash bottomrule} to frame your table
+\end{enumerate}
 
-
-My rules:
-
-- remove vertical lines
-- minimize horizontal lines
+You can see an example in \autoref{tab:exampletable}, below.
 
 \begin{center}
 \begin{table*}[htbp!]
@@ -36,7 +44,7 @@ Condition 2 & .444 & .451 & 1.32 & 18.4 \\
                               & (.0478) & (.0585) & (.319) & (2.76) \\
 \\
 
-Condition 3 & --- & .410 &  2.857 & --- \\
+Condition 3 &  & .410 &  2.857 &  \\
                      &        & (.0384)  & (.350) & \\
 \\
 
@@ -47,7 +55,7 @@ ANOVA Results & $F_{(1,12)} = 2.27,$ & $F_{(2,18)} = 2.76,$  & $F_{(2,18)} = 16.
 \end{tabular}
 
 \caption[a]{Mean values and standard deviations (in parentheses) for teamwork measures, and ANOVA results for comparisons between experimental conditions. Significant results denoted by *.}
-\label{tab:bpf_teamwork_results}
+\label{tab:exampletable}
 \end{center}
 \end{table*}
 \end{center}

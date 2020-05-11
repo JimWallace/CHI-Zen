@@ -1,0 +1,39 @@
+%
+%  This file imports each of the separate .tex files in this directory -- feel free to enable/disable each separately as you'd like
+%
+
+
+%
+%   A bunch of common includes for text formatting, features. 
+%
+\input{CHIZen/text.tex}
+
+
+%
+%   Figures -- formerly IDEA Plots -- Wraps most features from PGFPlots
+%       * Handles common formatting, defines some common graph types
+%       * See file for detailed documentation
+%
+\input{CHIZen/figures.tex}
+
+% This caches the PGF Plots stuff to speed up compile times
+\usetikzlibrary{external}
+\tikzexternalize[prefix=submission/tikz/]
+
+
+%
+%   Tables
+%
+\input{CHIZen/tables.tex}
+
+%
+%   Stats
+%
+\input{CHIZen/stats.tex}
+
+
+%
+%   Bibliography
+%
+\input{CHIZen/bib.tex}
+
