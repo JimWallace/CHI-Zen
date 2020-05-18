@@ -115,8 +115,8 @@ coordinates {(non-occluded, 2.10)  +- (.42,.42)};
 
 \begin{figure}
 \begin{tikzpicture}
-\pgfplotstableread[col sep = comma]{submission/data/Cleric_AvatarIdentificationStacked.csv}\ClericIdentificationData
-\pgfplotstableread[col sep = comma]{submission/data/Monster_AvatarIdentificationStacked.csv}\MonsterIdentificationData
+\pgfplotstableread[col sep = comma]{data/Cleric_AvatarIdentificationStacked.csv}\ClericIdentificationData
+\pgfplotstableread[col sep = comma]{data/Monster_AvatarIdentificationStacked.csv}\MonsterIdentificationData
 
 \begin{axis}[
     IDEA Likert,
@@ -251,7 +251,7 @@ coordinates {(non-occluded, 2.10)  +- (.42,.42)};
     %legend image code/.code={\draw[#1] circle (0.1cm);}
 ]
 
-\pgfplotstableread[col sep = comma]{submission/data/stopdrinking-usagebymonth.csv}\mydata;
+\pgfplotstableread[col sep = comma]{data/stopdrinking-usagebymonth.csv}\mydata;
 \addplot+[draw=ScienceDark,fill=none,thick] table[x=index,y=users] {\mydata};
 \addplot+[draw=ArtsLight,fill=none,thick] table[x=index,y=threads] {\mydata};
 
@@ -284,7 +284,7 @@ coordinates {(non-occluded, 2.10)  +- (.42,.42)};
     %legend image code/.code={\draw[#1] circle (0.1cm);}
 ]
 
-\pgfplotstableread[col sep = comma]{submission/data/opiaterecovery-usagebymonth.csv}\mydata;
+\pgfplotstableread[col sep = comma]{data/opiaterecovery-usagebymonth.csv}\mydata;
 \addplot+[draw=ScienceDark,fill=none,thick] table[x=index,y=users] {\mydata};
 \addlegendentry{Distinct Users}
 \addplot+[draw=ArtsLight,fill=none,thick] table[x=index,y=threads] {\mydata};
@@ -396,7 +396,7 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
 	%ytick style = {font=\tiny},
 	title style = {yshift=-.75cm,font=\sffamily\small}
 ]
-\pgfplotstableread[col sep = comma]{submission/data/CBT_PropOverTime.csv}\cbtovertimedata;
+\pgfplotstableread[col sep = comma]{data/CBT_PropOverTime.csv}\cbtovertimedata;
 
 \nextgroupplot[xtick style = {white}, title style = {yshift=+.35cm,font=\sffamily\small}, title={Not Damaging}]
 \addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=NotDamaging] {\cbtovertimedata};
