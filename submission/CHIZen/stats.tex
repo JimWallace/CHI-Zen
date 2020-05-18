@@ -4,11 +4,67 @@
 \newcommand{\mdn}{\emph{Mdn}=}
 \newcommand{\iqr}{\emph{IQR}=}
 \newcommand{\mean}{\emph{M}=}
-\newcommand{\sd}{\emph{SD}=}
-\newcommand{\p}{\emph{p}$<$}
+%\newcommand{\sd}{\emph{SD}=}
+%\newcommand{\p}{\emph{p}$<$}
 \newcommand{\effect}{\emph{r}=}
 \newcommand{\W}{\emph{W}=}
 \newcommand{\V}{\emph{V}=}
 \newcommand{\ttest}[1]{\emph{t}(#1)=}
 \newcommand{\quoting}[1]{``\emph{#1}''}
 \newcommand{\partic}[2]{``\emph{#1}''\textasciitilde\emph{#2}}%\texttildelow
+
+
+% Math and Measurements
+% --------------------------------
+
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+\newcommand{\degree}{\ensuremath{{}^{\circ}}\xspace}
+% a nicer cross, like 45 x 56 cm
+\newcommand{\by}{\ensuremath{\times}\xspace}
+\newcommand{\size}[3]{{#1}~{\by}~{#2}{#3}}
+
+
+% Statistics Reporting 
+% --------------------------------
+
+% standard deviation
+\newcommand{\sd}[1]{\mbox{{\textsc{sd}}~=~#1\xspace}}
+
+% ANOVAS
+
+% prefer this less than inequality (with thresholds of .01, .001, .0001, ...) when p < .01
+% Typical Anova: DOF1, DOF2, F value, less than p
+\newcommand{\anova}[4]{\mbox{$F_{#1,#2} =~#3$}, \mbox{$p~<~#4$}} 
+% Typical Anova with effect size: DOF1, DOF2, F value, less than p, partial eta sq
+\newcommand{\anovae}[5]{\mbox{$F_{#1,#2}~=~#3$}, \mbox{$p~<~#4$}, \mbox{$\eta^2_{p}~=~#5$}} 
+% if close to 0.05, can use equality for p using the following
+% Exact Anova: DOF1, DOF2, F value, exact p
+\newcommand{\anovaex}[4]{\mbox{$F_{#1,#2}~=~#3$}, \mbox{$p~=~#4$}} 
+% Exact Anova: DOF1, DOF2, F value, exact p, cohen's d, partial eta sq
+\newcommand{\anovaexe}[5]{\mbox{$F_{#1,#2}~=~#3$}, \mbox{$p~=~#4$}, \mbox{$\eta^2_{p}~=~#5$}} 
+
+% NOTE: usually don't give f-value, and dof for not signiciant tests, but this macro will do it if you need to
+% Not significant Anova: DOF1, DOF2, F value
+\newcommand{\anovans}[3]{\mbox{$F_{#1,#2}~=~#3$}, \mbox{$p~>~.05$}} 
+
+% reporting p-value with posthoc testds
+\newcommand{\p}[1]{{$p~<~#1$}}
+\newcommand{\pex}[1]{{$p~=~#1$}}
+
+
+% One-Way Anova : DF, DFDen, F et p
+\newcommand{\owanova}[3]{{\small $F_{#1}~=~#2$, $p~=~#3$}} 
+
+\newcommand{\chis}[1]{{\small $\chi^2~=~#1$}} % chi square seul
+\newcommand{\chisquare}[3]{{\small $\chi^2(#1)~=~#2$, $p~=~#3$}} % chi square classique : DF, DFDen, F et p
+\newcommand{\chisquares}[2]{{\small $\chi^2(#1)~=~#2$, $p~<~0.0001$}} % chi square "s-ignificatif" : DF, DFDen, F, avec p < 0,0001
+
+
+
+\newcommand{\cor}{correlation ($\rho$, p)}
+
+
+% Shortened post-hoc results if necessary
+\newcommand{\infS}[1]{$\overset{_{#1}}{<}$}
+\newcommand{\supS}[1]{$\overset{_{#1}}{>}$}
+

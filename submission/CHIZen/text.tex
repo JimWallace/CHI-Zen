@@ -4,6 +4,14 @@
 % Enables use of Chinese characters
 \usepackage{CJKutf8}
 
+% MARKDOWN
+%
+% TODO: Explore how useful this is for general-purpose HCI papers
+%       - Tables/Figures need to be a separate thing, but useful for everything else?
+%
+\usepackage[footnotes,definitionLists,hashEnumerators,smartEllipses,hybrid]{markdown}
+
+
 % Jim added this -- useful highlighting function \hl{}
 %\usepackage{soul,color}
 
@@ -11,7 +19,7 @@
 \frenchspacing
 \raggedbottom
 
-% Lennart's acronym
+% Lennart's acronym package
 \usepackage[nolist]{acronym}
 
 \begin{acronym}
@@ -33,3 +41,22 @@
 % Jim added this -- useful highlighting function \hl{}
 %\usepackage{soul,color}
 
+
+
+% Study Variables
+% ----------------------------
+
+% scale up the sc font slightly
+\usepackage{letltxmacro,lipsum,relsize}
+\LetLtxMacro{\oldscshape}{\scshape}
+\renewcommand{\scshape}[1]{\oldscshape\relscale{1.2}#1}
+
+% an experiment factor/variable
+\newcommand{\f}[1]{\mbox{{\textsc{#1}}}\xspace}
+% usage: \f{block}, \f{width}, etc.
+% NOTE: need \xspace package to fix spacing issues
+%       \mbox prevents breaking
+
+% a code when qualitative coding 
+\newcommand{\cd}[1]{\textit{``{#1}''}\xspace}
+% usage: \cd{errors}, \cd{work}

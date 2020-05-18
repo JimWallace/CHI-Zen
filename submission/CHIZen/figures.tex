@@ -62,8 +62,8 @@
 \usepgfplotslibrary{groupplots}
 
 
-%\usetikzlibrary{external}
-%\tikzexternalize[prefix=tikz/] % Must be in main .tex file?
+\usetikzlibrary{external}
+\tikzexternalize[prefix=tikz/] % Must be in main .tex file?
 
 \usetikzlibrary{pgfplots.statistics}
 \usetikzlibrary{matrix}
@@ -446,7 +446,7 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
         major tick length = 0,
         grid style = {white},
 	% Legend Formatting
-	title style = {yshift=-.75cm,font=\tiny}
+	title style = {yshift=-.75cm,font=\sffamily\tiny}
 	}
 }
 
