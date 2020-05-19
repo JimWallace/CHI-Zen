@@ -1,0 +1,50 @@
+%
+% This section is written in Markdown
+%
+\begin{markdown}
+
+# Why \LaTeX?
+
+\LaTeX\ is far from a perfect writing tool. For one thing, it's a *typesetting environment* and not a word processor, so little things like the difference between a \` and a ' can end up being important. When you're writing a paper, you generally want to focus on the words you're writing, and not getting the syntax right. So why use \LaTeX?
+
+1. Formatting is done `for free' by the SIG CHI template, and it does a great job of this for you, so you can spend your time on the more important parts of your paper
+2. The University of Waterloo provides a Pro Overleaf account if you login with your UW userid. Overleaf is lightweight, easy-to-use, and supports collaborative writing really well. 
+3. \LaTeX\ integrates well with other (free) tools like R, PGFPLots, etc. and any referencing software you can find through the Bib\TeX package.
+
+However, \LaTeX\ isn't perfect, and so this project embodies some changes to the template that make our typical workflow a little easier:
+
+1. It supports \href{https://daringfireball.net/projects/markdown/}{Markdown}: authors can therefore focus on content, and the ACM templates can handle formatting
+2. Sections are separated out into files, so that authors can edit each without interrupting one another
+3. Several commonly-used \LaTeX\ packages are automatically included, for instance, for Markdown, Figures and Tables, and Referencing
+4. Many (optional) in-text shortcuts are also included, for tasks like reporting statistics, defining colour palettes, and including alternative languages. 
+
+
+
+## Markdown
+A common complaint about \LaTeX is that it's hard to read and write, and that the learning curve is *really* steep. For this reason, we're following the general philosophy of letting \LaTeX\ handle the stuff it's good at --- formatting, math, figures, references --- and leaving the writing to Markdown. Markdown is extremely easy to read and write. In fact, you're probably familiar with much of its syntax already: 
+
+>    "The overriding design goal for Markdown’s formatting syntax is to make it as readable as possible. The idea is that a Markdown-formatted document should be publishable as-is, as plain text, without looking like it’s been marked up with tags or formatting instructions. While Markdown’s syntax has been influenced by several existing text-to-HTML filters, the single biggest source of inspiration for Markdown’s syntax is the format of plain text email"
+> --- John Gruber \citep{gruber2006}.
+
+However, you should be aware of some limitations of Markdown --- especially for some of the more technical aspects of a scientific paper. It doesn't always play well with tables, and while you can include images, Markdown doesn't necessarily offer some of the nice features that \LaTeX\ does. Keep reading for more information on that. 
+
+**This template has been configured to allow *both* Markdown and \LaTeX\ syntax in the same file**, through the \texttt{markdown} package's \texttt{hybrid} option.
+
+
+
+## A Wrapper for PGFPlots
+As as I was completing my PhD, I decided to spend some time trying to learn to make better figures since this was something I expected to spend a lot of time doing over the rest of my career, and I might as well think about how to do it well from the start. Some of the things I'd hoped to improve on were using scalable graphics, having better control over the width/height of figures, and being able to use experimental data itself to create the images (better fit with a typical academic workflow). I also prefer a minimalist feel, and wanted my papers to reflect that (And even if you prefer something different, this is a good starting point, you can always make things more complex where needed). 
+
+So after doing some research, I found that \texttt{PGFPlots} was a good fit for my needs. But it wasn't perfect, and in particular can be complicated to get right. So in the interest of saving the time of re-inventing the wheel, and (hopefully) enabling others to use my work for their own papers, I decided to create a set of templates that would encapsulate the common types of graphs I use in HCI research. I called these templates \texttt{IDEA Plots} after my lab at the time. As I developed the templates, they grew to include style choices, colour palettes, and some common shortcuts for layout. I expect they'll continue to evolve for a while to come.  
+
+All of the examples in this document use the templates, with some in-place customization based on the needs of the graph. 
+
+
+
+## Accessibility
+A perennial to-do list item, and a terrible gap in academic writing. I'm currently exploring the \texttt{accessibility} package to provide some support, but it is not (yet) working with this template. We clearly need to spend more time on this over the next writing cycles.
+
+Unfortunately, the \href{https://chi2021.acm.org/for-authors/presenting/papers/guide-to-an-accessible-submission}{CHI 2021 Guide to an Accessible Submission} does not yet provide any additional resources for writing in \LaTeX. 
+
+
+\end{markdown}

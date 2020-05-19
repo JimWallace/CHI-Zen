@@ -1,0 +1,60 @@
+%
+% This Section is written in LaTeX because Markdown wasn't playing well with the tables
+%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Tables}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+As a rule of thumb, if you can show your data with a table, consider doing that first. Tables are quite effective at `showing your data', and are usually easy to interpret. The Vis literature even suggests that tables might be more convincing for a skeptical audience \citep{pandey2014persuasive}!
+
+In terms of table formatting, many of the same principles apply to tables as figures. My specific advice is to: 
+
+\begin{enumerate}
+    \item Maintain a high Data-Ink Ratio \citep{tufte1983visual}: Don't use vertical lines, use horizontal lines sparingly, try to use whitespace to help group things together that belong together
+    \item Use \texttt{\textbackslash toprule}, \texttt{\textbackslash midrule}, and \texttt{\textbackslash bottomrule} to frame your table
+    \item Use the \texttt{[tb!]} flags when declaring the table in \LaTeX to push it to the top or bottom of a page
+    \item Use the \texttt{label\{\}} command to give your table a label that you can use later with \texttt{autoref\{\}}
+\end{enumerate}
+
+\autoref{tab:exampletable} is an example from \citet{wallace2013}. In general, writing tables directly in \LaTeX is a huge pain. I suggest using an online table generator, like \href{https://www.tablesgenerator.com}{https://www.tablesgenerator.com}, and then fine-tuning the formatting in your document. 
+
+\begin{center}
+\begin{table*}[b!]
+\small
+\begin{center}
+\begin{tabular}{l l l l l}
+\toprule
+Condition & \multicolumn{4}{l}{Teamwork Measures}\\
+\cmidrule(r){2-5}
+& \multicolumn{2}{l}{Measure 1} & Measure 2 & Measure 3 \\
+\cmidrule(r){2-3} 
+&  Sub 1 & Sub 2 &  \\ 
+
+
+\midrule
+
+
+Condition 1 & .478 & .468 & 1.68 & 12.3  \\
+                  & (.0259) & (.031) & (.703) & (5.93) \\
+\\
+
+Condition 2 & .444 & .451 & 1.32 & 18.4 \\
+                              & (.0478) & (.0585) & (.319) & (2.76) \\
+\\
+
+Condition 3 &  & .410 &  2.857 &  \\
+                     &        & (.0384)  & (.350) & \\
+\\
+
+
+ANOVA Results & $F_{(1,12)} = 2.27,$ & $F_{(2,18)} = 2.76,$  & $F_{(2,18)} = 16.16,$ & $F_{(1,12)} = 6.16,$ \\
+                          & $p = .158$ & $p = .090  $ &  $p < .0001$* &  $p = 0.029$ * \\
+\bottomrule
+\end{tabular}
+
+\caption[a]{Mean values and standard deviations (in parentheses) for teamwork measures, and ANOVA results for comparisons between experimental conditions. Significant results denoted by *.}
+\label{tab:exampletable}
+\end{center}
+\end{table*}
+\end{center}
