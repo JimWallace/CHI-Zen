@@ -1,32 +1,25 @@
 \newpage
 
+%
+% This section written in LaTeX because a lot of the graphing is untested in Markdown
+%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Showing Your Data}
+\section{Figures}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{markdown}
+Figures and Tables provide your readers with a `visual abstract' of your work. They can make the (often dense) results section more accessible to readers who are unfamiliar with your research area, and are a fallback when something in the text doesn't make sense right away. That is, they're often the first impression a reader has of your paper, make your work more accessible to the general audience, and provide a second, more visual, way of explaining results to your readers.
 
-- Figures and Tables in your results section often provide reviewers a first look at your results
-- can also make the often dense results section more accessible to readers who are unfamiliar with your research area
-- for readers with specific experience, particularly in replicated experimental settings such as a Fitts's Law study, can be the most important summary of research results in the paper 
+A general principal that I try to embody in all of these graphs is to **show your data**. Too often, we provide only summary data like an average and a standard error value, when we could have shown the entire data set. Summary statistics are useful, but often hide important trends in the data. (We should take this to heart well before writing the paper up, this all holds true for *data analysis*). I think that in the past, tools weren't always up to the task of showing our data. Tools like Excel would help you easily produce a bar chart, but don't have a preset for box plots. Fortunately, today our tools have become much better. 
 
+I've also tried to take best practice into consideration where possible, but there's always room for improvement. \citet{munznervisualization} provides an excellent summary of best practice from the literature, and I encourage you to read Chapter 6 on Rules of Thumb in depth to start thinking about how to approach thinking about visualizations as you're working on them. In particular, tips like **get it right in black and white** and **eyes beat memory** will help to improve the readability *and* accessibility of your paper. 
 
-Some rules of thumb from Munzner \citep{munznervisualization}:
-\begin{enumerate}
-	\item No unjustified 3D
-	\item No unjustified 2D
-	\item Eyes beat memory
-	\item Get it right in Black and White
-	\item Function first, form next
-\end{enumerate}
+The following sections are framed in terms of problem/solution for common types of graphs that we see in HCI research, with examples for each. The style for each graph is informed and inspired by \citet{tufte1983visual}, who emphasizes minimalist presentation of quantitative data. I find that Tufte's principles of information visualization, and general approach to working on graphs, are largely consistent with Munzner's advice above. That said, the style cetainly isn't for everyone --- your mileage may vary, please use what you find useful.  
 
 
-Munzner \citep{munznervisualization}, and in particular Chapter 5, is a useful resource for determining which Marks and Channels to use in a graph, and lists them in order of effectiveness
-
-- the style suggested in this document is informed and inspired by Tufte \citep{tufte1983visual}, who emphasizes minimalist presentation of quantitative data. Tufte's principles of information visualization 
-
- 
+ \end{markdown}
  
 %  For example, some good examples:
 % Bartneck and Hu \cite{Bartneck:2009:SAC:1518701.1518810}
@@ -47,24 +40,20 @@ Munzner \citep{munznervisualization}, and in particular Chapter 5, is a useful r
 
 
 
-
-
-
-
-
-
-
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Comparing Performance: Bar Charts and Box Plots}
+\subsection{Comparing Performance: Bar Charts}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 - common to compare performance, efficiency, error rate, or other dependent measures between two study groups. For example, our new technique for 3D pointing, compared to a computer mouse. 
-
 - most simple way of doing so is to show the means and standard error in a bar graph, and this is commonly accepted throughout the ACM. 
 - For example, Figure \ref{bargraph} is an example drawn from \citet{pietroszek2015}.
 
 
-\begin{figure}
+
+
+
+\begin{figure}[b!]
 \begin{tikzpicture}
 \begin{axis}[IDEA bar,
         symbolic x coords={non-occluded,occluded},
@@ -99,21 +88,35 @@ coordinates {(non-occluded, 2.10)  +- (.42,.42)};
 \end{figure}
 
 
+
+
+
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Comparing Performance: Box Plots, Violin Plots, Bee Swarm Plots}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 - to be more accurate and descriptive, box plots are often used
 - similar to a bar graph with error bars, but also indicate quartiles and outliers 
 - typically, better practice to include a box plot when possible -- but can be substantially more difficult to create in Microsoft Word. 
 
+variations: 
+- Admittedly, "Bee Swarm" plots are my personal preference for this kind of data since they "show your data" in a very clear way... but I haven't yet found a  way to generate them in \LaTeX. If you happen to work in R, there are some excellent supports for generating these graphs, and you can import those directly into this template with a little work. 
+- Violin plots 
 
 
 
+
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Questionnaire Responses}
+\subsection{Likert Scale Data: Stacked Divergent Bar Graphs}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-- Common to want to show questionnaire respones, particularly to, e.g., Likert scale questions
-- Jim's preference: stacked divergent bar graph
+A \emph{lot} of HCI research involves questionnaires, and interpreting diferences in questionnaire respones. For instance, Likert scale questions are very common. My preference for visualizing Likert scale responses is a stacked divergent bar graph (e.g., \autoref{fig:avatar_identification}), where responses are stacked into a bar, with neutral responses lined up at the graph's origin. This type of graph has a few properties that make it useful: in particular, readers can get a quick sense of `how positive' or `how negative' responses were based on the bar's position, while still being able to look at how many responses fell into each category. 
 
-\begin{figure}
+\begin{figure}[b!]
 \begin{tikzpicture}
 \pgfplotstableread[col sep = comma]{data/Cleric_AvatarIdentificationStacked.csv}\ClericIdentificationData
 \pgfplotstableread[col sep = comma]{data/Monster_AvatarIdentificationStacked.csv}\MonsterIdentificationData
@@ -219,13 +222,15 @@ coordinates {(non-occluded, 2.10)  +- (.42,.42)};
 
 
 
+
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Showing Trends over Time}
+\subsection{Trends over Time: Line Graph}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
-\begin{figure}[t!]
+\begin{figure}[b!]
 \begin{tikzpicture}[baseline]
 \begin{axis}[IDEA line,
 	% Graph Options
@@ -360,103 +365,94 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
 
 
 
-\begin{figure}
-\begin{tikzpicture}
-\begin{groupplot}[
-   group style={
-       group size=1 by 5,
-       x descriptions at=edge bottom,
-       y descriptions at=edge left,
-       vertical sep=10pt,
-       horizontal sep=0pt},
-  IDEA line,
-	% Graph Options
-	height=3cm,
-	 separate axis lines,
-	% X Axis Options
-	xmin=0, xmax= 35,
-	xtick={1,5,10,15,20,25,30, 35},
-	%date coordinates in=x,
-	%date ZERO=2014-01-01,
-    %xticklabel=\year,
-    %xmin=2014-01-01,
-    %xmax=2018-01-01,
-	xlabel = Number of NPC Requests,
-	xlabel style = {font=\small\sffamily},
-    xticklabel style = {font=\small\sffamily},
-	%xtick ={1,2,3,4,5,6,7,8,9},
-	% Y Axis Options
-	%ylabel = Proportion of Responses,
-	ymajorgrids = false,
-	ylabel shift = -.3cm,
-	ymin = 0, ymax = 1,
-	ytick = {0, 1.00},
-	ylabel style = {font=\small\sffamily},
-    yticklabel style = {font=\small\sffamily},
-	%ytick style = {font=\tiny},
-	title style = {yshift=-.75cm,font=\sffamily\small}
-]
-\pgfplotstableread[col sep = comma]{data/CBT_PropOverTime.csv}\cbtovertimedata;
+% \begin{figure}[tb!]
+% \begin{tikzpicture}
+% \begin{groupplot}[
+%   group style={
+%       group size=1 by 5,
+%       x descriptions at=edge bottom,
+%       y descriptions at=edge left,
+%       vertical sep=10pt,
+%       horizontal sep=0pt},
+%   IDEA line,
+% 	% Graph Options
+% 	height=3cm,
+% 	 separate axis lines,
+% 	% X Axis Options
+% 	xmin=0, xmax= 35,
+% 	xtick={1,5,10,15,20,25,30, 35},
+% 	%date coordinates in=x,
+% 	%date ZERO=2014-01-01,
+%     %xticklabel=\year,
+%     %xmin=2014-01-01,
+%     %xmax=2018-01-01,
+% 	xlabel = Number of NPC Requests,
+% 	xlabel style = {font=\small\sffamily},
+%     xticklabel style = {font=\small\sffamily},
+% 	%xtick ={1,2,3,4,5,6,7,8,9},
+% 	% Y Axis Options
+% 	%ylabel = Proportion of Responses,
+% 	ymajorgrids = false,
+% 	ylabel shift = -.3cm,
+% 	ymin = 0, ymax = 1,
+% 	ytick = {0, 1.00},
+% 	ylabel style = {font=\small\sffamily},
+%     yticklabel style = {font=\small\sffamily},
+% 	%ytick style = {font=\tiny},
+% 	title style = {yshift=-.75cm,font=\sffamily\small}
+% ]
+% \pgfplotstableread[col sep = comma]{data/CBT_PropOverTime.csv}\cbtovertimedata;
 
-\nextgroupplot[xtick style = {white}, title style = {yshift=+.35cm,font=\sffamily\small}, title={Not Damaging}]
-\addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=NotDamaging] {\cbtovertimedata};
-\addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=NotDamaging}}] {\cbtovertimedata};
-%\addlegendentry{Not Damaging}
+% \nextgroupplot[xtick style = {white}, title style = {yshift=+.35cm,font=\sffamily\small}, title={Not Damaging}]
+% \addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=NotDamaging] {\cbtovertimedata};
+% \addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=NotDamaging}}] {\cbtovertimedata};
+% %\addlegendentry{Not Damaging}
 
-\nextgroupplot[xtick style = {white}, title={Empathize}]
-\addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=Empathize] {\cbtovertimedata};
-\addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=Empathize}}] {\cbtovertimedata};
-%\addlegendentry{Empathize}
+% \nextgroupplot[xtick style = {white}, title={Empathize}]
+% \addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=Empathize] {\cbtovertimedata};
+% \addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=Empathize}}] {\cbtovertimedata};
+% %\addlegendentry{Empathize}
 
-\nextgroupplot[xtick style = {white}, title style = {yshift=+.25cm,font=\sffamily\small}, title={Reframe}]
-\addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=Reframe] {\cbtovertimedata};
-\addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=Reframe}}] {\cbtovertimedata};
-%\addlegendentry{Reframe}
+% \nextgroupplot[xtick style = {white}, title style = {yshift=+.25cm,font=\sffamily\small}, title={Reframe}]
+% \addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=Reframe] {\cbtovertimedata};
+% \addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=Reframe}}] {\cbtovertimedata};
+% %\addlegendentry{Reframe}
 
-\nextgroupplot[xtick style = {white}, title={Encourage}]
-\addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=Encourage] {\cbtovertimedata};
-\addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=Encourage}}] {\cbtovertimedata};
-%\addlegendentry{Encourage}
+% \nextgroupplot[xtick style = {white}, title={Encourage}]
+% \addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=Encourage] {\cbtovertimedata};
+% \addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=Encourage}}] {\cbtovertimedata};
+% %\addlegendentry{Encourage}
 
-\nextgroupplot[title={Solution}]
-\addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=Solution] {\cbtovertimedata};
-\addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=Solution}}] {\cbtovertimedata};
-%\addlegendentry{Solution}
-
-
-%\addplot+[mark=x, only marks,draw=Monster_0,fill=none,semithick] table[x=Query,y=Proportion, y error plus=CI-upper, y error minus=CI-lower] {\barbariansolutiondata};
-%\addlegendentry{Monster}
-%\addplot [draw=Monster_0, fill=none,ultra thick] table[y={create col/linear regression={y=Proportion}}] {\barbariansolutiondata};
-
-\end{groupplot}
-\end{tikzpicture}
-
-%\setlength{\belowcaptionskip}{-20pt}
-\caption{The proportion of responses that were classified as meeting five criteria: Empathize, Reframe, Encourage, Solution, and Not Damaging. The three categories related to CBT, Empathize, Reframe, and Encourage, were found to decrease over time ($p=0.05$). However, we did not find these changes for Solution and Not Damaging. 
-%decreased over time for all participants, however responses by participants in the \textsc{Cleric} group decreased more quickly than those in the \textsc{Monster} group.
-} 
-
-\label{fig:SolutionsOverQueryNumber}
-\end{figure}
+% \nextgroupplot[title={Solution}]
+% \addplot+[mark=*, mark size=1.5pt, draw=gray, only marks,fill=gray,thin] table[x=Query,y=Solution] {\cbtovertimedata};
+% \addplot [solid, draw=black, fill=none,ultra thick] table[y={create col/linear regression={y=Solution}}] {\cbtovertimedata};
+% %\addlegendentry{Solution}
 
 
+% %\addplot+[mark=x, only marks,draw=Monster_0,fill=none,semithick] table[x=Query,y=Proportion, y error plus=CI-upper, y error minus=CI-lower] {\barbariansolutiondata};
+% %\addlegendentry{Monster}
+% %\addplot [draw=Monster_0, fill=none,ultra thick] table[y={create col/linear regression={y=Proportion}}] {\barbariansolutiondata};
+
+% \end{groupplot}
+% \end{tikzpicture}
+
+% %\setlength{\belowcaptionskip}{-20pt}
+% \caption{The proportion of responses that were classified as meeting five criteria: Empathize, Reframe, Encourage, Solution, and Not Damaging. The three categories related to CBT, Empathize, Reframe, and Encourage, were found to decrease over time ($p=0.05$). However, we did not find these changes for Solution and Not Damaging. 
+% %decreased over time for all participants, however responses by participants in the \textsc{Cleric} group decreased more quickly than those in the \textsc{Monster} group.
+% } 
+
+% \label{fig:SolutionsOverQueryNumber}
+% \end{figure}
 
 
 
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Illustrating Scenarios: Rotograph}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- You don't need to be an artist
+- take a picture, trace over it
+- often by far the most effective technique for simply demonstrating key concepts in your paper 
 
 

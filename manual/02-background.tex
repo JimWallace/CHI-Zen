@@ -13,22 +13,22 @@
 
 However, \LaTeX\ isn't perfect, and so this project embodies some changes to the template that make our typical workflow a little easier:
 
-1. It supports \href{https://daringfireball.net/projects/markdown/}{Markdown}: authors can therefore focus on content, and the ACM templates can handle formatting
+1. It supports \href{https://daringfireball.net/projects/markdown/}{Markdown}: authors can therefore focus on content, and let ACM templates handle formatting
 2. Sections are separated out into files, so that authors can edit each without interrupting one another
 3. Several commonly-used \LaTeX\ packages are automatically included, for instance, for Markdown, Figures and Tables, and Referencing
-4. Many (optional) in-text shortcuts are also included, for tasks like reporting statistics, defining colour palettes, and including alternative languages. 
+4. Many (optional) in-text shortcuts are also included, for tasks like reporting statistics, defining colour palettes, and including alternative languages. (*Documentation in-progress*)
 
 
 
 ## Markdown
-A common complaint about \LaTeX is that it's hard to read and write, and that the learning curve is *really* steep. For this reason, we're following the general philosophy of letting \LaTeX\ handle the stuff it's good at --- formatting, math, figures, references --- and leaving the writing to Markdown. Markdown is extremely easy to read and write. In fact, you're probably familiar with much of its syntax already: 
+A common complaint about \LaTeX is that it's hard to read and write, and that the learning curve is *really* steep. For this reason, we're following the general philosophy of letting \LaTeX\ handle the stuff it's good at --- formatting, math, figures, references --- and leaving the content to Markdown. Markdown is extremely easy to read and write. In fact, you're probably familiar with much of its syntax already: 
 
 >    "The overriding design goal for Markdown’s formatting syntax is to make it as readable as possible. The idea is that a Markdown-formatted document should be publishable as-is, as plain text, without looking like it’s been marked up with tags or formatting instructions. While Markdown’s syntax has been influenced by several existing text-to-HTML filters, the single biggest source of inspiration for Markdown’s syntax is the format of plain text email"
 > --- John Gruber \citep{gruber2006}.
 
 However, you should be aware of some limitations of Markdown --- especially for some of the more technical aspects of a scientific paper. It doesn't always play well with tables, and while you can include images, Markdown doesn't necessarily offer some of the nice features that \LaTeX\ does. Keep reading for more information on that. 
 
-**This template has been configured to allow *both* Markdown and \LaTeX\ syntax in the same file**, through the \texttt{markdown} package's \texttt{hybrid} option.
+**This template has been configured to allow *both* Markdown and \LaTeX\ syntax in the same file**, through the \texttt{markdown} package's \texttt{hybrid} option. You can even combine them in the same *sentence*, and for example write paragraphs in Markdown that include BibTeX citations.
 
 
 

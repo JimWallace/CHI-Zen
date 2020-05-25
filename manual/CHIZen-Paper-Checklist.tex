@@ -1,35 +1,8 @@
-\documentclass[12pt]{article} %make sure that we are using 12 pt font
-\usepackage{fancyhdr}
-\usepackage{graphicx}
-\usepackage[margin=1.9cm]{geometry}%rounded up from 1.87, just to be safe...
-\usepackage{parskip}
-\usepackage{times} %make sure that the times new roman is used
-\usepackage{changepage}
-\usepackage{color}
-\usepackage{ifthen}
-\usepackage[sort]{natbib}
-\usepackage{latexsym} % for squares for the check-list environment
-\usepackage{multicol}
-\usepackage{hyperref}
-\usepackage{xcolor,colortbl}
-\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}
-\usepackage{booktabs}
 
-
-\usepackage{titlesec}
-% \titlespacing{\section}{12pt}{\parskip}{-\parskip}
-%\titlespacing{\subsection}{8pt}{\parskip}{-\parskip}
-% \titlespacing{\subsubsection}{0pt}{\parskip}{-\parskip}
-\titleformat{\section}{\large\bfseries}{\thesection}{2em}{}
-
-
-
-\begin{document}
-
-\pagestyle{fancy}
-\rhead{\href{http://hci.uwaterloo.ca}{\includegraphics[width=5cm]{submission/figures/uwhci-full-cs.png}}}
+%\pagestyle{fancy}
+\rhead{\href{http://hci.uwaterloo.ca}{\includegraphics[width=3cm]{figures/uwhci-full-cs.png}}}
 \lhead{\textcolor{gray}{\tiny{v3.0 -- \today}}}
-\renewcommand{\headrulewidth}{0pt}
+%\renewcommand{\headrulewidth}{0pt}
 
 \newenvironment{checklist}{%
   \begin{list}{}{}% whatever you want the list to be
@@ -45,7 +18,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 The following checklist is a compilation of common mistakes, reviewer feedback, and paper writing experience. It is intended to help identify the `little things' that often get in the way of a successful CHI submission, and may be helpful in reviewing your paper \textit{well before} the deadline. For example, to guide peer reviews, such as reviewing circles, or to help communicate necessary revisions. 
 
-The list was compiled by Jim Wallace, but incorporates the experience and feedback from many others at UWaterloo, including: Stacey Scott, Adrian Reetz, Mark Hancock, and Lennart Nacke. Suggestions are welcome, please email to \href{mailto:james.wallace@uwaterloo.ca}{james.wallace@uwaterloo.ca}. 
+The list was compiled by Jim Wallace, but incorporates the experience, advice, and feedback from many others at UWaterloo, including: Stacey Scott, Adrian Reetz, Mark Hancock, and Lennart Nacke. Suggestions are welcome, please email to \href{mailto:james.wallace@uwaterloo.ca}{james.wallace@uwaterloo.ca}. 
+
 
 \noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,7 +30,7 @@ The list was compiled by Jim Wallace, but incorporates the experience and feedba
 	\item What is the specific contribution of the paper? (e.g., Precisely how does your design build on existing work? or What new findings does this study provide over similar existing studies?)
 	\item Is the research described clearly? Could a fellow student replicate the work if all they had was this paper?  
 	\item Have you justified the research methods? (e.g., Construct / Internal / External validity)
-	\item Is the related literature comprehensive? 
+	
 	\item Have you summarized your findings? Are take-home messages clear and meaningful? 
 \end{checklist}
 
@@ -267,16 +241,4 @@ Summarize relevant citations, including findings from previous studies & Bauer e
 
 
 
-% Other Resources, not yet included:
-%
-% http://www.cs.ubc.ca/~tmm/writing.txt
-% http://web.ece.ucdavis.edu/~jowens/commonerrors.html
-% https://www.lightbluetouchpaper.org/2007/03/14/how-not-to-write-an-abstract/
-%
-%
-
-
-
-
-\end{document}
 
