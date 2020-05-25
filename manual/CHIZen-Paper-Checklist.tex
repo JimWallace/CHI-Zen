@@ -16,95 +16,146 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{\textsc{CHI Paper Checklist}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-The following checklist is a compilation of common mistakes, reviewer feedback, and paper writing experience. It is intended to help identify the `little things' that often get in the way of a successful CHI submission, and may be helpful in reviewing your paper \textit{well before} the deadline. For example, to guide peer reviews, such as reviewing circles, or to help communicate necessary revisions. 
 
-The list was compiled by Jim Wallace, but incorporates the experience, advice, and feedback from many others at UWaterloo, including: Stacey Scott, Adrian Reetz, Mark Hancock, and Lennart Nacke. Suggestions are welcome, please email to \href{mailto:james.wallace@uwaterloo.ca}{james.wallace@uwaterloo.ca}. 
+% The following checklist is a compilation of common mistakes, reviewer feedback, and paper writing experience. It is intended to help identify the `little things' that often get in the way of a successful CHI submission, and may be helpful in reviewing your paper \textit{well before} the deadline. For example, to guide peer reviews, such as reviewing circles, or to help communicate necessary revisions. 
+
+% The list was compiled by Jim Wallace, but incorporates the experience, advice, and feedback from many others at UWaterloo, including: Stacey Scott, Adrian Reetz, Mark Hancock, and Lennart Nacke. Suggestions are welcome, please email to \href{mailto:james.wallace@uwaterloo.ca}{james.wallace@uwaterloo.ca}. 
+
+
+
+
+\noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection*{\textsc{The Big Picture}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{0.5cm}
+
+You should answer the following in \emph{each of} the abstract, introduction, and related work sections to varying levels of detail. For instance, you might answer each question using about 1 sentence in the abstract, 1 paragaph in the introduction, and 1--3 paragraphs in the related work. If your reviewers can't answer these questions after reading the introduction of your paper, the odds that they can argue for accepting it are reduced drastically. 
+
+\begin{checklist}
+    \item What problem are you trying to solve?
+    \item Who cares if you do? 
+    \item What's the solution to the problem? 
+	\item What is the specific contribution of your paper? (e.g., Precisely how does your design build on existing work? or What new findings does this study provide over similar existing studies?)
+	\item Have you summarized your findings? Are take-home messages clear and meaningful? 
+\end{checklist}
+
+When thinking about how to articulate your contribution, consider framing it in terms of \citet{wobbrock2016research}, who suggest seven HCI contributions: Empirical, Artifact, Methodological, Theoretical, Dataset, Survey, and Opinion.
+
+%\item Is the research described clearly? Could a fellow student replicate the work if all they had was this paper?  
+	
+
+\noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{\textsc{Data Collection, Analysis, and Results}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Be sure to report and describe: 
+\begin{checklist}
+	\item What data was collected? (e.g., independent variables) And how? (e.g., computer logs, video recordings, field notes, questionnaires, etc.) 
+
+	\item What qualitative data analysis method(s) were conducted (e.g., high-level video review, affinity diagramming on your interview data, in-depth video coding, etc.) and by who(m)?
+	
+	\item What quantitative data analysis method(s) were used? (e.g., One-Way Analysis of Variance (ANOVA), Repeated-measures Analysis of Variance (RM-ANOVA), t-test, regression, etc.) 	
+	
+	\begin{enumerate}
+ 		\item State your alpha value, and any transformations or adjustments that were applied (e.g., for family-wise errors)
+		\item Report summary statistics of your actual data (e.g. mean, standard deviations, or standard error) as well as the statistical test results ($t$-values, $F$-values, $p$-values, effect size, etc.)
+	\end{enumerate}
+	\item When including any figures or tables of your data, always indicate directly in the figure or table any statistically significant differences between data values
+\end{checklist}
 
 
 \noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{\textsc{The Big Picture}}
+\section*{\textsc{Figures and Tables}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \vspace{0.5cm}
+Do all of the Figures and Tables:
 \begin{checklist}
-	\item What is the specific contribution of the paper? (e.g., Precisely how does your design build on existing work? or What new findings does this study provide over similar existing studies?)
-	\item Is the research described clearly? Could a fellow student replicate the work if all they had was this paper?  
-	\item Have you justified the research methods? (e.g., Construct / Internal / External validity)
-	
-	\item Have you summarized your findings? Are take-home messages clear and meaningful? 
+	\item Clearly highlight the relevant information? Can they be (mostly) understood without reading the paper? 
+	\item Have a caption and title? Are they annotated? 
+	\item Have labelled axes, and appropriate units / scale?
+	\item Are they legible when printed? In black and white?
+	\item Are they referenced in the body text? Are they numbered sequentially?
 \end{checklist}
+
+
+
+
+
+
+
+
+
+
+
+%\noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{\textsc{References}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{0.5cm}
+
+\begin{checklist}
+	\item Have you \begin{em}\textbf{thoroughly}\end{em} checked your reference list at the end of your paper?
+	\item Have you checked references to author's names in the main text for spelling?
+\end{checklist}
+
+\begin{center}
+
+\small % The size of the table text can be changed depending on content. Remove if desired.
+\def\arraystretch{2}
+\begin{tabular}{p{6cm} p{4cm} p{4cm}}
+& \textbf{YES} & \textbf{NO} \\
+ \cmidrule{2-2}  \cmidrule{3-3} 
+Include in-line citations in sentence & your claim [1]. & your claim. [1]. \\
+Citations follow author's name & Bauer et al. [1] claimed X, Y, and Z. & Bauer et al. claimed X, Y, and Z [1]. \\
+Citations are not nouns & ... as Bauer et al. [1] found ... & ... as [1] found ... \\
+Citations immediately follow claims & Previous research has found X [1], Y [2,3], and Z [4, 5]. &  Previous research has found X, Y, and Z [1, 2, 3, 4, 5]. \\
+All claims backed by a citation & The long-term use of smartphones causes increased anxiety [1, 2, 4]. & The long-term use of smartphones causes anxiety.  \\
+Summarize relevant citations, including findings from previous studies & Bauer et al. [1] previously showed that FitBit's have long-term benefits for mental health. They found initial positive health benefits ... & Bauer et al. [1] previously studied the impact of FitBit on long-term mental health. \\
+\end{tabular}
+\end{center}
 
 
 % \noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection*{\textsc{Structure}}
+% \section*{\textsc{Formatting \& Misc.}}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \begin{multicols}{2}
-% \begin{itemize}
-%   \item Introduction
-%   	\begin{checklist}
-% 		\item General Introduction
-% 		\item Problem Statement
-% 		\item Summary of findings
-% 	\end{checklist}
-	
-%   \item Related Work
-%   	\begin{checklist}
-% 		\item General Introduction
-% 		\item Problem Statement
-% 		\item What has been done?
-% 		\item How did it shape this work?
-% 	\end{checklist}
-   
-%   \item Experimental Design
-%   	\begin{checklist}
-% 		\item Participants
-% 		\item Experimental Setup
-% 		\item Experimental Design
-% 		\item Experimental Task
-% 		\item Hypotheses
-% 		\item Procedure
-% 		\item Data Collection and Analysis
-% 		\item Results
-% 	\end{checklist}
-	
-%   \item Discussion
-%   	\begin{checklist}
-% 		\item All results discussed?
-% 		\item Implications for Design/Theory
-% 		\item Take-home message?
-% 	\end{checklist}
+% \vspace{0.5cm}
 
+%\begin{checklist}
+% 	\item Did you use the most recent \href{https://chi2021.acm.org/for-authors/chi-publication-formats}{ACM SIGCHI Paper Format}?
+% 	\item Are all acronyms defined on first use? 
+% \end{checklist}
 
-%   \item Conclusion
-%   	\begin{checklist}
-% 		\item Impact Statement
-% 		\item Summary of findings
-% 		\item General Implications
-% 	\end{checklist}
-	
-% \end{itemize}
-% \end{multicols}
-
-
-
-\newpage
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{\textsc{Grammar}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{checklist}
-	\item Has a friend proof-read the full draft of your paper? 
-	\item When writing about numbers less than or equal to ten, use full words: ``one'', ``two'' ...etc, 
-	\item When a sentence starts with a number, it should also use words (e.g., ``Twenty-four participants were recruited...'') 
-	\item Be consistent (e.g., ``There were 23 participants who wrote CHI papers carefully, and only 2 that wrote them at the last minute'')
-\end{checklist}
+% \begin{checklist}
+% 	\item When writing about numbers less than or equal to ten, use full words: ``one'', ``two'' ...etc, 
+% 	\item When a sentence starts with a number, it should also use words (e.g., ``Twenty-four participants were recruited...'') 
+% 	\item Be consistent (e.g., ``There were 23 participants who wrote CHI papers carefully, and only 2 that wrote them at the last minute'')
+% \end{checklist}
 
 
 
 \noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{\textsc{Words and Phrases to Avoid}}
+\section*{\textsc{Before You Submit }}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{checklist}
+    \item \textbf{1 week before deadline} Have you checked your paper for everything above? 
+    \item \textbf{1 week before} Have you asked a friend to check your paper for everything above? 
+    \item \textbf{1 day before} Check with your co-authors that everything is ready
+    \item \textbf{After the deadline} Email a copy of the submitted PDF to your co-authors
+\end{checklist}
+
+
+
+
+
+\newpage
+%\noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{\textsc{BONUS: Words and Phrases to Avoid}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{multicols}{5}
 \small
@@ -147,6 +198,7 @@ The list was compiled by Jim Wallace, but incorporates the experience, advice, a
 \item[] thing
 \item[] totally
 \item[] user
+\item[] utilize
 \item[] various
 \item[] very
 \item[] well
@@ -158,86 +210,8 @@ The list was compiled by Jim Wallace, but incorporates the experience, advice, a
 \end{multicols}
 
 
-\noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{\textsc{Data Collection, Analysis, and Results}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Be sure to report and describe: 
-\begin{checklist}
-	\item What data was collected? (i.e., independent variables) And how? (e.g., computer logs, video recordings, field notes, questionnaires, etc.) 
-
-	\item What qualitative data analysis method(s) were conducted (e.g., high-level video review, affinity diagramming on your interview data, in-depth video coding, etc.)
+%\item Has a friend proof-read the full draft of your paper? 
 	
-	\item What quantitative data analysis method(s) were used? (e.g., One-Way Analysis of Variance (ANOVA), Repeated-measures Analysis of Variance (RM-ANOVA), t-test, regression, etc.) 	
-	
-	\begin{enumerate}
- 		\item State your alpha value, and any transformations or adjustments that were applied (e.g., for family-wise errors)
-		\item Report summary statistics of your actual data (e.g. mean, standard deviations, or standard error) as well as the statistical test results ($t$-values, $F$-values, $p$-values, effect size, etc.)
-	\end{enumerate}
-	\item When including any figures or tables of your data, always indicate directly in the figure or table any statistically significant differences between data values
-\end{checklist}
-
-
-\newpage
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{\textsc{Figures and Tables}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\vspace{0.5cm}
-Do all of the Figures and Tables:
-\begin{checklist}
-	\item Clearly highlight the relevant information? Can they be understood without reading the paper? 
-	\item Have a caption and title? Are they annotated? 
-	\item Have labelled axes, and appropriate units / scale?
-	\item Are they legible when printed? In black and white?
-	\item Are they referenced in the body text? Are they numbered sequentially?
-\end{checklist}
-
-
-\noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{\textsc{References}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\vspace{0.5cm}
-
-\begin{checklist}
-	\item Have you \begin{em}\textbf{thoroughly}\end{em} checked your reference list at the end of your paper?
-	\item Have you checked references to author's names in the main text for spelling?
-\end{checklist}
-
-\begin{center}
-
-\small % The size of the table text can be changed depending on content. Remove if desired.
-\def\arraystretch{2}
-\begin{tabular}{p{6cm} p{5cm} p{5cm}}
-& \textbf{YES} & \textbf{NO} \\
- \cmidrule{2-2}  \cmidrule{3-3} 
-Include in-line citations in sentence & your claim [1]. & your claim. [1]. \\
-Citations follow author's name & Bauer et al. [1] claimed X, Y, and Z. & Bauer et al. claimed X, Y, and Z [1]. \\
-Citations are not nouns & ... as Bauer et al. [1] found ... & ... as [1] found ... \\
-Citations immediately follow claims & Previous research has found X [1], Y [2,3], and Z [4, 5]. &  Previous research has found X, Y, and Z [1, 2, 3, 4, 5]. \\
-All claims backed by a citation & The long-term use of smartphones causes increased anxiety [1, 2, 4]. & The long-term use of smartphones causes anxiety.  \\
-Summarize relevant citations, including findings from previous studies & Bauer et al. [1] previously showed that FitBit's have long-term benefits for mental health. They found initial positive health benefits ... & Bauer et al. [1] previously studied the impact of FitBit on long-term mental health. \\
-\end{tabular}
-\end{center}
-
-
-\noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{\textsc{Formatting \& Misc.}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\vspace{0.5cm}
-
-\begin{checklist}
- 	\item Did you use the most recent \href{https://chi2021.acm.org/for-authors/chi-publication-formats}{ACM SIGCHI Paper Format}?
-%	\item Does the paper fall within the conference page length guidelines? 
-	\item Are all acronyms defined? Are footnotes used sparingly? 
-\end{checklist}
-
-
-
-
-
 
 
 
