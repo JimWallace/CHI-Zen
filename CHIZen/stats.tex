@@ -1,12 +1,9 @@
-% Katja's stats stuff
-% Shorthand for common terms
 \newcommand{\chisq}[1]{$\chi^2$(#1)=}
-\newcommand{\mdn}{\emph{Mdn}=}
 \newcommand{\iqr}{\emph{IQR}=}
-\newcommand{\mean}{\emph{M}=}
+
 %\newcommand{\sd}{\emph{SD}=}
 %\newcommand{\p}{\emph{p}$<$}
-\newcommand{\effect}{\emph{r}=}
+%\newcommand{\effect}{\emph{r}=}
 \newcommand{\W}{\emph{W}=}
 \newcommand{\V}{\emph{V}=}
 \newcommand{\ttest}[1]{\emph{t}(#1)=}
@@ -16,11 +13,14 @@
 
 % Math and Measurements
 % --------------------------------
+\newcommand{\mdn}{\emph{Mdn}=}
+\newcommand{\mean}{\emph{M}=}
 
 \newcommand{\vect}[1]{\boldsymbol{#1}}
-\newcommand{\degree}{\ensuremath{{}^{\circ}}\xspace}
+\newcommand{\degree}{${}^{\circ}$\xspace}
+
 % a nicer cross, like 45 x 56 cm
-\newcommand{\by}{\ensuremath{\times}\xspace}
+\newcommand{\by}{$\times$}
 \newcommand{\size}[3]{{#1}~{\by}~{#2}{#3}}
 
 
@@ -30,7 +30,9 @@
 % standard deviation
 \newcommand{\sd}[1]{\mbox{{\textsc{sd}}~=~#1\xspace}}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ANOVAS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % prefer this less than inequality (with thresholds of .01, .001, .0001, ...) when p < .01
 % Typical Anova: DOF1, DOF2, F value, less than p
@@ -55,12 +57,16 @@
 % One-Way Anova : DF, DFDen, F et p
 \newcommand{\owanova}[3]{{\small $F_{#1}~=~#2$, $p~=~#3$}} 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CHI-SQUARED
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \newcommand{\chis}[1]{{\small $\chi^2~=~#1$}} % chi square seul
 \newcommand{\chisquare}[3]{{\small $\chi^2(#1)~=~#2$, $p~=~#3$}} % chi square classique : DF, DFDen, F et p
 \newcommand{\chisquares}[2]{{\small $\chi^2(#1)~=~#2$, $p~<~0.0001$}} % chi square "s-ignificatif" : DF, DFDen, F, avec p < 0,0001
 
-
-
+% CORRELATION
 \newcommand{\cor}{correlation ($\rho$, p)}
 
 

@@ -456,3 +456,72 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
 - often by far the most effective technique for simply demonstrating key concepts in your paper 
 
 
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Scheduling: Gantt Charts}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[b]
+\begin{ganttchart}[
+    x unit=.208cm,
+    y unit title=0.4cm,
+    y unit chart=0.3cm,
+    vgrid,
+    time slot format=isodate-yearmonth,
+    time slot unit=month,
+    vgrid={*{3}{draw=none},dotted,*{3}{draw=none},dotted,*{3}{draw=none},*{1}{draw=gray}},
+    %
+    % TITLE OPTIONS
+    %
+    title/.style={draw=none, fill=none},
+    title label node/.append style={below=-1.6ex},
+    title top shift=-.5,
+    title label font=\tiny,
+    %
+    % BAR OPTIONS
+    %
+    bar height=.5,
+    bar/.append style={draw = none, fill=blue!50},
+    bar label font=\tiny,
+    %   
+    % GROUP OPTIONS
+    %
+    group label font={\tiny},
+    group right shift=0,
+    group top shift=.6,
+    group height=.3,
+    group peaks height=.2,
+   ]{2018-05}{2023-04}
+
+    
+    \gantttitle{\textbf{Year 1: 2019 -- 2020}}{12}
+    \gantttitle{\textbf{Year 2: 2020 -- 2021}}{12}
+    \gantttitle{\textbf{Year 3: 2021 -- 2022}}{12}
+    \gantttitle{\textbf{Year 4: 2022 -- 2023}}{12}
+    \gantttitle{\textbf{Year 5: 2023 -- 2024}}{12}
+                
+\ganttset{progress label text={}, link/.style={black, -to}}
+
+\ganttgroup{\textbf{Objective 1: Design Framework}}{2018-05}{2021-04} \\
+\ganttbar{Literature Review (1.1)}{2018-05}{2019-03} \\
+\ganttbar{Artifact Review (1.2)}{2018-09}{2019-07} \\
+\ganttbar{Framework Development (1.3)}{2019-05}{2020-04} \\
+\ganttbar{Mentoring \& Publication (1.4)}{2020-05}{2021-04} \\
+
+\ganttgroup{\textbf{Objective 2: Interaction Mechanics}}{2020-05}{2022-04} \\
+\ganttbar{Design (2.1)}{2020-05}{2020-07} \\
+\ganttbar{Development (2.2)}{2020-08}{2020-12} \\
+\ganttbar{Lab Study (2.3)}{2021-01}{2021-07} \\
+\ganttbar{Analysis \& Publication (2.4)}{2021-07}{2022-04} \\
+
+\ganttgroup{\textbf{Objective 3: In-Situ Evaluation}}{2021-05}{2023-04} \\
+\ganttbar{Requirements Gathering (3.1)}{2021-05}{2021-10} \\
+\ganttbar{Development (3.2)}{2021-11}{2022-06} \\
+\ganttbar{Ecological Validation (3.3)}{2022-06}{2022-12} \\
+\ganttbar{Analysis \& Publication (3.4)}{2023-01}{2023-04} 
+
+
+\end{ganttchart}
+\caption{Research activities are designed to scaffold development of a design framework and evaluation methodology, culminating in an in-situ evaluation with Homewood Research Institute.}
+\label{gantt}
+\end{figure}
