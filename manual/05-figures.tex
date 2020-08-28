@@ -463,6 +463,60 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
 
 
 
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{PRISMA Flow Diagram}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+- Example provided by Katja Rogers
+- http://www.prisma-statement.org
+- ``PRISMA is an evidence-based minimum set of items for reporting in systematic reviews and meta-analyses. PRISMA focuses on the reporting of reviews evaluating randomized trials, but can also be used as a basis for reporting systematic reviews of other types of research, particularly evaluations of interventions.''
+
+
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+\begin{figure}[b!]
+{
+\footnotesize
+\begin{tikzpicture}
+    \tikzstyle{block}=[
+        draw,
+        thick,
+        text width=5cm,
+        minimum height=1cm,
+        align=center
+    ]
+    \tikzstyle{header}=[rotate=90, align=center]
+    \tikzstyle{line}=[-latex, draw, very thick]
+    \node[block] (included-0) {Studies included in qualitative and quantitative synthesis (N=60)};
+    \node[block, above=2em of included-0] (eligibility-1) {Full-text articles assessed for eligibility \\ (N=791)};
+    \node[block, right=2em of eligibility-1] (eligibility-2) {Full-text articles excluded, with reasons \\ (N=731)};
+    \node[block, above=2em of eligibility-1] (screening-1) {Records screened \\ (N=1030)};
+    \node[block, right=2em of screening-1] (screening-2) {Records excluded \\ (N=239)};
+    \node[block, above=2em of screening-1] (screening-0) {Records after duplicates removed\\ (N=1030)};
+    \node[block, above=2em of screening-0, minimum height=1.5cm] (identification-1) {Records identified through database searching \\ (N=1035)}; 
+    \coordinate (screening-mid) at ($ (screening-0.west)!0.5!(screening-1.south west) $);
+    \coordinate (identification-mid) at ($ (screening-0.west)!0.5!(identification-1.north west-|screening-0.west) $);
+    \node[header, left=1cm of included-0.west, anchor=north] (included) {\textbf{Included}}; %left=\textwidth/6 of included-0.west, anchor=north
+    \node[header, left=1cm of eligibility-1.west, anchor=north] (eligibility) {\textbf{Eligibility}};
+    \node[header, left=1cm of screening-1.west, anchor=north] (screening) {\textbf{Screening}};
+    \node[header, left=1cm of identification-mid, anchor=north] (identification) {\textbf{Identification}};
+    % Draw edges
+    \path [line] (identification-1) -- ([yshift=.5cm]screening-0.north) -- (screening-0);
+    \path [line] (screening-0) -- (screening-1);
+    \path [line] (screening-1) -- (screening-2);
+    \path [line] (screening-1) -- (eligibility-1);
+    \path [line] (eligibility-1) -- (eligibility-2);
+    \path [line] (eligibility-1) -- (included-0);
+\end{tikzpicture}
+}
+\caption{Number of results at each stage of the review, as represented in a PRISMA flow diagram.}
+\end{figure}
+
+
+
+
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Scheduling: Gantt Charts}
