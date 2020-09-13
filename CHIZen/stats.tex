@@ -1,86 +1,49 @@
-%
-% Init
-%
+\usepackage{etoolbox}
 \usepackage{siunitx}
 
+\sisetup{
+    % range-phrase = --, % make ranges use en-dash instead of "to" (e.g., ages)
+    round-mode = places,
+    round-precision = 1, % can change precision globally
+    round-half = even
+}
 
-%
-%
-%
-
-
-\newcommand{\iqr}{\emph{IQR}=}
-
-%\newcommand{\sd}{\emph{SD}=}
-%\newcommand{\p}{\emph{p}$<$}
-%\newcommand{\effect}{\emph{r}=}
-\newcommand{\W}{\emph{W}=}
-\newcommand{\V}{\emph{V}=}
-\newcommand{\ttest}[1]{\emph{t}(#1)=}
-\newcommand{\quoting}[1]{``\emph{#1}''}
-\newcommand{\partic}[2]{``\emph{#1}''\textasciitilde\emph{#2}}%\texttildelow
-
-
-% Math and Measurements
-% --------------------------------
-\newcommand{\mdn}{\emph{Mdn}=}
-\newcommand{\mean}{\emph{M}=}
-
-\newcommand{\vect}[1]{\boldsymbol{#1}}
-\newcommand{\degree}{${}^{\circ}$\xspace}
-
-% a nicer cross, like 45 x 56 cm
-\newcommand{\by}{$\times$}
-\newcommand{\size}[3]{{#1}~{\by}~{#2}{#3}}
-
-
-% Statistics Reporting 
-% --------------------------------
-
-% standard deviation
-\newcommand{\sd}[1]{\mbox{{\textsc{sd}}~=~#1\xspace}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ANOVAS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% prefer this less than inequality (with thresholds of .01, .001, .0001, ...) when p < .01
-% Typical Anova: DOF1, DOF2, F value, less than p
-\newcommand{\anova}[4]{\mbox{$F_{#1,#2} =~#3$}, \mbox{$p~<~#4$}} 
-% Typical Anova with effect size: DOF1, DOF2, F value, less than p, partial eta sq
-\newcommand{\anovae}[5]{\mbox{$F_{#1,#2}~=~#3$}, \mbox{$p~<~#4$}, \mbox{$\eta^2_{p}~=~#5$}} 
-% if close to 0.05, can use equality for p using the following
-% Exact Anova: DOF1, DOF2, F value, exact p
-\newcommand{\anovaex}[4]{\mbox{$F_{#1,#2}~=~#3$}, \mbox{$p~=~#4$}} 
-% Exact Anova: DOF1, DOF2, F value, exact p, cohen's d, partial eta sq
-\newcommand{\anovaexe}[5]{\mbox{$F_{#1,#2}~=~#3$}, \mbox{$p~=~#4$}, \mbox{$\eta^2_{p}~=~#5$}} 
-
-% NOTE: usually don't give f-value, and dof for not signiciant tests, but this macro will do it if you need to
-% Not significant Anova: DOF1, DOF2, F value
-\newcommand{\anovans}[3]{\mbox{$F_{#1,#2}~=~#3$}, \mbox{$p~>~.05$}} 
-
-% reporting p-value with posthoc testds
-\newcommand{\p}[1]{{$p~<~#1$}}
-\newcommand{\pex}[1]{{$p~=~#1$}}
-
-
-% One-Way Anova : DF, DFDen, F et p
-\newcommand{\owanova}[3]{{\small $F_{#1}~=~#2$, $p~=~#3$}} 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% CHI-SQUARED
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\chisq}[1]{$\chi^2$(#1)=}
-\newcommand{\chis}[1]{{\small $\chi^2~=~#1$}} % chi square seul
-\newcommand{\chisquare}[3]{{\small $\chi^2(#1)~=~#2$, $p~=~#3$}} % chi square classique : DF, DFDen, F et p
-\newcommand{\chisquares}[2]{{\small $\chi^2(#1)~=~#2$, $p~<~0.0001$}} % chi square "s-ignificatif" : DF, DFDen, F, avec p < 0,0001
-
-% CORRELATION
-\newcommand{\cor}{correlation ($\rho$, p)}
-
-
-% Shortened post-hoc results if necessary
-\newcommand{\infS}[1]{$\overset{_{#1}}{<}$}
-\newcommand{\supS}[1]{$\overset{_{#1}}{>}$}
-
+\newcommand{\fprecision}{1}
+\newcommand{\chisqprecision}{1}
+\newcommand{\formatprob}[2]{%
+    \ifdimless{#2 pt}{.001 pt}{$#1 < .001$}{%
+        \ifdimless{#2 pt}{.01 pt}{$#1 < .01$}{%
+            $#1 = \num[add-integer-zero=false,%
+                      round-mode=places,%
+                      round-precision=2,%
+                      round-half=even]{#2}$%
+        }%
+    }%
+}
+\newcommand{\p}[1]{\formatprob{p}{#1}}
+\newcommand{\etasqp}[1]{\formatprob{\eta_{p}^2}{#1}}
+\newcommand{\F}[3]{{$F_{#1,#2}=\num[round-mode=places,%
+                                    round-precision=\fprecision]{#3}$}}
+\newcommand{\owF}[2]{{$F_{#1}=\num[round-mode=places,%
+                                   round-precision=\fprecision]{#2}$}}
+\newcommand{\chisq}[2]{$\chi^2(#1)=\num[round-mode=places,%
+                                        round-precision=\chisqprecision]{#2}$}
+\newcommand{\sd}[2][]{$SD=\SI{#2}{#1}$}
+\newcommand{\mean}[2][]{$M=\SI{#2}{#1}$}
+\newcommand{\mdn}[2][]{$Mdn=\SI{#2}{#1}$}
+\newcommand{\ages}[2]{Ages \numrange{#1}{#2}}
+\newcommand{\gender}[2]{\num{#1} identified as #2}
+\newcommand{\genderlist}[2]{\numlist{#1} identified as #2, respectively}
+\newcommand{\by}{\,$\times$\,}
+\newcommand{\size}[3][]{\SIrange[range-phrase=\by,%
+                                 range-units=single]{#2}{#3}{#1}}
+\newcommand{\sizen}[2][]{\SIlist[list-separator=\by,%
+                                 list-final-separator=\by,%
+                                 list-pair-separator=\by,%
+                                %  list-units=single% % repeat (default),single,brackets
+                                 ]{#2}{#1}}
+\newcommand{\msd}[3][]{\mean[#1]{#2}, \sd[#1]{#3}}
+\newcommand{\anova}[4]{\F{#1}{#2}{#3}, \p{#4}}
+\newcommand{\anovae}[5]{\F{#1}{#2}{#3}, \p{#4}, \etasqp{#5}}
+\newcommand{\owanova}[4]{\owF{#1}{#2}, \p{#3}, \etasqp{#4}}
+\newcommand{\chisquare}[3]{\chisq{#1}{#2}, \p{#3}}
