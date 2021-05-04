@@ -48,6 +48,21 @@
 %% the next command will enable that style.
 %%\citestyle{acmauthoryear}
 
+%\usepackage[utf8]{inputenc}
+% \usepackage[english]{babel}% recommended
+% \usepackage{csquotes}% recommended
+% \usepackage{xpatch}% recommended
+% \usepackage[%
+%     style=ACM-Reference-Format,
+%     backend=biber,
+%     doi=false,
+%     isbn=false,
+%     maxcitenames=2,
+%     mincitenames=1,
+%     sortcites]{biblatex}
+% \addbibresource{bibliography.bib}
+% \AtBeginBibliography{\footnotesize}
+
 
 %%
 %% end of the preamble, start of the body of the document source.
@@ -67,6 +82,7 @@
 \author{James R. Wallace}
 \affiliation{%
   \institution{University of Waterloo}
+  \country{Canada}
 }
 \email{james.wallace@uwaterloo.ca}
 
@@ -130,9 +146,11 @@
 
 \input{manual/07-limitations.tex}
 
-\input{manual/08-conclusion.tex}
+\input{manual/08-transparency.tex}
 
-\input{manual/09-acknowledgements.tex}
+\input{manual/09-conclusion.tex}
+
+\input{manual/10-acknowledgements.tex}
 
 
 \bibliographystyle{ACM-Reference-Format}

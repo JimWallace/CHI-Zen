@@ -7,7 +7,7 @@
 
 % ACCESSABILITY
 % Experimental, no perfect solution yet... but need to try this
-%.     -- Disabled for now, not playing well with other packages -- markdown? Need to investigate: JW
+%.     -- Not enabled for now, not playing well with other packages -- markdown? Need to investigate: JW
 %
 %\usepackage[tagged,highstructure]{accessibility}
 
@@ -18,9 +18,13 @@
 %
 \usepackage[footnotes,definitionLists,hashEnumerators,smartEllipses,hybrid]{markdown}
 
+% This package is useful for revisions! 
+\usepackage{savesym}
+\savesymbol{comment}
+\usepackage{changes}
+%\usepackage[final]{changes}
+\restoresymbol{SC}{comment}
 
-% Jim added this -- useful highlighting function \hl{}
-%\usepackage{soul,color}
 
 % Mark likes to add these options to his papers .... worth considering
 \frenchspacing

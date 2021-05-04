@@ -37,7 +37,7 @@
 %%   Right brace   \}     Tilde         \~}
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{acmart}
-[2019/10/19 v1.65 Typesetting articles for the Association for Computing Machinery]
+[2021/04/16 v1.77 Typesetting articles for the Association for Computing Machinery]
 \def\@classname{acmart}
 \InputIfFileExists{acmart-preload-hook.tex}{%
   \ClassWarning{\@classname}{%
@@ -45,6 +45,7 @@
     for any problems from now on.}}{}
 \RequirePackage{xkeyval}
 \RequirePackage{xstring}
+\RequirePackage{iftex}
 \define@choicekey*+{acmart.cls}{format}[\ACM@format\ACM@format@nr]{%
   manuscript, acmsmall, acmlarge, acmtog, sigconf, siggraph,
   sigplan, sigchi, sigchi-a}[manuscript]{}{%
@@ -119,6 +120,10 @@
   \PackageError{\@classname}{The option balance can be either true or
     false}}
 \ExecuteOptionsX{balance}
+\define@boolkey+{acmart.cls}[@ACM@]{pbalance}[true]{}{%
+  \PackageError{\@classname}{The option pbalance can be either true or
+    false}}
+\ExecuteOptionsX{pbalance=false}
 \define@boolkey+{acmart.cls}[@ACM@]{natbib}[true]{%
   \if@ACM@natbib
     \PackageInfo{\@classname}{Explicitly selecting natbib mode}%
@@ -167,9 +172,29 @@
 \newif\if@ACM@journal@bibstrip
 \newif\if@ACM@sigchiamode
 \ifnum\ACM@format@nr=5\relax % siggraph
-  \ClassWarning{\@classname}{The format siggraph is now obsolete.
-    I am switching to sigconf.}
+\ClassWarning{\@classname}{%
+  The format siggraph is now obsolete.\MessageBreak
+  I am switching to sigconf.}
   \setkeys{acmart.cls}{format=sigconf}
+\fi
+\ifnum\ACM@format@nr=7\relax % sigchi
+\ClassWarning{\@classname}{%
+  The format sigchi is now obsolete.\MessageBreak
+  I am switching to sigconf.}
+  \setkeys{acmart.cls}{format=sigconf}
+\fi
+\ifnum\ACM@format@nr=8\relax % sigchi
+\ClassWarning{\@classname}{%
+  ACM SIGCHI has retired the SIGCHI-A template\MessageBreak
+  effective immediately. ACM is keeping this template\MessageBreak
+  option available to authors who are working on legacy\MessageBreak
+  documents only. ACM will not, under any circumstances,\MessageBreak
+  accept documents in this format for publication and\MessageBreak
+  will not offer technical support to the authors who use\MessageBreak
+  this template.\MessageBreak
+  ACM SIGCHI is directing Conference leaders and\MessageBreak
+  authors to publish their articles using the SIGCONF\MessageBreak
+  template call.}
 \fi
 \ifnum\ACM@format@nr=0\relax
   \@ACM@manuscripttrue
@@ -220,7 +245,7 @@
    \or % sigplan
     \def\ACM@fontsize{10pt}%
    \or % sigchi
-    \def\ACM@fontsize{10pt}%
+    \def\ACM@fontsize{9pt}%
   \or % sigchi-a
     \def\ACM@fontsize{10pt}%
   \fi
@@ -439,7 +464,7 @@
 }
 \def\l@section{\@tocline{1}{0pt}{1pc}{2pc}{}}
 \def\l@subsection{\@tocline{2}{0pt}{1pc}{3pc}{}}
-\def\l@subsubsection{\@tocline{2}{0pt}{1pc}{5pc}{}}
+\def\l@subsubsection{\@tocline{3}{0pt}{1pc}{5pc}{}}
 \def\@makefntext{\noindent\@makefnmark}
 \if@ACM@sigchiamode
 \long\def\@footnotetext#1{\marginpar{%
@@ -466,6 +491,7 @@
         \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
     \color@endgroup}}
 \def\@makefnmark{\hbox{\@textsuperscript{\normalfont\@thefnmark}}}
+\RequirePackage{hyperxmp}
 \let\@footnotemark@nolink\@footnotemark
 \let\@footnotetext@nolink\@footnotetext
 \RequirePackage[bookmarksnumbered,unicode]{hyperref}
@@ -547,6 +573,17 @@
   \SetWatermarkText{\parbox{12em}{\centering
       Unpublished working draft.\\
       Not for distribution.}}
+\else
+  \if@ACM@sigchiamode
+    \if@ACM@nonacm\else
+      \RequirePackage{draftwatermark}
+      \SetWatermarkFontSize{0.5in}
+      \SetWatermarkColor[gray]{.9}
+      \SetWatermarkText{\parbox{12em}{\centering
+          Legacy document. \\
+          Not for publication in an ACM venue}}
+    \fi
+  \fi
 \fi
 \RequirePackage{geometry}
 \ifcase\ACM@format@nr
@@ -666,7 +703,6 @@
   \flushbottom
 \or % sigchi-a
 \fi
-\RequirePackage{iftex}
 \ifPDFTeX
 \input{glyphtounicode}
 \pdfglyphtounicode{f_f}{FB00}
@@ -677,29 +713,40 @@
 \pdfglyphtounicode{f_t}{0066 0074}
 \pdfglyphtounicode{T_h}{0054 0068}
 \pdfgentounicode=1
-\fi
 \RequirePackage{cmap}
+\fi
 \newif\if@ACM@newfonts
 \@ACM@newfontstrue
 \IfFileExists{libertine.sty}{}{\ClassWarning{\@classname}{You do not
     have the libertine package installed.  Please upgrade your
     TeX}\@ACM@newfontsfalse}
 \IfFileExists{zi4.sty}{}{\ClassWarning{\@classname}{You do not
-    have the zi4 package installed.  Please upgrade your
+    have the inconsolata (zi4.sty) package installed.  Please upgrade your
     TeX}\@ACM@newfontsfalse}
 \IfFileExists{newtxmath.sty}{}{\ClassWarning{\@classname}{You do not
     have the newtxmath package installed.  Please upgrade your
     TeX}\@ACM@newfontsfalse}
 \if@ACM@newfonts
   \RequirePackage[T1]{fontenc}
-\ifxetex
-  \RequirePackage[tt=false]{libertine}
-  \setmonofont{inconsolata}
-\else
-  \RequirePackage[tt=false, type1=true]{libertine}
-\fi
-\RequirePackage[varqu]{zi4}
-\RequirePackage[libertine]{newtxmath}
+  % Note that the order in which packages are loaded matters,
+  % and the correct order depends on the LaTeX engine used.
+  % See https://github.com/borisveytsman/acmart/issues/402
+  % and https://github.com/borisveytsman/acmart/issues/410
+  \ifxetex
+    \RequirePackage[libertine]{newtxmath}
+    \RequirePackage[tt=false]{libertine}
+    \setmonofont[StylisticSet=3]{inconsolata}
+  \else
+    \ifluatex
+      \RequirePackage[libertine]{newtxmath}
+      \RequirePackage[tt=false]{libertine}
+      \setmonofont[StylisticSet=3]{inconsolata}
+    \else
+       \RequirePackage[tt=false, type1=true]{libertine}
+       \RequirePackage[varqu]{zi4}
+       \RequirePackage[libertine]{newtxmath}
+    \fi
+  \fi
 \fi
 \let\liningnums\@undefined
 \AtEndPreamble{%
@@ -730,6 +777,23 @@
   \let\@vspacer\@vspacer@orig}
 \AtBeginEnvironment{table*}{\let\@vspace\@vspace@orig
   \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{algorithm}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{algorithm*}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{lstlisting}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{lstlisting*}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{minted}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{minted*}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{listing}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{listing*}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+
 \RequirePackage{caption, float}
 \captionsetup[table]{position=top}
 \if@ACM@journal
@@ -1033,8 +1097,8 @@
 \or % TCPS
   \def\@journalName{ACM Transactions on Cyber-Physical Systems}%
 \or % TDS
-  \def\@journalName{ACM Transactions on Data Science}%
-  \def\@journalNameShort{ACM Trans. Data Sci.}%
+  \def\@journalName{ACM/IMS Transactions on Data Science}%
+  \def\@journalNameShort{ACM/IMS Trans. Data Sci.}%
   \def\@permissionCodeOne{2577-3224}%
 \or % TEAC
   \def\@journalName{ACM Transactions on Economics and Computation}%
@@ -1208,9 +1272,12 @@
   DC, USA}%
 \fi
 \def\acmBooktitle#1{\gdef\@acmBooktitle{#1}}
+\acmBooktitle{}
+\ifx\acmConference@name\@undefined\else
 \acmBooktitle{Proceedings of \acmConference@name
        \ifx\acmConference@name\acmConference@shortname\else
-         \ (\acmConference@shortname)\fi}
+       \ (\acmConference@shortname)\fi}
+\fi
 \def\@editorsAbbrev{(Ed.)}
 \def\@acmEditors{}
 \def\editor#1{\ifx\@acmEditors\@empty
@@ -1228,7 +1295,7 @@
 \newif\if@insideauthorgroup
 \@insideauthorgroupfalse
 \renewcommand\author[2][]{%
-  \IfSubStr{#2}{,}{\ClassWarning{\@classname}{Do not put several
+  \IfSubStr{\detokenize{#2}}{,}{\ClassWarning{\@classname}{Do not put several
       authors in the same \string\author\space macro!}}{}%
   \global\advance\num@authors by 1\relax
   \if@insideauthorgroup\else
@@ -1242,12 +1309,16 @@
           \@acmSubmissionID\fi}}%
       \gdef\authors{Anonymous Author(s)}%
     \else
-      \gdef\addresses{\@author{#2}}%
+      \expandafter\gdef\expandafter\addresses\expandafter{%
+        \expandafter\@author\expandafter{%
+          \csname typeset@author\the\num@authors\endcsname{#2}}}%
       \gdef\authors{#2}%
     \fi
   \else
     \if@ACM@anonymous\else
-      \g@addto@macro\addresses{\and\@author{#2}}%
+    \expandafter\g@addto@macro\expandafter\addresses\expandafter{%
+      \expandafter\and\expandafter\@author\expandafter{%
+        \csname typeset@author\the\num@authors\endcsname{#2}}}%
       \g@addto@macro\authors{\and#2}%
     \fi
   \fi
@@ -1298,7 +1369,14 @@
   \if@ACM@anonymous\else
     \g@addto@macro\addresses{\email{#1}{#2}}%
   \fi}
-\def\orcid#1{\unskip\ignorespaces}
+\def\orcid#1{\unskip\ignorespaces%
+  \IfBeginWith{#1}{http}{%
+    \expandafter\gdef\csname
+        typeset@author\the\num@authors\endcsname##1{%
+          \href{#1}{##1}}}{%
+    \expandafter\gdef\csname
+        typeset@author\the\num@authors\endcsname##1{%
+          \href{https://orcid.org/#1}{##1}}}}
 \def\authorsaddresses#1{\def\@authorsaddresses{#1}}
 \authorsaddresses{\@mkauthorsaddresses}
 \def\@titlenotes{}
@@ -1379,7 +1457,12 @@
 \def\terms#1{\ClassWarning{\@classname}{The command \string\terms{} is
     obsolete.  I am going to ignore it}}
 \def\keywords#1{\def\@keywords{#1}}
-\keywords{}
+\let\@keywords\@empty
+\AtEndDocument{\if@ACM@nonacm\else\ifx\@keywords\@empty
+  \ifnum\getrefnumber{TotPages}>2\relax
+  \ClassWarningNoLine{\@classname}{ACM keywords are mandatory
+    for papers over two pages}%
+  \fi\fi\fi}
 \renewenvironment{abstract}{\Collect@Body\@saveabstract}{}
 \long\def\@saveabstract#1{\if@ACM@maketitle@typeset
   \ClassError{\@classname}{Abstract must be defined before maketitle
@@ -1399,6 +1482,11 @@
   \else
     \ClassInfo{\@classname}{Suppressing bibformat}%
   \fi}{\ClassError{\@classname}{The option printacmref can be either true or false}}
+\AtEndDocument{\if@ACM@nonacm\else\if@ACM@printacmref\else
+  \ifnum\getrefnumber{TotPages}>1\relax
+  \ClassWarningNoLine{\@classname}{ACM reference format is mandatory
+    for papers over one page}%
+  \fi\fi\fi}
 \define@boolkey+{@ACM@topmatter@}[@ACM@]{printfolios}[true]{%
   \if@ACM@printfolios
     \ClassInfo{\@classname}{Printing folios}%
@@ -1446,7 +1534,7 @@
 \newcounter{@concepts}
 \newcommand\ccsdesc[2][100]{%
   \ccsdesc@parse#1~#2~~\ccsdesc@parse@end}
-\RequirePackage{textcomp}
+\def\textrightarrow{$\rightarrow$}
 \def\ccsdesc@parse#1~#2~#3~{%
   \stepcounter{@concepts}%
   \expandafter\ifx\csname CCS@General@#2\endcsname\relax
@@ -1468,6 +1556,11 @@
      #3\fi\fi\ifnum\value{@concepts}=0.\else; \fi}%
   \fi
 \ccsdesc@parse@finish}
+\AtEndDocument{\if@ACM@nonacm\else\ifx\@concepts\@empty\relax
+  \ifnum\getrefnumber{TotPages}>2\relax
+  \ClassWarningNoLine{\@classname}{CCS concepts are mandatory
+    for papers over two pages}%
+  \fi\fi\fi}
 \def\ccsdesc@parse@finish#1\ccsdesc@parse@end{}
 \newif\if@printcopyright
 \@printcopyrighttrue
@@ -1608,10 +1701,10 @@
    source.
   \or % usgovmixed
    ACM acknowledges that this contribution was authored or co-authored
-   by an employee, contractor, or affiliate of the United States government. As such,
-   the United States government retains a nonexclusive, royalty-free right to
-   publish or reproduce this article, or to allow others to do so, for
-   government purposes only.
+   by an employee, contractor, or affiliate of the United States
+   government. As such, the United States government retains a
+   nonexclusive, royalty-free right to publish or reproduce this
+   article, or to allow others to do so, for government purposes only.
   \or % cagov
    This article was authored by employees of the Government of Canada.
    As such, the Canadian government retains all interest in the
@@ -1703,8 +1796,12 @@
    \else
     \g@addto@macro\thankses{\thanks{#1}}%
    \fi}}
+\ifx\@beginmaketitlehook\@undefined
+  \let\@beginmaketitlehook\@empty
+\fi
+\def\AtBeginMaketitle{\g@addto@macro\@beginmaketitlehook}
 \newbox\mktitle@bx
-\def\maketitle{%
+\def\maketitle{\@beginmaketitlehook
   \@ACM@maketitle@typesettrue
   \if@ACM@anonymous
     % Anonymize omission of \author-s
@@ -1799,7 +1896,7 @@
   \if@ACM@printccs
   \ifx\@concepts\@empty\else\bgroup
       {\@specialsection{CCS Concepts}%
-         \@concepts\par}\egroup
+         \noindent\@concepts\par}\egroup
      \fi
    \fi
    \ifx\@keywords\@empty\else\bgroup
@@ -1808,17 +1905,13 @@
        \else
          \@specialsection{Keywords}%
        \fi
-         \@keywords}\par\egroup
+         \noindent\@keywords\par}\egroup
    \fi
-  \andify\authors
-  \andify\shortauthors
-  \global\let\authors=\authors
-  \global\let\shortauthors=\shortauthors
-  \if@ACM@printacmref
-     \@mkbibcitation
-  \fi
+  \let\metadata@authors=\authors
+  \nxandlist{, }{, }{, }\metadata@authors
+  \def\@ACM@checkaffil{}%
   \hypersetup{%
-    pdfauthor={\authors},
+    pdfauthor={\metadata@authors},
     pdftitle={\@title},
     pdfsubject={\@concepts},
     pdfkeywords={\@keywords},
@@ -1826,6 +1919,13 @@
       \csname ver@acmart.cls\endcsname\space
       and hyperref
       \csname ver@hyperref.sty\endcsname}}%
+  \andify\authors
+  \andify\shortauthors
+  \global\let\authors=\authors
+  \global\let\shortauthors=\shortauthors
+  \if@ACM@printacmref
+     \@mkbibcitation
+  \fi
   \global\@topnum\z@ % this prevents floats from falling
                      % at the top of page 1
   \global\@botnum\z@ % we do not want them to be on the bottom either
@@ -1848,12 +1948,13 @@
   \or % siggraph
     \section*{#1}%
   \or % sigplan
-    \paragraph*{#1}%
+     \noindentparagraph*{#1:~}%
   \or % sigchi
     \section*{#1}%
   \or % sigchi-a
     \section*{#1}%
-    \fi}
+    \fi
+}
 \def\@printtopmatter{%
   \ifx\@startPage\@empty
      \gdef\@startPage{1}%
@@ -2035,19 +2136,22 @@
 \def\postcode#1{\unskip\ignorespaces}
 \if@ACM@journal
   \def\position#1{\unskip\ignorespaces}
-  \def\institution#1{\unskip~#1\ignorespaces}
-  \def\city#1{\unskip\ignorespaces}
+  \def\institution#1{\global\@ACM@instpresenttrue
+    \unskip~#1\ignorespaces}
+  \def\city#1{\global\@ACM@citypresenttrue\unskip\ignorespaces}
   \def\state#1{\unskip\ignorespaces}
   \newcommand\department[2][0]{\unskip\ignorespaces}
-  \def\country#1{\if@ACM@affiliation@obeypunctuation\else, \fi#1\ignorespaces}
+  \def\country#1{\global\@ACM@countrypresenttrue
+    \if@ACM@affiliation@obeypunctuation\else, \fi#1\ignorespaces}
 \else
   \def\position#1{\if@ACM@affiliation@obeypunctuation#1\else#1\par\fi}%
-  \def\institution#1{\if@ACM@affiliation@obeypunctuation#1\else#1\par\fi}%
+  \def\institution#1{\global\@ACM@instpresenttrue
+    \if@ACM@affiliation@obeypunctuation#1\else#1\par\fi}%
   \newcommand\department[2][0]{\if@ACM@affiliation@obeypunctuation
     #2\else#2\par\fi}%
-  \let\city\@ACM@addtoaddress
+  \def\city#1{\global\@ACM@citypresenttrue\@ACM@addtoaddress{#1}}%
   \let\state\@ACM@addtoaddress
-  \let\country\@ACM@addtoaddress
+  \def\country#1{\global\@ACM@countrypresenttrue\@ACM@addtoaddress{#1}}%
 \fi
 \def\@mkauthors{\begingroup
   \hsize=\textwidth
@@ -2108,6 +2212,29 @@
       \unskip, {\@currentaffiliations}\par
   \fi
   \def\@currentaffiliations{}}
+\newif\if@ACM@instpresent
+\@ACM@instpresenttrue
+\newif\if@ACM@citypresent
+\@ACM@citypresenttrue
+\newif\if@ACM@countrypresent
+\@ACM@countrypresenttrue
+\def\@ACM@resetaffil{%
+  \global\@ACM@instpresentfalse
+  \global\@ACM@citypresentfalse
+  \global\@ACM@countrypresentfalse
+}
+\def\@ACM@checkaffil{%
+  \if@ACM@instpresent\else
+  \ClassWarningNoLine{\@classname}{No institution present for an affiliation}%
+  \fi
+  \if@ACM@citypresent\else
+  \ClassWarningNoLine{\@classname}{No city present for an affiliation}%
+  \fi
+  \if@ACM@countrypresent\else
+  \ClassError{\@classname}{No country present for an affiliation}{ACM
+    requires each author to indicate their country using country macro.}%
+  \fi
+}
 \def\@mkauthors@i{%
   \def\@currentauthors{}%
   \def\@currentaffiliations{}%
@@ -2126,11 +2253,13 @@
           \gdef\@currentaffiliations{%
             \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
             \setkeys{@ACM@affiliation@}{##1}%
-            \@affiliationfont##2}%
+            \@ACM@resetaffil
+            \@affiliationfont##2\@ACM@checkaffil}%
        \else
          \g@addto@macro{\@currentaffiliations}{\and
            \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
-           \setkeys{@ACM@affiliation@}{##1}##2}%
+           \setkeys{@ACM@affiliation@}{##1}\@ACM@resetaffil
+           ##2\@ACM@checkaffil}%
       \fi
     \fi
      \global\let\and\@typeset@author@line}%
@@ -2188,11 +2317,13 @@
   \def\affiliation##1##2{\ifx\@currentaffiliation\@empty
     \gdef\@currentaffiliation{%
       \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
-      \setkeys{@ACM@affiliation@}{##1}##2}%
+      \setkeys{@ACM@affiliation@}{##1}\@ACM@resetaffil
+      ##2\@ACM@checkaffil}%
   \else
     \g@addto@macro\@currentaffiliation{\par
       \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
-      \setkeys{@ACM@affiliation@}{##1}##2}%
+      \setkeys{@ACM@affiliation@}{##1}\@ACM@resetaffil
+      ##2\@ACM@checkaffil}%
   \fi
   \global\let\and\@typeset@author@bx
 }%
@@ -2231,11 +2362,13 @@
   \def\affiliation##1##2{\ifx\@currentaffiliation\@empty
     \gdef\@currentaffiliation{%
       \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
-           \setkeys{@ACM@affiliation@}{##1}##2}%
+      \setkeys{@ACM@affiliation@}{##1}\@ACM@resetaffil
+      ##2\@ACM@checkaffil}%
   \else
     \g@addto@macro\@currentaffiliation{\par
       \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
-      \setkeys{@ACM@affiliation@}{##1}##2}%
+      \setkeys{@ACM@affiliation@}{##1}\@ACM@resetaffil
+      ##2\@ACM@checkaffil}%
   \fi
   \global\let\and\@typeset@author@bx}%
     \bgroup\hsize=\columnwidth
@@ -2251,16 +2384,22 @@
   \def\streetaddress##1{\unskip, ##1}%
   \def\postcode##1{\unskip, ##1}%
   \def\position##1{\unskip\ignorespaces}%
-  \def\institution##1{\unskip, ##1}%
+  \gdef\@ACM@institution@separator{, }%
+  \def\institution##1{\unskip\@ACM@institution@separator ##1\gdef\@ACM@institution@separator{ and }}%
   \def\city##1{\unskip, ##1}%
   \def\state##1{\unskip, ##1}%
   \renewcommand\department[2][0]{\unskip\@addpunct, ##2}%
   \def\country##1{\unskip, ##1}%
-  \def\and{\unskip; }%
+  \def\and{\unskip; \gdef\@ACM@institution@separator{, }}%
   \def\@author##1{##1}%
   \def\email##1##2{\unskip, \nolinkurl{##2}}%
   \addresses
   \egroup}
+\AtEndDocument{\if@ACM@nonacm\else\if@ACM@journal
+  \ifx\@authorsaddresses\@empty
+  \ClassWarningNoLine{\@classname}{Authors'
+    addresses are mandatory for ACM journals}%
+  \fi\fi\fi}
 \def\@setaddresses{}
 \def\@authornotemark{\g@addto@macro\@currentauthors{\footnotemark\relax}}
 \def\@@authornotemark#1{\g@addto@macro\@currentauthors{\footnotemark[#1]}}
@@ -2321,11 +2460,13 @@
   \fi
   \ifx\@acmDOI\@empty\else\@formatdoi{\@acmDOI}\fi
 \par\egroup}
-\def\@printendtopmatter{\bgroup
+\def\@printendtopmatter{%
   \let\@vspace\@vspace@orig
   \let\@vspacer\@vspacer@orig
   \par\bigskip
-  \egroup}
+  \let\@vspace\@vspace@acm
+  \let\@vspacer\@vspacer@acm
+  }
 \def\@setthanks{\long\def\thanks##1{\par##1\@addpunct.}\thankses}
 \def\@setauthorsaddresses{\@authorsaddresses\unskip\@addpunct.}
 \RequirePackage{fancyhdr}
@@ -2362,10 +2503,29 @@
   \fi}
 \def\ACM@linecountR{%
   \if@ACM@review
-  \ACM@mk@linecount
-  \begin{picture}(0,0)%
-    \put(20,-22){\usebox{\ACM@linecount@bx}}%
-  \end{picture}%
+    \ifcase\ACM@format@nr
+    \relax % manuscript
+         \relax
+       \or % acmsmall
+         \relax
+       \or % acmlarge
+         \relax
+       \or % acmtog
+          \ACM@mk@linecount
+       \or % sigconf
+          \ACM@mk@linecount
+       \or % siggraph
+          \ACM@mk@linecount
+       \or % sigplan
+          \ACM@mk@linecount
+       \or % sigchi
+          \ACM@mk@linecount
+       \or % sigchi-a
+          \ACM@mk@linecount
+    \fi
+    \begin{picture}(0,0)%
+      \put(20,-22){\usebox{\ACM@linecount@bx}}%
+     \end{picture}%
   \fi}
 \if@ACM@timestamp
   % Subtracting 30 from \time gives us the effect of rounding down despite
@@ -2446,7 +2606,10 @@
       \fancyfoot[C]{\if@ACM@printfolios\footnotesize\thepage\fi}%
       \fancyhead[LO]{\ACM@linecountL\@headfootfont\shorttitle}%
       \fancyhead[RE]{\@headfootfont\@shortauthors\ACM@linecountR}%
-      \if@ACM@nonacm\else%
+      \if@ACM@nonacm
+        \fancyhead[LE]{\ACM@linecountL}%
+        \fancyhead[RO]{\ACM@linecountR}%
+      \else%
         \fancyhead[LE]{\ACM@linecountL\@headfootfont\footnotesize
           \acmConference@shortname,
           \acmConference@date, \acmConference@venue}%
@@ -2459,7 +2622,10 @@
     \fancyfoot[C]{\if@ACM@printfolios\footnotesize\thepage\fi}%
     \fancyhead[LO]{\ACM@linecountL\@headfootfont\shorttitle}%
     \fancyhead[RE]{\@headfootfont\@shortauthors\ACM@linecountR}%
-    \if@ACM@nonacm\else%
+    \if@ACM@nonacm
+      \fancyhead[LE]{\ACM@linecountL}%
+      \fancyhead[RO]{\ACM@linecountR}%
+    \else%
       \fancyhead[LE]{\ACM@linecountL\@headfootfont
         \acmConference@shortname,
         \acmConference@date, \acmConference@venue}%
@@ -2625,6 +2791,11 @@
   {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
   {-3.5\p@}%
   {\ACM@NRadjust{\@parfont\@adddotafter}}}
+\newcommand\noindentparagraph{\@startsection{paragraph}{4}{\z@}%
+  {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
+  {-3.5\p@}%
+  {\ACM@NRadjust{\@parfont}}}
+
 \renewcommand\part{\@startsection{part}{9}{\z@}%
   {-10\p@ \@plus -4\p@ \@minus -2\p@}%
   {4\p@}%
@@ -2656,20 +2827,8 @@
 \or % sigplan
  \def\@secfont{\bfseries\Large\section@raggedright}
  \def\@subsecfont{\bfseries\section@raggedright}
- \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
-   {-.75\baselineskip \@plus -2\p@ \@minus -.2\p@}%
-   {.25\baselineskip}%
-   {\@subsubsecfont}}
  \def\@subsubsecfont{\bfseries\section@raggedright}
- \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
-   {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
-   {-3.5\p@}%
-   {\@parfont\@addspaceafter}}
  \def\@parfont{\bfseries\itshape}
- \renewcommand\subparagraph{\@startsection{subparagraph}{5}{\z@}%
-   {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
-   {-3.5\p@}%
-   {\@subparfont\@addspaceafter}}
  \def\@subparfont{\itshape}
 \or % sigchi
  \setcounter{secnumdepth}{1}
@@ -2797,6 +2956,25 @@
   \popQED\endtrivlist\@endpefalse
 }
 \AtEndPreamble{%
+  \if@ACM@pbalance
+    \global\@ACM@balancefalse
+    \ifcase\ACM@format@nr
+    \relax % manuscript
+       \or % acmsmall
+       \or % acmlarge
+       \or % acmtog
+          \RequirePackage{pbalance}%
+       \or % sigconf
+          \RequirePackage{pbalance}%
+       \or % siggraph
+          \RequirePackage{pbalance}%
+       \or % sigplan
+          \RequirePackage{pbalance}%
+       \or % sigchi
+          \RequirePackage{pbalance}%
+       \or % sigchi-a
+    \fi
+  \fi
   \if@ACM@balance
     \ifcase\ACM@format@nr
     \relax % manuscript
@@ -2854,8 +3032,15 @@
   \def\@tempa{#1}%
   \ifx\@tempa\@empty\def\@tempa{arxiv}\fi
   \def\@tempb{arxiv}%
-  \ifx\@tempa\@tempb
-     arXiv:\href{http://arxiv.org/abs/#2}{#2}\else arXiv:#2%
+  \ifx\@tempa\@tempb\relax
+     arXiv:\href{https://arxiv.org/abs/#2}{#2}%
+  \else
+     \def\@tempb{arXiv}%
+     \ifx\@tempa\@tempb\relax
+       arXiv:\href{https://arxiv.org/abs/#2}{#2}%
+     \else
+       arXiv:#2%
+    \fi
   \fi}
 \let\@vspace@orig=\@vspace
 \let\@vspacer@orig=\@vspacer
@@ -2865,6 +3050,8 @@
 \apptocmd{\@vspacer}{\ClassWarning{\@classname}{\string\vspace\space should
     only be used to provide space above/below surrounding
     objects}}{}{}
+\let\@vspace@acm=\@vspace
+\let\@vspacer@acm=\@vspacer
 \let\ACM@origbaselinestretch\baselinestretch
 \AtEndDocument{\ifx\baselinestretch\ACM@origbaselinestretch\else
   \ClassError{\@classname}{An attempt to redefine

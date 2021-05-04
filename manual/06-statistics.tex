@@ -1,22 +1,47 @@
 \newpage
 \begin{markdown}
 
-# Statistics
+
+# Reporting Measurements and Statistics
+
+As part of loading this template, the \texttt{siunit} package is loaded, which supports some common requests, like metric units and angles. This template also includes some macros that help with reporting of common elements of HCI papers like display measurements, study designs, and statistical tests. See below for some common examples: 
+
+## Sizes
+
+The \texttt{siunitx} package already has a feature for angles, \ang{45}.
+
+The display resolution was \size[pixels]{1920}{1080}.
+The volume of the cube was \sizen[\cm]{13;12;5}.
+
+We performed a 5 (width)\by 2 (distance)\by 2 (angle) factorial ANOVA.
+
+
+## Summary Statistics
+
+We recruited 20 participants (\ages{23}{51}; \gender{12}{women}, \gender{7}{men}, and \gender{1}{transgender}).
+Alternatively: \genderlist{12;7;1}{women, men, and transgender}.
+
+A mean and standard deviation (\mean[\cm]{32.1}, \sd{4.1}) with same units (\msd[pixels]{3.3333333}{0.32}).
+
+
+
+## Reporting Statistical Tests
+
+### $p$-values
+
+\p{.03}
+
+### ANOVA \& $F$-statistics
 
 Some made up stats (\F{2}{3}{4.33}, \p{.03}, \etasqp{.67})
 Some made up stats (\F{2}{3}{15.33}, \p{.003}, \etasqp{.67}).
 Some made up stats (\anovae{2}{3}{4.33}{.03}{.6666667})
 Some made up stats (\anovae{2}{3}{15.333333333}{.003}{.6666667})
 Some made up stats (\anovae{2}{3}{30.55555}{.0000000055}{0.9666667})
-A mean and standard deviation (\mean[\cm]{32.1}, \sd{4.1}) with same units (\msd[pixels]{3.3333333}{0.32}).
-We recruited 20 participants (\ages{23}{51}; \gender{12}{women}, \gender{7}{men}, and \gender{1}{transgender}).
-Alternatively: \genderlist{12;7;1}{women, men, and transgender}.
-The siunitx package already has a feature for angles, \ang{45}.
-This is a size: \size[pixels]{1920}{1080}.
-The volume of the cube was \sizen[\cm]{13;12;5}.
-We performed a 5 (width)\by2 (distance)\by2 (angle) factorial ANOVA.
-Here is a chi-square test (\chisquare{33}{3.323}{.000005}).
 
+### CHI-Square Test
+
+Here is a chi-square test (\chisquare{33}{3.323}{.000005}).
 
 
 \end{markdown}
