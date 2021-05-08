@@ -4,20 +4,26 @@
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Tables}
+\label{sec:tables}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 As a rule of thumb, if you can show your data with a table, consider doing that first. Tables are quite effective at `showing your data', and are usually easy to interpret. The Vis literature even suggests that tables might be more convincing for a skeptical audience \citep{pandey2014persuasive}!
 
-In terms of table formatting, many of the same principles apply to tables as figures. My specific advice is to: 
+In terms of table formatting, many of the same principles apply to tables as figures. My advice is to: 
 
 \begin{enumerate}
-    \item Maintain a high Data-Ink Ratio \citep{tufte1983visual}: Don't use vertical lines, use horizontal lines sparingly, try to use whitespace to help group things together that belong together
+    \item Maintain a high Data-Ink Ratio \citep{tufte1983visual}: 
+        \begin{itemize}
+            \item Don't use vertical lines
+            \item Use horizontal lines sparingly
+            \item Use whitespace to help group things together that belong together
+        \end{itemize}
     \item Use \texttt{\textbackslash toprule}, \texttt{\textbackslash midrule}, and \texttt{\textbackslash bottomrule} to frame your table
     \item Use the \texttt{[tb!]} flags when declaring the table in \LaTeX to push it to the top or bottom of a page
     \item Use the \texttt{label\{\}} command to give your table a label that you can use later with \texttt{autoref\{\}}
 \end{enumerate}
-
-\autoref{tab:exampletable} is an example from \citet{wallace2013}. In general, writing tables directly in \LaTeX is a huge pain. I suggest using an online table generator, like \href{https://www.tablesgenerator.com}{https://www.tablesgenerator.com}, and then fine-tuning the formatting in your document. 
+%
+In general, writing tables directly in \LaTeX is a huge pain --- the output is generally \emph{beautiful}, but the input is complicated, and generally not very human-readable. I suggest using an online table generator, like \href{https://www.tablesgenerator.com}{https://www.tablesgenerator.com}, and then fine-tuning the formatting in your document. \autoref{tab:exampletable} is an example from \citet{wallace2013}. 
 
 \begin{center}
 \begin{table*}[b!]
@@ -58,3 +64,8 @@ ANOVA Results & $F_{(1,12)} = 2.27,$ & $F_{(2,18)} = 2.76,$  & $F_{(2,18)} = 16.
 \end{center}
 \end{table*}
 \end{center}
+
+\subsection*{Additional Resources}
+\begin{enumerate}
+    \item Overleaf's documentation for tables: \href{https://www.overleaf.com/learn/latex/Tables}{https://www.overleaf.com/learn/latex/Tables}
+\end{enumerate}

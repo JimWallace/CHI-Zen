@@ -7,6 +7,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Figures}
+\label{sec:figures}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{markdown}
@@ -45,9 +46,8 @@ The following sections are framed in terms of problem/solution for common types 
 \subsection{Comparing Performance: Bar Charts}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-- common to compare performance, efficiency, error rate, or other dependent measures between two study groups. For example, our new technique for 3D pointing, compared to a computer mouse. 
-- most simple way of doing so is to show the means and standard error in a bar graph, and this is commonly accepted throughout the ACM. 
-- For example, Figure \ref{bargraph} is an example drawn from \citet{pietroszek2015}.
+Bar graphs are probably the most commonly-used data visualization at CHI. They are simple, easy to create, and easy to understand. And so they make comparisons between two or more variables easy, since data is presented in a side=by-side manner on a common scale (the y-axis). Because of these advantages, they are often used to make quantitative comparisons based on criteria like performance, efficiency, and error rate. A very common approach to presenting data in a bar chart is to show means and standard error  (e.g., \autoref{fig:bargraph} from \citet{pietroszek2015}).
+
 
 
 
@@ -83,8 +83,8 @@ coordinates {(non-occluded, 2.10)  +- (.42,.42)};
 
 \end{axis}
 \end{tikzpicture}
-\caption{An example bar graph with error bars. Data is specified in the latex file.}
-\label{bargraph}
+\caption{An example bar graph with error bars. Data is specified directly in the latex file --- not in a separate data file.}
+\label{fig:bargraph}
 \end{figure}
 
 
@@ -106,6 +106,417 @@ variations:
 - Admittedly, "Bee Swarm" plots are my personal preference for this kind of data since they "show your data" in a very clear way... but I haven't yet found a  way to generate them in \LaTeX. If you happen to work in R, there are some excellent supports for generating these graphs, and you can import those directly into this template with a little work. 
 - Violin plots 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Gigantic Figure Starts here for physiological data... 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{Nature}{HTML}{3AA876}
+\definecolor{Urban}{HTML}{D14820}
+
+
+\pgfplotstableread{
+Treatment    P0_HR    P0_GSR    P1_HR    P1_GSR    P2_HR    P2_GSR
+0	-0.06	-1.09	0.73	-0.54	-0.57	0.87
+0	0.38	-1.022	0.63	0.32	-0.88	0.106666667
+0	-0.52	-1.31	0.59	0.47	-0.72	-0.36
+0	-0.49	-1.37	0.99	0.01	-0.27	0.32
+0	0.2	-1.022	-0.2	0.32	0.11	0.106666667
+0	0.76	1.14	0.15	0.46	-0.45	-0.91
+0	0.3	-1.022	0.33	0.32	-0.67	0.106666667
+0	-0.73	-0.44	1.13	0.41	-0.54	-0.12
+0	-0.62	-1.04	0.94	0.74	-0.69	-0.33
+0	-0.66	-2.46	0.63	0.23	-0.68	0.52
+}\SPN 
+
+\pgfplotstableread{
+Treatment    P0_HR    P0_GSR    P1_HR    P1_GSR    P2_HR    P2_GSR
+1	-0.38	-1.022	0.51	0.32	-0.66	0.106666667
+1	-0.45	-0.98	0.44	0.81	-0.55	-0.97
+1	0.31	-0.8	0.78	0.74	-0.81	0.31
+1	-0.35	-0.89	0.75	0.87	-0.56	-0.44
+1	0.08	-0.8	0.7	1.46	-0.44	-0.47
+1	-0.22	-1.7	0.64	-0.02	-0.71	0.69
+1	-0.29	-0.77	0.61	-0.52	-0.74	0.84
+1	-1.24	-2.24	0.42	-0.06	-0.19	0.63
+1	-0.06	-1.022	0.25	0.32	-0.25	0.106666667
+1	0.14	-0.58	0.57	-0.26	-0.86	1.02
+}\SPU
+
+\pgfplotstableread{
+Treatment    Z0_posaffect    Z0_negaffect    Z0_attentive    Z1_posaffect    Z1_negaffect    Z1_attentive    Z2_posaffect    Z2_negaffect    Z2_attentive
+0	3.75	1.22	3.50	2.00	3.56	2.50	3.75	1.22	3.50
+0	1.50	1.11	3.00	1.00	1.44	2.50	2.25	1.00	2.50
+0	3.25	1.00	3.50	1.75	2.11	1.50	3.00	1.11	4.00
+0	2.50	1.00	3.50	3.00	1.11	3.50	3.00	1.22	4.00
+0	2.00	1.00	2.50	1.00	1.11	3.00	2.00	1.11	2.00
+0	2.50	1.22	4.00	1.00	2.22	1.50	2.25	1.11	3.50
+0	3.50	1.33	2.50	2.50	2.33	1.00	2.25	2.67	1.50
+0	1.00	1.11	2.00	1.25	1.33	2.00	1.50	1.00	1.50
+0	3.25	1.11	2.50	2.00	1.67	3.50	4.25	1.00	3.50
+0	3.00	1.00	3.00	1.75	1.78	2.00	2.50	1.11	2.50
+}\SZN
+
+\pgfplotstableread{
+Treatment    Z0_posaffect    Z0_negaffect    Z0_attentive    Z1_posaffect    Z1_negaffect    Z1_attentive    Z2_posaffect    Z2_negaffect    Z2_attentive
+1	4.00	1.00	3.00	3.25	1.44	2.00	4.75	1.00	2.50
+1	2.75	1.22	2.50	1.00	4.22	1.50	2.25	1.33	3.00
+1	2.75	1.11	2.50	1.00	1.72	2.00	1.00	1.78	1.00
+1	2.25	1.56	3.50	1.50	2.33	3.00	3.25	1.00	3.50
+1	2.00	1.11	3.50	1.25	3.00	3.00	2.50	1.11	3.00
+1	3.75	1.33	4.00	1.25	2.78	3.50	3.25	1.22	3.00
+1	3.25	1.00	3.50	2.25	1.44	3.50	2.75	1.11	1.00
+1	3.50	1.11	3.50	1.25	1.67	4.00	3.75	1.22	2.50
+1	3.25	1.44	4.00	3.00	2.33	3.50	3.75	1.33	3.50
+1	2.25	1.00	2.50	1.50	3.22	2.00	3.75	1.00	1.50
+}\SZU
+
+\begin{figure}[b!]
+\begin{subfigure}{.45\textwidth}
+\begin{tikzpicture}
+\begin{axis}[
+    IDEA box,
+    height = 6cm,
+    width = \textwidth,
+    ymin=-2.75, ymax=2.75,
+    ylabel = Heart Rate ($z$-score), 
+    ytick={-2,-1,0,1,2},
+    xtick={1,2,3},
+    xticklabels={Baseline,Stressor,Game},
+]
+
+%% Baseline
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=P0_HR] {\SPU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=P0_HR] {\SPN};
+
+
+%% Stressor
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=P1_HR] {\SPU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=P1_HR] {\SPN};
+
+
+%% GAME
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=P2_HR] {\SPU};
+
+    
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=P2_HR] {\SPN};
+
+   
+\end{axis}
+\end{tikzpicture}
+%\caption{Box plot of heart rate data collected during the study. Participants in Nature (left) vs Urban (right) conditions.}
+%\end{figure}
+
+
+%\begin{figure}
+\begin{tikzpicture}
+\begin{axis}[
+    IDEA box,
+	height= 6cm,
+    width = \textwidth,
+    ymin=-2.75, ymax=2.75,
+    ylabel = Galvanic Skin Response ($z$-score), 
+    ytick={-2,-1,0,1,2},
+    xtick={1,2,3},
+    xticklabels={Baseline,Stressor,Game},
+    legend style={at={(0.25,-.2)},anchor=south,font={\sffamily}}
+]
+
+%% Baseline
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=P0_GSR] {\SPU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=P0_GSR] {\SPN};
+
+
+%% Stressor
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=P1_GSR] {\SPU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=P1_GSR] {\SPN};
+%\addlegendimage{fill=Nature,draw=Nature}
+%\addlegendentry{Nature}
+
+%% GAME
+\addplot[Nature,mark=*,
+    lshift,
+    forget plot,
+    boxplot,
+]
+table[y=P2_GSR] {\SPN};
+%\fill[Nature] (0,0) circle (0.1cm);
+
+
+\addplot[Urban, mark=*,
+	boxplot,
+    rshift,
+]
+table[y=P2_GSR] {\SPU};
+%\fill[Urban] (0,0) circle (0.1cm);
+%\addlegendimage{fill=Urban,draw=Urban}
+%\addlegendentry{Urban}
+    
+    \coordinate (legend) at (axis description cs:.15,-.15);
+\end{axis}
+% this is a dummy `axis' environment only to create the legend
+\matrix [
+    matrix of nodes, 
+    every node/.style={anchor=center}, 
+    ] at (legend) {
+        |[fill=Nature]| & |[font=\small\sffamily]|Nature & |[fill=white]| & |[fill=Urban]| & |[font=\small\sffamily]|Urban \\
+    };
+\end{tikzpicture}
+\caption{A summary of Heart Rate and Galvanic Skin Response data collected during the study. Our analysis revealed a significant increase between Baseline and Stressor data, and a significant decrease between Stressor and Game data for both measures.}
+\label{fig:physio}
+
+\end{subfigure}
+\hfill
+\begin{subfigure}{.45\textwidth}
+\begin{tikzpicture}
+\begin{axis}[
+    IDEA box,
+    height=4cm,
+    width = \textwidth,
+    ymin=1, ymax=5,
+    ylabel = Positive Affect, 
+    ytick={1,2,3,4,5},
+    xtick={1,2,3},
+    xticklabels={Baseline,Stressor,Game},
+]
+
+%% Baseline
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=Z0_posaffect] {\SZU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=Z0_posaffect] {\SZN};
+
+
+%% Stressor
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=Z1_posaffect] {\SZU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=Z1_posaffect] {\SZN};
+
+
+%% GAME
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=Z2_posaffect] {\SZU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=Z2_posaffect] {\SZN};
+   
+\end{axis}
+\end{tikzpicture}
+\begin{tikzpicture}
+\begin{axis}[
+    IDEA box,
+    height=4cm,
+    width = \textwidth,
+    ymin=1, ymax=5,
+    ylabel = Negative Affect, 
+    ytick={1,2,3,4,5},
+    xtick={1,2,3},
+    xticklabels={Baseline,Stressor,Game},
+]
+
+%% Baseline
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=Z0_negaffect] {\SZU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=Z0_negaffect] {\SZN};
+
+
+%% Stressor
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=Z1_negaffect] {\SZU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=Z1_negaffect] {\SZN};
+
+
+%% GAME
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=Z2_negaffect] {\SZU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=Z2_negaffect] {\SZN};
+   
+\end{axis}
+\end{tikzpicture}
+\begin{tikzpicture}
+\begin{axis}[
+    IDEA box,
+    height=4cm,
+    width = \textwidth,
+    ymin=1, ymax=5,
+    ylabel = Attentiveness, 
+    ytick={1,2,3,4,5},
+    xtick={1,2,3},
+    xticklabels={Baseline,Stressor,Game},
+]
+
+%% Baseline
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=Z0_attentive] {\SZU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=Z0_attentive] {\SZN};
+
+
+%% Stressor
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=Z1_attentive] {\SZU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=Z1_attentive] {\SZN};
+
+
+%% GAME
+\addplot[Urban, mark=*,
+	boxplot,
+    forget plot,
+    rshift,
+]
+table[y=Z2_attentive] {\SZU};
+    
+
+\addplot[Nature,mark=*,
+    lshift,
+    boxplot,
+]
+table[y=Z2_attentive] {\SZN};
+   
+\end{axis}
+\end{tikzpicture}
+\caption{A summary of Positive Affect, Negative Affect, and Attentiveness self-reported ratings collected during the study. All measures were aggregated across 5-point Likert scale questions from the ZIPERS questionnaire.}
+\label{fig:selfreports}
+
+\end{subfigure}
+\caption{Summary of physiological (\autoref{fig:physio}) and self-reported (\autoref{fig:selfreports}) dependent measures collected during our experiment. For both sets of measures, we observed the anticipated increase in stress following the Stressor math test followed by a decrease during gameplay. These trends are indicative of our experimental design working as intended. However, we found no significant differences between the Nature and Urban game settings for any of our measures.}
+\label{fig:summary}
+
+
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Gigantic Figure Ends here for physiological data... 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 

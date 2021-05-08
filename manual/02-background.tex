@@ -1,43 +1,58 @@
 %
 % This section is written in Markdown
 %
+
+%\tableofcontents
+
+\newpage
 \begin{markdown}
 
 # Why \LaTeX?
 
-\LaTeX\ is far from a perfect writing tool. For one thing, it's a *typesetting environment* and not a word processor, so little things like the difference between a \` and a ' can end up being important. When you're writing a paper, you generally want to focus on the words you're writing, and not getting the syntax right. So why use \LaTeX?
+\LaTeX\ is far from a perfect writing tool. For one thing, it's a *typesetting environment* and not a word processor, so little things like the difference between a \` and a ' can end up being a distraction. That is, when you're writing a paper, you generally want to focus on your words, and not getting the syntax right. So why use \LaTeX?
 
-1. Formatting is done `for free' by the SIG CHI template, and it does a great job of this for you, so you can spend your time on the more important parts of your paper
+1. Formatting is done `for free' by the SIG CHI template, and it does a great job of this for you, so you can spend your time thinking about *what* you say, not how it should look.
 2. The University of Waterloo provides a Pro Overleaf account if you login with your UW userid. Overleaf is lightweight, easy-to-use, and supports collaborative writing really well. 
-3. \LaTeX\ integrates well with other (free) tools like R, PGFPLots, etc. and any referencing software you can find through the Bib\TeX package.
+3. \LaTeX\ integrates well with other (free) tools like R and Python, and any referencing software you can find through the Bib\TeX package.
 
-However, \LaTeX\ isn't perfect, and so this project embodies some changes to the template that make our typical workflow a little easier:
+However, as hinted at above, \LaTeX\ also isn't perfect, and so this project embodies some examples, tips, and hacks that make our typical publication workflow a little easier. For instance, I've included some supports for all of the following tasks:
 
-1. It supports \href{https://daringfireball.net/projects/markdown/}{Markdown}: authors can therefore focus on content, and let ACM templates handle formatting
-2. Sections are separated out into files, so that authors can edit each without interrupting one another
-3. Several commonly-used \LaTeX\ packages are automatically included, for instance, for Markdown, Figures and Tables, and Referencing
-4. Many (optional) in-text shortcuts are also included, for tasks like reporting statistics, defining colour palettes, and including alternative languages. (*Documentation in-progress*)
+1. Writing: It supports Markdown: enabling you to focus on *content*, and the ACM templates to handle all formatting
+
+2. Collaborative Editing: Sections are separated out into files, so that authors can edit each one without interrupting one another on Overleaf, without the need to email drafts back and forth between authors, and with features like version control, and automatic backups. 
+
+3. Illustrating: Several commonly-used \LaTeX\ packages are automatically included, for tasks like creating figures and tables, documenting code, and referencing
+
+4. Revising: The \texttt{changes} package helps authors to show revisions to their work when working within the ACM's Revise \& Resubmit model
+
+5. Many (optional) in-text shortcuts are also included, for tasks like reporting statistics, defining colour palettes, and including alternative languages. They are there if you need them, and easy to ignore if you don't. 
 
 
 
 ## Markdown
-A common complaint about \LaTeX is that it's hard to read and write, and that the learning curve is *really* steep. For this reason, we're following the general philosophy of letting \LaTeX\ handle the stuff it's good at --- formatting, math, figures, references --- and leaving the content to Markdown. Markdown is extremely easy to read and write. In fact, you're probably familiar with much of its syntax already: 
+A common complaint about \LaTeX\ is that it's hard to read and write, and that the learning curve is *really* steep. For this reason, we're following the general philosophy of letting \LaTeX\ handle the stuff it's good at --- formatting, math, figures, references --- and writing the rest in Markdown. Markdown is extremely easy to read and write. In fact, you're probably familiar with much of its syntax already: 
 
 >    "The overriding design goal for Markdown’s formatting syntax is to make it as readable as possible. The idea is that a Markdown-formatted document should be publishable as-is, as plain text, without looking like it’s been marked up with tags or formatting instructions. While Markdown’s syntax has been influenced by several existing text-to-HTML filters, the single biggest source of inspiration for Markdown’s syntax is the format of plain text email"
 > --- John Gruber \citep{gruber2006}.
 
-However, you should be aware of some limitations of Markdown --- especially for some of the more technical aspects of a scientific paper. It doesn't always play well with tables, and while you can include images, Markdown doesn't necessarily offer some of the nice features that \LaTeX\ does. Keep reading for more information on that. 
+However, you should be aware of some its limitations --- especially for some of the more technical aspects of a scientific paper. It doesn't always play well with tables, and while you can include images, Markdown doesn't necessarily offer some of the nice features that \LaTeX\ does. Keep reading for more information on that. 
 
 **This template has been configured to allow *both* Markdown and \LaTeX\ syntax in the same file**, through the \texttt{markdown} package's \texttt{hybrid} option. You can even combine them in the same *sentence*, and for example write paragraphs in Markdown that include BibTeX citations.
 
 
 
-## A Wrapper for PGFPlots
-As as I was completing my PhD, I decided to spend some time trying to learn to make better figures since this was something I expected to spend a lot of time doing over the rest of my career, and I might as well think about how to do it well from the start. Some of the things I'd hoped to improve on were using scalable graphics, having better control over the width/height of figures, and being able to use experimental data itself to create the images (better fit with a typical academic workflow). I also prefer a minimalist feel, and wanted my papers to reflect that (And even if you prefer something different, this is a good starting point, you can always make things more complex where needed). 
+## PGFPlots and My Templates 
+As as I was completing my PhD, I decided to spend some time trying to learn to make better figures since this was something I expected to spend a lot of time doing over the rest of my career. Some of the things I'd hoped to improve on were using scalable graphics, having better control over the width/height of figures, and being able to use the data itself to create the images (better fit with a typical academic workflow). I also prefer a minimalist feel, and wanted my papers to reflect that (And even if you prefer something different, this is a good starting point, you can always make things more complex where needed). 
 
 So after doing some research, I found that \texttt{PGFPlots} was a good fit for my needs. But it wasn't perfect, and in particular can be complicated to get right. So in the interest of saving the time of re-inventing the wheel, and (hopefully) enabling others to use my work for their own papers, I decided to create a set of templates that would encapsulate the common types of graphs I use in HCI research. I called these templates \texttt{IDEA Plots} after my lab at the time. As I developed the templates, they grew to include style choices, colour palettes, and some common shortcuts for layout. I expect they'll continue to evolve for a while to come.  
 
-All of the examples in this document use the templates, with some in-place customization based on the needs of the graph. 
+All of the examples in this document use those templates, which are now wrapped into CHI Zen, with some in-place customization based on the needs of the graph. 
+
+
+
+## Tracking Changes
+
+Since SIG CHI has begun transitioning its conferences to the *Proceedings of the ACM* model, most involve some form of Revise \& Resubmit. That is, you should expect to take reviewer feedback into consideration and submit an updated version of your paper for a second round of review. When doing so, conferences typically ask for a marked-up version of the paper that shows where changes have been made.  To track changes in \LaTeX, we use the \texttt{changes} package. It provides a few simple functions to track anything that you've \texttt{added()}, \texttt{deleted()}, or \texttt{replaced} in the paper. 
 
 
 

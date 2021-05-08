@@ -10,14 +10,106 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Introduction
-Even the most experienced researchers are constantly looking for ways to improve their papers. And there are many different aspects of a paper to improve on: from high-level concerns like experimental design, positioning the paper within the literature, and consideration of ethical issues, to sweating the details in a statistical analyis, or getting that graph \emph{just right} to show off your earth-shattering results. But sometimes it's hard to put all the pieces together. That's where this project comes in. 
+Even the most experienced researchers are constantly looking for ways to improve their papers. And there are many different parts of a paper you can improve: from high-level concerns like experimental design, positioning the paper within the literature, and consideration of ethical issues, to sweating the details in a statistical analysis, or getting that graph *just right* to show off your earth-shattering results. But sometimes it's hard to put all the pieces together. That's where this project comes in. 
 \end{markdown}
 
-This project --- CHI Zen, a play on the words \begin{CJK}{UTF8}{min}改善\end{CJK} (`KaiZen') or `continuous improvement' --- describes common pitfalls and best practices based on my experience writing academic papers. That experience reflects some of my own preferences, but also a lot that I've learned from working with other HCI researchers. It also contains a lot of examples that you are free to copy, modify, or re-use as often as you'd like. The goal is to have something of an \emph{information zoo} \citep{heer2010tour} that can help you think about how to best visualize results, and hopefully make the process of creating that visualization easy, too. 
+This project --- CHI Zen, a play on the words \begin{CJK}{UTF8}{min}改善\end{CJK} (`KaiZen') or `continuous improvement' --- describes common pitfalls and best practices based on my experience writing academic papers. That experience reflects some of my own preferences, but also a lot that I've learned from working with other HCI researchers. It also contains a lot of examples that you are free to copy, modify, or re-use as often as you'd like. The goal is to have something of an \emph{information zoo}~\citep{heer2010tour} that can make the process of creating that groundbreaking paper a little easier. 
 
 \begin{markdown}
-This document also provides a sample reference for a set of templates that I developed for \texttt{PGFPlots}. Please use \texttt{PGFPlots} if you find it useful. If you do, I'd love to hear about it, and if you have any ways to improve them. You might also prefer to use a different graphing package, and that's cool too. The examples contained in this document hopefully can provide tips or shortcuts for use in your own papers. I suspect that you can generate more or less the same graphs with your tool of choice. 
+CHI Zen grew out of a a `CHI Paper Checklist' that I developed as a resource to help both myself and students as a paper deadline approached. It encapsulates some important advice I'd collected as a PhD student and Early Career Researcher, including bigger questions like how to frame your contributions and how early you should be seeking out peer feedback, as well as fine-grained issues like common mistakes people make when citing the literature. I also included some stylistic preferences, like words and phrases to avoid in academic writing. That checklist is now provided in the Appendix.
 
-Finally, my intention in making this project available via GitHub is to allow it to grow. If you find it useful, please drop me a line. If you find a way to improve it, please push the changes to GitHub. It might also just be an important prompt to have a conversation about best practices, or an opportunity to explore different ways of thinking about or presenting research. In any case, I hope that it's an opportunity to think about how we can improve our research practices, one small step at a time. 
+Th bulk of document provides a sample reference for a set of templates that I developed for \texttt{PGFPlots}. Please use \texttt{PGFPlots} if you find it useful. If you do, I'd love to hear about it. I'd also love to hear from you if you have any ways to improve them. You might also prefer to use a different graphing package, and that's cool too. The examples contained in this document hopefully can provide tips or shortcuts for use in your own papers. I suspect that you can generate more or less the same graphs with your tool of choice, be it R, a Python library, or Excel. Maybe those are an even better fit for your needs; if that's the case, you should use them instead! 
+
+Beyond that, I've slowly accumulated information about best practices, such as transparency of research and reporting of statistics, as well as ways of simplifying the (often complex) workflow of academic publishing. For instance, I've most recently added a section on change tracking, to match the recent shift in many SIG CHI conferences to the *Proceedings of the ACM* journal, which often requires authors to revise and resubmit manuscript drafts with tracked changes. I've tried to summarize what I know, point to useful packages, and provide links to additional resources where I can. 
 
 \end{markdown}
+
+
+
+
+
+\begin{markdown}
+# How to Use CHI Zen
+
+This package brings together examples, tips, and hacks from a variety of different sources, and regarding just about every aspect of writing a research paper. You may find it all useful, or might only want to borrow bits and pieces. It has been designed to useful from a variety of perspectives, and these are only a few of the intended use cases:  
+
+\subsection*{As a Template}
+
+CHI Zen is written using the same \href{https://www.acm.org/publications/authors/submissions}{ACM Template that SIG CHI Conferences use}. It is divided into two parts: this manual, and a new submission. The new submission is contained in the `submission' folder, with placeholders for common paper sections like an Introduction, Related Work, and Discussion. These sections are pulled together in ``\texttt{00-my-new-paper.tex}'' in the main folder, which also pre-loads all of the \LaTeX\ packages and visualization templates described here. It is intended to be a quick way to start writing your own CHI paper.
+
+\subsection*{As an Information Zoo}
+
+Sections \ref{sec:code}, \ref{sec:tables}, and especially \ref{sec:figures} are an *information zoo* --- they contain annotated, working examples that you can use to help you think about how to best present data in your research. The intention *is not* to define right or wrong ways to present your work, but to provide a starting point, and point to the info vis literature to explain some of the considerations you should make when implementing those graphs in your own paper.
+
+
+\subsection*{As a Quick Reference and a Checklist}
+
+Sections \ref{sec:referencing} and \ref{sec:statistics} provide information about some common \LaTeX\ questions, like referencing the literature and reporting statistics. Section \ref{sec:transparency} and \autoref{sec:checklist} provide some guidance on how to manage the *process* of writing a CHI paper. Section \ref{sec:transparency} synthesizes some emerging best practices for transparency and replicability, and points to resources for implementing them in your own work. Section \ref{sec:checklist} is an actual checklist that you can print out and use as a summative evaluation tool for your paper, preferably a week or two before the paper deadline. 
+
+
+# Comments, Suggestions, Feedback
+
+Finally, my intention in making this project available via GitHub is to allow it to grow. If you find it useful, or can suggest a way improve it, I'd love to hear about it --- drop me a line at \href{mailto:james.wallace@uwaterloo.ca}{james.wallace@uwaterloo.ca}. It might also just be an important prompt to have a conversation about best practices, or an opportunity to explore different ways of thinking about or presenting research. In any case, I hope that it's an opportunity to think about how we can improve our research practices, one small step at a time. 
+
+\end{markdown}
+
+
+% \newpage 
+
+% \begin{paracol}{2}
+% \setlength{\parindent}{0em}
+% \begin{CJK*}{UTF8}{gbsn}
+% 其安易持， \\
+% 其未兆易謀，\\
+% 其脆易破，\\
+% 其微易散。\\
+% 為之于未有，\\
+% 治之于未亂。\\
+% 合抱之木，生于毫末；\\
+% 九層之臺起于累土； \\
+% 千里之行，始于足下。 \\
+% 為者敗之，\\
+% 執者失之。\\
+% 聖人無為，故無敗；\\
+% 無執，故無失。\\
+% 民之徒事，常于幾成而敗之。\\
+% 慎終如始，\\
+% 則無敗事。\\
+% 是以聖人欲不欲，\\
+% 不貴難得之貨。\\
+% 學不學，\\
+% 復眾人之所過。\\
+% 以輔萬物之自然，\\
+% 而不敢為\\
+% \flushright{-- 老子}
+% \end{CJK*}
+
+% \switchcolumn
+% That settled is easily maintained, \\
+% That without signs is easily conspired, \\
+% That fragile is easily shattered, \\
+% That insignificant is easily dispersed. \\
+% Act on it before it materializes, \\
+% Manage it before it becomes chaotic. \\
+% A strapping tree is grown from a tiny sprout; \\
+% A sky-scraping tower is built from a modest mound, \\
+% A far-reaching journey begins with a small step. \\
+% Those who act upon will fail, \\
+% Those who hold on will lose. \\
+% The master acts not, therefore fails not; \\
+% Holds not on, therefore loses not. \\
+% Amateurs often fail at the verge of success. \\
+% Be focused in the end as in the beginning, \\
+% Then there will be no failure. \\
+% Hence the master desires not to be desirous, \\
+% Treasures not precious possessions. \\
+% Learn to be unlearned, \\
+% Liberate the people of their past. \\
+% Assist the myriad things in returning to their essence, \\
+% And not dare act. \\
+% \flushright{-- Laozi}
+
+% \end{paracol}
+
+% \newpage
+

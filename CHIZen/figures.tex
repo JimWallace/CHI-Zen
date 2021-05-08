@@ -62,6 +62,8 @@
 \usepgfplotslibrary{groupplots}
 \usepackage{pgfgantt}
 
+\usepackage{subcaption}
+
 \usetikzlibrary{external}
 %\tikzexternalize[prefix=tikz/] % Must be in main .tex file?
 
@@ -515,7 +517,7 @@ range frame/.style={
         width  = \columnwidth,
         height = 6cm,
         	axis line style = very thin,
-       	bar width=25pt,
+       	bar width=1pt,
        	font = \sffamily,
         	% X Axis
         	major x tick style = transparent,
@@ -529,8 +531,8 @@ range frame/.style={
         	ymajorgrids = true,
         	major tick length = 0,
         %Legend
-        	legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
-        	legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);}
+        %	legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        %	legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);}
  	% Boxplot specific options
 	boxplot,
 	boxplot/draw direction=y, 
@@ -573,7 +575,7 @@ range frame/.style={
         font = \sffamily,
         	% X Axis
         	major x tick style = transparent,
-        	enlarge x limits = {abs=1cm},
+        	enlarge x limits = {abs=0.75cm},
         	xlabel style={name=xlabel},
 	% Y Axis
         	ymajorgrids = true,
@@ -583,8 +585,8 @@ range frame/.style={
         	ymajorgrids = true,
         	major tick length = 0,
         %Legend
-        	legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
-        	legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);}
+        	legend style={legend columns = 2, draw=none, column sep = 0.25cm},
+        	legend image code/.code={\fill[#1] (0,0) circle (0.1cm);}
         % draw whiskers as a single line:
         boxplot/draw/whisker/.code 2 args={%
             \draw[/pgfplots/boxplot/every whisker/.try]
@@ -599,7 +601,7 @@ range frame/.style={
         % 
         % the median should be visualized as a thick white line:
         boxplot/every median/.style={
-        		ultra thick,
+        		thick,
 		fill=white, draw=white,
         },
         %boxplot/draw/median/.code={%
@@ -608,12 +610,12 @@ range frame/.style={
         %    ;
         %},
         % draw the average as a circle
-        boxplot/average=auto,
-        boxplot/draw/average/.code={%
-	   \draw[fill=white,draw=gray]
-            	(boxplot cs:\pgfplotsboxplotvalue{average}) circle (2pt)
-            ;
-        },
+%        boxplot/average=auto,
+%        boxplot/draw/average/.code={%
+%	   \draw[fill=white,draw=gray]
+%            	(boxplot cs:\pgfplotsboxplotvalue{average}) circle (2pt)
+%            ;
+%        },
         %
         % do not clip to avoid problems with the median:
         clip=false,

@@ -1,0 +1,71 @@
+\newpage
+
+\section{Code}
+\label{sec:code}
+
+If you need to share some code, I recommend using the \texttt{minted} package, which is already imported by CHI Zen. The \texttt{minted} package provides a nice environment for sharing pieces of code directly in your document, and has built-in support for a long list of common programming languages. It can highlight keywords, add line numbers, and comes with a variety of colour styles to fit your needs. It can also import code directly from a file, so you can link directly to your own source code if appropriate. 
+
+If you don't need an entire code block, the package also enables you to insert single lines of code into your manuscript, like this: 
+
+\mint{python}|fibonacci(100) # Defined in the figure below|
+
+
+
+
+
+\begin{figure}[b!]
+    \centering
+    \begin{subfigure}{.45\textwidth}
+    \usemintedstyle{vc}
+    \begin{minted}[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.2,
+        fontsize=\footnotesize,
+        linenos]
+        {python}
+    # An Example in Python
+
+    def fibonacci (nterms):
+
+    terms = [1,1]
+
+    for i in range(2,nterms):
+        terms += [terms[i-1] + terms[i-2]]
+
+    for term in terms:
+        print(term)
+    \end{minted}
+    \caption{Example code in Python}
+    \end{subfigure}
+    %
+    \begin{subfigure}{.45\textwidth}
+    \usemintedstyle{bw}
+    \begin{minted}[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.2,
+        fontsize=\footnotesize,
+        linenos]
+        {c}
+// An Example in C
+int main() {
+    printf("hello, world");
+return 0;
+}
+\end{minted}
+\caption{Example code in C}
+\end{subfigure}
+    \caption{Example code fragments in \texttt{minted} for Python and C. The colour style on the left is similar to what you might see in an IDE, the one on the right is black and white, and might be better when printed. }
+    \label{fig:minted}
+\end{figure}
+
+
+
+
+\subsection*{Additional Resources}
+
+\begin{enumerate}
+    \item The \texttt{minted} package on CTAN: \href{https://www.ctan.org/pkg/minted}{https://www.ctan.org/pkg/minted}
+    \item Overleaf's \texttt{minted} documentation: \href{https://www.overleaf.com/learn/latex/Code\_Highlighting\_with\_minted}{https://www.overleaf.com/learn/latex/Code\_Highlighting\_with\_minted}
+\end{enumerate}
