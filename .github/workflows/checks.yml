@@ -1,0 +1,72 @@
+name: Checks
+
+# The CHI Zen plugin and its paper linter, separate from build.yml (which
+# compiles and validates the PDFs):
+#   - the linter's tests, and the linter on the manual and the starter paper,
+#     with the findings accepted in chizen-baseline.txt (new findings fail,
+#     and so do baseline lines that no longer occur);
+#   - `claude plugin validate` on the marketplace and the plugin;
+#   - the matplotlib and ggplot examples in the guide's styles/ folder.
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  linter:
+    name: Paper linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test check_paper.py and copy_into_paper.py
+        run: python3 -m unittest discover -s tests -v
+      - name: Lint the manual and the starter paper (errors and warnings beyond chizen-baseline.txt fail)
+        run: python3 plugins/chizen/skills/review/scripts/check_paper.py .
+
+  plugin:
+    name: Plugin validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # Pinned so that a new release can't change the verdict under us; bump on purpose.
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code@2.1.312
+      - name: Validate the marketplace (.claude-plugin/marketplace.json)
+        run: claude plugin validate .
+      - name: Validate the plugin (plugins/chizen)
+        run: claude plugin validate plugins/chizen
+      - name: The plugin's TAPS list resolves to CHIZen/taps-accepted-packages.txt
+        run: cmp plugins/chizen/skills/review/scripts/data/taps-accepted-packages.txt CHIZen/taps-accepted-packages.txt
+
+  styles:
+    name: Figure styles (matplotlib, ggplot2)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: matplotlib example
+        run: |
+          python3 -m pip install --quiet "matplotlib==3.10.0"
+          python3 plugins/chizen/skills/chizen/styles/example_matplotlib.py
+      - name: ggplot2 example
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends r-base-core r-cran-ggplot2 >/dev/null
+          Rscript -e 'cat("ggplot2", as.character(packageVersion("ggplot2")), "\n")'
+          cd plugins/chizen/skills/chizen/styles && Rscript example_ggplot.R
+      - uses: actions/upload-artifact@v4
+        with:
+          name: style-examples
+          path: plugins/chizen/skills/chizen/styles/*.pdf
+          if-no-files-found: error

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "chizen",
+  "description": "CHI Zen: the Waterloo HCI lab's style guide for LaTeX research papers, as a Claude Code plugin.",
+  "owner": {
+    "name": "James R. Wallace"
+  },
+  "plugins": [
+    {
+      "name": "chizen",
+      "source": "./plugins/chizen",
+      "description": "Lab style guide for HCI papers: authoring rules for figures, tables, statistics, qualitative reporting, ethics and citations; a paper linter; and read-only reviewer agents."
+    }
+  ]
+}

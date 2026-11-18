@@ -1,0 +1,30 @@
+\begin{figure}
+  \Description{Bar chart of time by technique.}
+  \begin{tikzpicture}
+    \begin{axis}[chizen bar, xlabel=Technique]
+      \addplot[fill=red!50] coordinates {(1,2)};\label{plot:a}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Selection time by technique.}
+  \label{fig:good}
+\end{figure}
+
+\begin{figure}
+  \label{fig:early}
+  \includegraphics{figures/photo.png}
+  \caption{A photo whose label comes first and that is never referenced.}
+\end{figure}
+
+\begin{figure}
+  \begin{subfigure}{.45\textwidth}\includegraphics{a.png}\end{subfigure}
+\end{figure}
+
+\begin{table}
+  \caption{Results}
+  \begin{tabular}{l|rr}
+    \hline
+    A & 1 & 2 \\ \hdashline
+  \end{tabular}
+  \label{tab:results}
+\end{table}
+\textcolor{blue}{This is really important.}

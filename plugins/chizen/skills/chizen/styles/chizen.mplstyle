@@ -1,0 +1,64 @@
+# CHI Zen style for matplotlib: matches the pgfplots styles in CHIZen/figures.tex.
+#   import matplotlib.pyplot as plt
+#   plt.style.use("path/to/chizen.mplstyle")
+# Then put the legend below the plot:
+#   fig, ax = plt.subplots(layout="constrained")
+#   ...
+#   fig.legend(loc="outside lower center", ncols=3)
+# See example_matplotlib.py and the guide (references/figures.md).
+
+# Size: one ACM column (241 pt = 3.34 in) by 6 cm (2.36 in), the CHI Zen default.
+figure.figsize: 3.34, 2.36
+figure.dpi: 150
+savefig.format: pdf
+savefig.bbox: tight
+savefig.pad_inches: 0.02
+
+# Sans-serif text, sized for the final figure (no scaling in LaTeX).
+font.family: sans-serif
+font.sans-serif: Helvetica, Arial, DejaVu Sans, Liberation Sans, sans-serif
+font.size: 8
+axes.titlesize: 8
+axes.labelsize: 8
+xtick.labelsize: 7
+ytick.labelsize: 7
+legend.fontsize: 7
+# Embed fonts as TrueType (Type 42), not Type 3.
+pdf.fonttype: 42
+
+# High data-ink ratio: left and bottom axes only, thin lines, light horizontal grid.
+axes.spines.top: False
+axes.spines.right: False
+axes.linewidth: 0.5
+axes.edgecolor: black
+axes.grid: True
+axes.grid.axis: y
+axes.axisbelow: True
+grid.color: d9d9d9
+grid.linewidth: 0.4
+grid.linestyle: -
+xtick.major.width: 0.5
+ytick.major.width: 0.5
+xtick.major.size: 3
+ytick.major.size: 3
+xtick.direction: out
+ytick.direction: out
+
+# Okabe-Ito colours in the order of the `chizen lines' cycle list (darkest first, no
+# yellow), each with its own dash pattern and marker, so series differ in black and white.
+axes.prop_cycle: (cycler('color', ['0072B2', 'D55E00', '009E73', 'CC79A7', 'E69F00', '56B4E9', '000000']) + cycler('linestyle', ['-', '--', ':', '-.', (0, (5, 1)), (0, (1, 1)), (0, (5, 5))]) + cycler('marker', ['o', 's', '^', 'D', 'o', 's', '^']))
+lines.linewidth: 1.0
+lines.markersize: 3.5
+
+# Bars and boxes: thin dark outline, as the pgfplots fills have.
+patch.linewidth: 0.5
+patch.force_edgecolor: True
+patch.edgecolor: 333333
+boxplot.medianprops.color: white
+boxplot.medianprops.linewidth: 1.5
+boxplot.flierprops.marker: o
+boxplot.flierprops.markersize: 3
+
+# Legend: no frame (place it below with fig.legend, see above).
+legend.frameon: False
+legend.handlelength: 2.5

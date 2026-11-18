@@ -1,0 +1,27 @@
+\documentclass[sigconf]{acmart}
+\begin{document}
+\section{Results}
+Participants were faster with the new technique ($F(1, 23) = 4.6$, $p = .03$, $p < .001$),
+as \autoref{fig:time} and \autoref{tab:errors} show.
+\begin{figure}
+  \Description{Bar chart of selection time by technique: Tiltcasting 3.2 s, Smartcasting 2.1 s.}
+  \begin{tikzpicture}
+    \begin{axis}[chizen bar, xlabel=Technique, ylabel={Selection time (s)}]
+      \addplot+[fill=OkabeItoBlue!50!white] coordinates {(1,2)};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Selection time by technique.}
+  \label{fig:time}
+\end{figure}
+\begin{table}
+  \caption{Errors by technique.}
+  \label{tab:errors}
+  \begin{tabular}{@{}lrr@{}}
+    \toprule
+    Technique & Errors & Time (s) \\
+    \midrule
+    Tiltcasting & 3 & 3.2 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\end{document}
