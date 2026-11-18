@@ -41,7 +41,9 @@ for your codes. If the guide path is missing, look for it at
 - **Likert data** (STAT-14, STAT-15): single items treated as ordinal (medians, distributions,
   nonparametric tests or ordinal models); validated scales scored as published.
 - **Consistency**: the same result reported identically in the text, tables and figures;
-  degrees of freedom consistent with the stated *n* and design (flag, don't recompute).
+  degrees of freedom consistent with the stated *n* and design. You may recompute *p* from a
+  reported test statistic and its degrees of freedom to check that they agree (as statcheck
+  does); a mismatch is a QUESTION for the author, never a corrected value in the fix.
 
 ## Output (exactly this shape)
 ```
