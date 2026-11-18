@@ -535,40 +535,6 @@ range frame/.style={
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   Tufte Dot Dash 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\pgfplotsset{
-  dot dash plot/.style={
-    axis line style={opacity=0},
-    tick style={thin, black},
-    major tick length=0.15cm,
-    xtick=data,
-    xticklabels={},
-    ytick=data,
-    yticklabels={},
-    extra x ticks={
-      \pgfplotsdataxmin,
-      \pgfplotsdataxmax
-    },
-    extra y ticks={
-      \pgfplotsdataymin,
-      \pgfplotsdataymax
-    },
-    extra tick style={
-      xticklabel={\pgfmathprintnumber[
-        fixed,
-        fixed zerofill,
-        precision=1
-      ]{\tick}},
-      yticklabel={\pgfmathprintnumber[
-        fixed,
-        fixed zerofill,
-        precision=1
-]{\tick}} }
-} }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Tufte Box Plot 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
