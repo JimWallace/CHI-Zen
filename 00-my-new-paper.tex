@@ -1,8 +1,12 @@
 %% The first command in your LaTeX source must be the \documentclass command.
-\documentclass[sigconf,anonymous,review,manuscript]{acmart}
+\documentclass[sigconf,anonymous,review,manuscript,natbib=false]{acmart}
 
 % Turn on the CHIZen features
 \input{CHIZen/init.tex}
+
+% References: biblatex with ACM's styles (acmnumeric, or acmauthoryear), run with biber.
+\usepackage[datamodel=acmdatamodel, style=acmnumeric, backend=biber]{biblatex}
+\addbibresource{submission/bibliography.bib}
 
 
 %%
@@ -144,9 +148,7 @@ Hello, World!
 %\input{submission/09-acknowledgements.tex}
 
 \newpage
-%\bibliographystyle{SIGCHI-Reference-Format}
-\bibliographystyle{ACM-Reference-Format}
-\bibliography{submission/bibliography.bib}
+\printbibliography
 
 %\input{submission/11-appendix.tex}
 
