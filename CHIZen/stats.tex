@@ -35,14 +35,24 @@
     \ifdimless{#2 pt}{.001 pt}{$#1 < .001$}{%
         \ifdimless{#2 pt}{.01 pt}{$#1 < .01$}{%
             $#1 = \num[add-integer-zero=false,%
+                      print-zero-integer=false,% siunitx v3: add-integer-zero alone no longer drops the 0
                       round-mode=places,%
                       round-precision=2,%
                       round-half=even]{#2}$%
         }%
     }%
 }
+% Effect sizes (e.g., partial eta squared) are bounded by 1: two decimals,
+% no leading zero, and never "< .001" (that rule is for p-values only).
+\newcommand{\formateffect}[2]{%
+    $#1 = \num[add-integer-zero=false,%
+               print-zero-integer=false,% siunitx v3: add-integer-zero alone no longer drops the 0
+               round-mode=places,%
+               round-precision=2,%
+               round-half=even]{#2}$%
+}
 \newcommand{\p}[1]{\formatprob{p}{#1}}
-\newcommand{\etasqp}[1]{\formatprob{\eta_{p}^2}{#1}}
+\newcommand{\etasqp}[1]{\formateffect{\eta_{p}^2}{#1}}
 \newcommand{\F}[3]{{$F_{#1,#2}=\num[round-mode=places,%
                                     round-precision=\fprecision]{#3}$}}
 \newcommand{\owF}[2]{{$F_{#1}=\num[round-mode=places,%
