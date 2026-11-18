@@ -13,7 +13,9 @@ session, GitHub Actions); no TeX needed.
 WHAT IT READS. Every top-level .tex file in PAPER_DIR that has an uncommented
 \\documentclass (or the files given with --main), followed through \\input,
 \\include and \\subfile. Files under CHIZen/ (the CHI Zen library itself, which
-defines the palettes) are not checked; add more with --exclude.
+defines the palettes) are not checked; add more with --exclude. The ACM TAPS
+package check is the exception: it covers every file TeX reads, because TAPS
+receives the whole source. Its list is data/taps-accepted-packages.txt.
 
 SEVERITIES.
   error    the PDF is wrong or breaks a venue rule (vertical rules, a p-value with
@@ -88,6 +90,26 @@ AVOID_WORDS = [
     "you",
 ]
 CASE_SENSITIVE_WORDS = {"I", "OK"}
+
+TAPS_FILE = Path(__file__).resolve().parent / "data" / "taps-accepted-packages.txt"
+
+
+def load_taps(path: Path = TAPS_FILE) -> tuple[set, set] | None:
+    """(accepted, included in acmart) from the vendored TAPS list, or None if missing."""
+    if not path.is_file():
+        return None
+    lists: dict[str, set] = {}
+    current = None
+    for ln in path.read_text(encoding="utf-8").splitlines():
+        ln = ln.strip()
+        if not ln or ln.startswith("#"):
+            continue
+        if ln.startswith("[") and ln.endswith("]"):
+            current = lists.setdefault(ln[1:-1], set())
+        elif current is not None:
+            current.add(ln)
+    return lists.get("accepted", set()), lists.get("included-in-acmart", set())
+
 
 FLOAT_ENVS = ("figure", "figure*", "table", "table*", "wrapfigure", "wraptable")
 FIGURE_ENVS = ("figure", "figure*", "wrapfigure")
@@ -311,6 +333,12 @@ def check_doc(doc: Doc, excludes, add) -> None:
             add("error", "E-description", where,
                 f"figure '{ident}' has no \\Description{{...}} (alt text; CHI requires one per figure)")
 
+    # --- ACM TAPS: every file TeX reads counts, the CHI Zen library included
+    taps = load_taps()
+    if taps:
+        for ln in lines:
+            check_taps(ln.text, ln, add, *taps)
+
     # --- per-line checks in the body
     stack: list[str] = []
     code_pat = re.compile(r"\\(begin|end)\{(" + "|".join(re.escape(e) for e in CODE_ENVS) + r")\}")
@@ -368,6 +396,22 @@ def check_tabular(t: str, ln: Line, add) -> None:
     for m in re.finditer(r"\\(hline|cline)\b", t):
         add("error", "E-hline", ln, f"\\{m.group(1)}: use booktabs (\\toprule, \\midrule, "
             "\\cmidrule, \\bottomrule)")
+
+
+PACKAGE_RE = re.compile(r"\\(?:usepackage|RequirePackage)\s*(?:\[[^\]]*\])?\s*\{([^}]*)\}")
+
+
+def check_taps(t: str, ln: Line, add, accepted: set, included: set) -> None:
+    for m in PACKAGE_RE.finditer(t):
+        for pkg in (x.strip() for x in m.group(1).split(",")):
+            if not pkg:
+                continue
+            if pkg in included:
+                add("warning", "W-taps-acmart", ln, f"\\usepackage{{{pkg}}}: acmart already loads {pkg}; "
+                    "ACM's TAPS list says not to include it in your LaTeX source")
+            elif pkg not in accepted:
+                add("warning", "W-taps", ln, f"\\usepackage{{{pkg}}}: not on ACM's TAPS accepted-packages "
+                    "list (April 2025); TAPS may reject the camera-ready source")
 
 
 P_RE = re.compile(
@@ -564,7 +608,7 @@ def report(found, new, stale, bpath, mains, root) -> None:
         if sev == "style":  # one line per source line: "file:12: like, you"
             by_line: dict[tuple, list] = {}
             for f in items:
-                by_line.setdefault((f.file, f.line), []).append(f.msg.split("'")[1])
+                by_line.setdefault((f.file, f.line), []).append(f.msg[1:f.msg.index("' is on")])
             out += [f"- `{fl}:{ln}` {', '.join(ws)}" for (fl, ln), ws in by_line.items()]
             out.append("")
             continue

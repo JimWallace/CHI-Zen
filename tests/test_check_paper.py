@@ -124,6 +124,21 @@ class Units(unittest.TestCase):
             self.assertEqual(len(found), n, text)
 
 
+class Taps(unittest.TestCase):
+    def test_list_loads(self):
+        accepted, included = check_paper.load_taps()
+        self.assertIn("siunitx", accepted)
+        self.assertIn("booktabs", included)
+        self.assertNotIn("pgfplots", accepted)
+
+    def test_packages(self):
+        found = []
+        line = check_paper.Line("x.tex", 1, "", "")
+        check_paper.check_taps(r"\usepackage[final]{siunitx, booktabs ,pgfplots}", line,
+                               lambda *a: found.append(a[1]), *check_paper.load_taps())
+        self.assertEqual(found, ["W-taps-acmart", "W-taps"])
+
+
 class PaletteInStep(unittest.TestCase):
     def test_palette_matches_figures_tex(self):
         tex = (REPO / "CHIZen" / "figures.tex").read_text(encoding="utf-8")
