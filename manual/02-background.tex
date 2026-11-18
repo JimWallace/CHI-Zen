@@ -59,6 +59,18 @@ Since SIG CHI has begun transitioning its conferences to the *Proceedings of the
 \end{markdown}
 
 % Written in LaTeX rather than Markdown because it shows LaTeX commands.
+\subsection{Overleaf Settings}
+\label{sec:overleaf}
+
+CHI Zen uses the \texttt{acmart} class that comes with TeX Live (it is no longer copied into the project), and its documents produce a tagged, accessible PDF. Set these once per Overleaf project, under Menu, Settings:
+\begin{itemize}
+    \item \textbf{Compiler: LuaLaTeX.} The \LaTeX\ tagging code and \texttt{acmart} need LuaLaTeX for a fully tagged PDF. pdfLaTeX still compiles the documents, but the tags are less complete.
+    \item \textbf{TeX Live version: 2026 or later.} On an older TeX Live, comment out the \texttt{\textbackslash DocumentMetadata} block at the top of the main file.
+    \item \textbf{Main document:} \texttt{00-my-new-paper.tex} for your paper, or \texttt{CHIZen-Manual.tex} for this manual (formerly \texttt{CHIZen-Manual-chi2022.tex}).
+\end{itemize}
+With LuaLaTeX, shell escape is not needed (\texttt{minted} runs \texttt{latexminted}, which TeX Live allows, and \texttt{markdown} runs its Lua code directly); pdfLaTeX needs it for \texttt{markdown}, and Overleaf turns it on anyway. References use \texttt{biblatex} with ACM's \texttt{acmnumeric} style and biber, which Overleaf runs automatically. The \texttt{latexmkrc} file sets the same options for local builds with \texttt{latexmk}.
+
+% Written in LaTeX rather than Markdown because it shows LaTeX commands.
 \subsection{Accessibility}
 \label{sec:accessibility}
 

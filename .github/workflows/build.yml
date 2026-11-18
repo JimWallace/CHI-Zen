@@ -2,7 +2,7 @@ name: Build
 
 # Builds the CHI Zen manual and the starter paper on every push and pull
 # request, the way students should compile them on Overleaf: LuaLaTeX on
-# TeX Live 2026 (see README.md). The PDFs are tagged (\DocumentMetadata), so
+# TeX Live 2026 (see the manual, Section "Overleaf Settings"). The PDFs are tagged (\DocumentMetadata), so
 # they are then validated with veraPDF against PDF/UA-2 (accessibility) and
 # PDF/A-4f (archiving). A second job checks that both documents still
 # compile with pdfLaTeX, Overleaf's default compiler.
@@ -95,7 +95,7 @@ jobs:
               echo "::error::$1 is not valid $2"; status=1
               /opt/verapdf/verapdf --flavour "$2" --format text -v --maxfailuresdisplayed 3 "$1" | head -60 || true
             else
-              echo "::warning::$1 is not valid $2 (known issue, see README.md)"
+              echo "::warning::$1 is not valid $2 (known issue: subcaption is not yet compatible with tagging)"
               /opt/verapdf/verapdf --flavour "$2" --format text -v --maxfailuresdisplayed 3 "$1" | head -60 || true
             fi
           }
