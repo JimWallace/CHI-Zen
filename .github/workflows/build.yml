@@ -39,6 +39,10 @@ jobs:
             00-my-new-paper.pdf
           if-no-files-found: error
 
+      - name: Show LaTeX errors on failure
+        if: failure()
+        run: grep -n -A8 -E '^!|^\./[^:]*:[0-9]+:' *.log || true
+
       - name: Upload logs on failure
         if: failure()
         uses: actions/upload-artifact@v4
