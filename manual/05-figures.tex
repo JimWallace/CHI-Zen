@@ -90,6 +90,199 @@ coordinates {(non-occluded, 2.10)  +- (.42,.42)};
 
 
 
+\begin{figure*}[tb!]
+%\centerline{
+%\includegraphics[width=1.75\columnwidth]{figures/gesture-agreement.png}}
+\begin{tikzpicture}
+\begin{small}
+\begin{axis}[IDEA stacked bar, 
+	bar width = 5pt,
+	% X Axis options (xmin, xmax, xtick={})
+    xtick={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34},
+    xticklabels={Play Song, Jump to Movie, Jump to Floor Level, Play Movie, Pause Song, Replay Song, Activate Search, Zoom In, Zoom Out, Favorite Item, Activate Search, Next Movie, Previous Movie, Pan Up, Pan Down, Pan Left, Pan Right, Jump to Flight, Jump to Store, Toggle View, Home Screen, Floor Up, Floor Down, Next Song, Previous Song, Page Left, Page Right, Reset Location, Clear Filter, Show Menu, Volume up, Volume Down, Filter Delayed Flights, Jump to Menu Item},
+    %xlabel={ },
+    %xlabel near ticks, 
+    xticklabel style={rotate=45,anchor=north east,font=\small},
+	% Y Axis options (ymin, ymax, ytick={})
+    ymin = 0, ymax = 1.0,
+    ylabel={Agreement Rate},
+    ytick={0,.25,.5,.75,1.0},
+    %general sizing options
+    width = \columnwidth,
+    height = 4cm,
+	enlarge x limits = {abs=0.25cm},
+    % legend
+    legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);},
+    legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 4, draw=none, column sep = 0.25cm},
+       ]
+
+
+
+    % DATA GOES IN HERE
+    
+
+    \addplot+[style={draw=ScienceDark,fill=ScienceDark}] plot coordinates {
+    (1,0.43)
+	(2,0.34)
+	(3,0.30)
+    (4, 0)
+	(5, 0)
+	(6, 0)
+	(7, 0)
+	(8, 0)
+	(9, 0)
+	(10, 0)
+	(11, 0)
+	(12,0)
+	(13,0)
+	(14,0)
+	(15,0)
+	(16,0)
+	(17,0)
+	(18,0)
+	(19,0)
+    (20, 0)
+	(21, 0)
+	(22, 0)
+	(23, 0)
+	(24, 0)
+	(25, 0)
+	(26, 0)
+	(27, 0)
+	(28, 0)
+	(29, 0)
+	(30, 0)
+	(31, 0)
+	(32, 0)
+	(33, 0)
+	(34, 0)
+};
+\addlegendentry{High ($0.3 - 0.5$)}
+    
+    \addplot+[style={draw=ScienceDark!75!white,fill=ScienceDark!75!white}] plot coordinates 
+{
+    (1,0)
+	(2,0)
+	(3,0)
+    (4, 0.26)
+	(5, 0.26)
+	(6, 0.23)
+	(7, 0.23)
+	(8, 0.21)
+	(9, 0.21)
+	(10, 0.20)
+	(11, 0.19)
+	(12,0.17)
+	(13,0.17)
+	(14,0.15)
+	(15,0.15)
+	(16,0.15)
+	(17,0.15)
+	(18,0.12)
+	(19,0.11)
+    (20, 0)
+	(21, 0)
+	(22, 0)
+	(23, 0)
+	(24, 0)
+	(25, 0)
+	(26, 0)
+	(27, 0)
+	(28, 0)
+	(29, 0)
+	(30, 0)
+	(31, 0)
+	(32, 0)
+	(33, 0)
+	(34, 0)
+};
+\addlegendentry{Medium ($0.1 - 0.3$)}
+    
+    \addplot+[style={draw=ScienceLight,fill=ScienceLight}] plot coordinates 
+{
+(1,0)
+	(2,0)
+	(3,0)
+    (4, 0)
+	(5, 0)
+	(6, 0)
+	(7, 0)
+	(8, 0)
+	(9, 0)
+	(10, 0)
+	(11, 0)
+	(12,0)
+	(13,0)
+	(14,0)
+	(15,0)
+	(16,0)
+	(17,0)
+	(18,0)
+	(19,0)
+    (20, 0.08)
+	(21, 0.06)
+	(22, 0.06)
+	(23, 0.06)
+	(24, 0.06)
+	(25, 0.06)
+	(26, 0.05)
+	(27, 0.05)
+	(28, 0.04)
+	(29, 0.03)
+	(30, 0.03)
+	(31, 0.03)
+	(32, 0.03)
+	(33, 0.02)
+	(34, 0.01)
+};
+\addlegendentry{Low ($\leq 0.1$)}
+\addplot+[style={draw=ArtsLight!60!white,fill=ArtsLight!60!white}] plot coordinates {
+    (1,0.03)
+	(2,0.04)
+	(3,0.03)
+	(4,0.34)
+	(5,0.27)
+	(6,0.16)
+	(7,0.17)
+	(8,0.59)
+	(9,0.59)
+	(10,0.37)
+	(11,0.21)
+	(12,0.55)
+	(13,0.55)
+	(14,0.35)
+	(15,0.35)
+	(16,0.35)
+	(17,0.35)
+	(18,0.61)
+	(19,0.38)
+    (20, 0.23)
+	(21, 0.37)
+	(22, 0.31)
+	(23, 0.31)
+	(24, 0.35)
+	(25, 0.35)
+	(26, 0.44)
+	(27, 0.44)
+	(28, 0.25)
+	(29, 0.40)
+	(30, 0.19)
+	(31, 0.34)
+	(32, 0.34)
+	(33, 0.16)
+	(34, 0.20)
+};
+\addlegendentry{Agreement by Type and Length}
+\end{axis}
+\end{small}
+\end{tikzpicture}
+
+\caption{Agreement Rates (AR) for suggested gestures in terms of its visual trace, by each of the 34 tasks included in our elicitation study. Gestures ranked by agreement rating, with Vatavu and Wobbrock's high, medium, and low  agreement categories indicated by color. Orange bars show agreement scores when gestures are placed within more general groups of type and length.}
+\label{fig:gesture-agreement}
+\end{figure*}
+
+
+
 
 
 \newpage
@@ -863,14 +1056,14 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
 
 
 
-\newpage
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Illustrating Scenarios: Rotograph}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \newpage
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Illustrating Scenarios: Rotograph}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-- You don't need to be an artist
-- take a picture, trace over it
-- often by far the most effective technique for simply demonstrating key concepts in your paper 
+% - You don't need to be an artist
+% - take a picture, trace over it
+% - often by far the most effective technique for simply demonstrating key concepts in your paper 
 
 
 
