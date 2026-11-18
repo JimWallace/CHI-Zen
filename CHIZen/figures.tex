@@ -389,7 +389,7 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
         ymajorgrids = true,
         major tick length = -5,
         %Legend
-        legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        legend style={at={(xlabel.south)},yshift=-0.5ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
         	%legend image code/.code={%
             %        \draw[#1,fill] circle (0.075cm);
             %    },
@@ -401,8 +401,8 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
   IDEA bar/.style={
-  	cycle list name = okabe-ito,
 	ybar = 0pt,
+  	cycle list name = okabe-ito,
         width  = \columnwidth,
         height = 6cm,
         	axis line style = very thin,
@@ -422,7 +422,7 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
         	ymajorgrids = true,
         	major tick length = 0,
         %Legend
-        	legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        	legend style={at={(xlabel.south)},yshift=-0.5ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
         	legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);}
 	}
 }
@@ -453,7 +453,7 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
         	ymajorgrids = true,
         	major tick length = 0,
         %Legend
-        	legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        	legend style={at={(xlabel.south)},yshift=-0.5ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
         	legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);}
 	}
 }
@@ -492,8 +492,8 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
   IDEA tufte panel/.style={
-  cycle list name = okabe-ito,
  ybar, 
+  cycle list name = okabe-ito,
 	% Generic Bar Graph Options
         width = 1.1\columnwidth,
         height = .325\columnwidth,
@@ -574,8 +574,8 @@ range frame/.style={
 \pgfplotsset{
   IDEA tufte box/.style={
 	% Colour Options
-	cycle list name = okabe-ito,
 	ybar = 0pt,
+	cycle list name = okabe-ito,
         width  = \columnwidth,
         height = 6cm,
         	axis line style = very thin,
@@ -629,8 +629,8 @@ range frame/.style={
 \pgfplotsset{
     IDEA box/.style={
     	% Colour Options
-	cycle list name = okabe-ito,
 	ybar = 0pt,
+	cycle list name = okabe-ito,
         width  = \columnwidth,
         height = 6cm,
         axis line style = very thin,
