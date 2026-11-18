@@ -81,7 +81,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \definecolor{RYB1}{RGB}{141, 211, 199}
-\definecolor{RYB2}{RGB}{255, 255, 179}
+\definecolor{RYB2}{RGB}{255, 255, 179} % NOTE: near-invisible on white (1.04:1); use colorbrewer-RYB (with outlines), not -plain
 \definecolor{RYB3}{RGB}{190, 186, 218}
 \definecolor{RYB4}{RGB}{251, 128, 114}
 \definecolor{RYB5}{RGB}{128, 177, 211}
@@ -154,6 +154,48 @@
 {MathDark!50!black,fill=MathDark},
 {ScienceDark!50!black,fill=ScienceDark},
 {SchoolRedDark!50!black,fill=SchoolRedDark},
+}
+
+
+%%%%%%%%%%%%%%%%%%%%
+% GREYSCALE / COLOUR-BLIND NOTES (relative luminance, WCAG 2 formula)
+%   None of the categorical palettes above is greyscale-safe: some colours
+%   have almost the same luminance and print as the same grey, e.g.
+%     waterloo-light: ArtsLight .336 vs SchoolRedLight .343,
+%                     MathLight .441 vs ScienceLight .449
+%     waterloo-dark:  AHS, Arts, Environment, Science and Math are all .17-.19
+%     colorbrewer-RYB: RYB1 .564 vs RYB6 .544; RYB2 (.960) is almost white.
+%   The colours are kept as they are because published figures use them.
+%   For colour-blind readers use okabe-ito below; for black-and-white print,
+%   also vary marks, dash patterns or hatching, or label series directly.
+%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%
+% OKABE-ITO PALETTE - colour-blind safe (Okabe & Ito, "Color Universal Design")
+%   Distinguishable with the common forms of colour blindness, but NOT in
+%   greyscale (OkabeItoOrange .416 vs OkabeItoSkyBlue .405). OkabeItoYellow
+%   is light on white (1.32:1), so the cycle list gives every fill a darker
+%   outline, like the palettes above.
+%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{OkabeItoOrange}{RGB}{230, 159, 0}
+\definecolor{OkabeItoSkyBlue}{RGB}{86, 180, 233}
+\definecolor{OkabeItoBluishGreen}{RGB}{0, 158, 115}
+\definecolor{OkabeItoYellow}{RGB}{240, 228, 66}
+\definecolor{OkabeItoBlue}{RGB}{0, 114, 178}
+\definecolor{OkabeItoVermillion}{RGB}{213, 94, 0}
+\definecolor{OkabeItoReddishPurple}{RGB}{204, 121, 167}
+\definecolor{OkabeItoBlack}{RGB}{0, 0, 0}
+
+\pgfplotscreateplotcyclelist{okabe-ito}{
+{OkabeItoOrange!50!black,fill=OkabeItoOrange},
+{OkabeItoSkyBlue!50!black,fill=OkabeItoSkyBlue},
+{OkabeItoBluishGreen!50!black,fill=OkabeItoBluishGreen},
+{OkabeItoYellow!50!black,fill=OkabeItoYellow},
+{OkabeItoBlue!50!black,fill=OkabeItoBlue},
+{OkabeItoVermillion!50!black,fill=OkabeItoVermillion},
+{OkabeItoReddishPurple!50!black,fill=OkabeItoReddishPurple},
+{OkabeItoBlack,fill=OkabeItoBlack},
 }
 
 

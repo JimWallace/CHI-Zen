@@ -37,6 +37,21 @@ The following sections are framed in terms of problem/solution for common types 
 % - axes start at 0, unless explicitly justified (for a good reason!)
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Colour Palettes}
+\label{sec:palettes}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\texttt{CHIZen/figures.tex} defines several palettes as PGFPlots cycle lists (\texttt{cycle list name=...}): \texttt{waterloo-light} (the default for the bar and box plot styles), \texttt{waterloo-dark}, \texttt{colorbrewer-RYB}, \texttt{colorbrewer-RYB-plain}, \texttt{okabe-ito}, and \texttt{IDEA lines} (the default for \texttt{IDEA line}), plus the divergent Likert colours. To \emph{get it right in black and white}, keep in mind that:
+
+\begin{itemize}
+    \item \textbf{None of the categorical palettes is greyscale-safe.} In \texttt{waterloo-light}, ArtsLight and SchoolRedLight, and MathLight and ScienceLight, print as almost the same grey; most of \texttt{waterloo-dark} prints as one mid grey; and \texttt{colorbrewer-RYB} has pairs of near-identical lightness too. In greyscale, tell series apart with marks, dash patterns, or direct labels as well as colour (\texttt{IDEA lines} varies all three).
+    \item \textbf{RYB2 (pale yellow) is almost invisible on white.} Use \texttt{colorbrewer-RYB}, which draws a darker outline around each fill, rather than \texttt{colorbrewer-RYB-plain}.
+    \item \textbf{For colour-blind readers, use \texttt{okabe-ito}}, the Okabe--Ito palette, which stays distinguishable with the common forms of colour blindness. It is not greyscale-safe either, so the same advice about marks and labels applies.
+\end{itemize}
+
+
+
 
 
 
