@@ -23,7 +23,7 @@ However, as hinted at above, \LaTeX\ also isn't perfect, and so this project emb
 
 3. Illustrating: Several commonly-used \LaTeX\ packages are automatically included, for tasks like creating figures and tables, documenting code, and referencing
 
-4. Revising: The \texttt{changes} package helps authors to show revisions to their work when working within the ACM's Revise \& Resubmit model
+4. Revising: The \texttt{changes} package helps authors to show revisions to their work when working within the ACM's Revise \\& Resubmit model
 
 5. Many (optional) in-text shortcuts are also included, for tasks like reporting statistics, defining colour palettes, and including alternative languages. They are there if you need them, and easy to ignore if you don't. 
 
@@ -52,14 +52,48 @@ All of the examples in this document use those templates, which are now wrapped 
 
 ## Tracking Changes
 
-Since SIG CHI has begun transitioning its conferences to the *Proceedings of the ACM* model, most involve some form of Revise \& Resubmit. That is, you should expect to take reviewer feedback into consideration and submit an updated version of your paper for a second round of review. When doing so, conferences typically ask for a marked-up version of the paper that shows where changes have been made.  To track changes in \LaTeX, we use the \texttt{changes} package. It provides a few simple functions to track anything that you've \texttt{added()}, \texttt{deleted()}, or \texttt{replaced} in the paper. 
+Since SIG CHI has begun transitioning its conferences to the *Proceedings of the ACM* model, most involve some form of Revise \\& Resubmit. That is, you should expect to take reviewer feedback into consideration and submit an updated version of your paper for a second round of review. When doing so, conferences typically ask for a marked-up version of the paper that shows where changes have been made.  To track changes in \LaTeX, we use the \texttt{changes} package. It provides a few simple functions to track anything that you've \texttt{added()}, \texttt{deleted()}, or \texttt{replaced} in the paper. 
 
-
-
-## Accessibility
-A perennial to-do list item, and a terrible gap in academic writing. I'm currently exploring the \texttt{accessibility} package to provide some support, but it is not (yet) working with this template. We clearly need to spend more time on this over the next writing cycles.
-
-Unfortunately, the \href{https://chi2021.acm.org/for-authors/presenting/papers/guide-to-an-accessible-submission}{CHI 2021 Guide to an Accessible Submission} does not yet provide any additional resources for writing in \LaTeX. 
 
 
 \end{markdown}
+
+% Written in LaTeX rather than Markdown because it shows LaTeX commands.
+\subsection{Overleaf Settings}
+\label{sec:overleaf}
+
+CHI Zen uses the \texttt{acmart} class that comes with TeX Live (it is no longer copied into the project), and its documents produce a tagged, accessible PDF. Set these once per Overleaf project, under Menu, Settings:
+\begin{itemize}
+    \item \textbf{Compiler: LuaLaTeX.} The \LaTeX\ tagging code and \texttt{acmart} need LuaLaTeX for a fully tagged PDF. pdfLaTeX still compiles the documents, but the tags are less complete.
+    \item \textbf{TeX Live version: 2026 or later.} On an older TeX Live, comment out the \texttt{\textbackslash DocumentMetadata} block at the top of the main file.
+    \item \textbf{Main document:} \texttt{00-my-new-paper.tex} for your paper, or \texttt{CHIZen-Manual.tex} for this manual (formerly \texttt{CHIZen-Manual-chi2022.tex}).
+\end{itemize}
+With LuaLaTeX, shell escape is not needed (\texttt{minted} runs \texttt{latexminted}, which TeX Live allows, and \texttt{markdown} runs its Lua code directly); pdfLaTeX needs it for \texttt{markdown}, and Overleaf turns it on anyway. References use \texttt{biblatex} with ACM's \texttt{acmnumeric} style and biber, which Overleaf runs automatically. The \texttt{latexmkrc} file sets the same options for local builds with \texttt{latexmk}.
+
+% Written in LaTeX rather than Markdown because it shows LaTeX commands.
+\subsection{Accessibility}
+\label{sec:accessibility}
+
+Accessibility used to be a perennial to-do item for \LaTeX\ papers: the \texttt{accessibility} package never worked with this template, and the SIGCHI guide had no \LaTeX\ advice beyond figure descriptions. That has changed. The \LaTeX\ Project's tagging project now produces tagged PDF, and \texttt{acmart} supports it (since v2.17). CHI Zen turns it on for you.
+
+\paragraph{What CHI asks for.} The CHI 2027 publication formats page states that ``The CHI conference committee requests that authors ensure basic accessibility of their submissions'', and points to the SIGCHI \href{https://sigchi.org/resources/guides-for-authors/accessibility/}{Accessibility Guide for Authors} (last updated 2024-08-15). For the camera-ready version, CHI 2025 told authors that ``An external provider will tag TAPS-produced PDFs for accessibility; however, authors must provide meaningful alt text for figures in their source files and on PCS.'' The SIGCHI guide's rules are:
+\begin{itemize}
+    \item ``Mark up content such as headings and lists'': use \texttt{\textbackslash section}, \texttt{itemize}, \texttt{enumerate}, \texttt{figure} and \texttt{table}, not bold text or manual numbering.
+    \item ``Provide a text description for all figures.'' In \LaTeX, ``you can use the \texttt{\textbackslash Description\{...\}} tag to add an image description.'' ``Figure descriptions are different to figure captions'': they ``are an alternative to seeing the figure'' and should not ``simply repeat the caption.'' The SIGACCESS \href{https://www.sigaccess.org/welcome-to-sigaccess/resources/describing-figures/}{Guide to Describing Figures} explains how to write them.
+    \item ``Don't rely only on colour'': in figures and legends, ``use different shapes and patterns to provide another way to visually distinguish elements.''
+    \item ``Create every table as a real table, not an image, and indicate which cells are headers.''
+    \item ``Create every equation as a marked-up equation, not an image of an equation.''
+    \item ``Set the metadata of your document'': its title and language.
+\end{itemize}
+
+\paragraph{What CHI Zen does.} The first line of \texttt{00-my-new-paper.tex} is a \texttt{\textbackslash DocumentMetadata} block that asks for a tagged PDF meeting PDF/UA-2 (the accessibility standard) and PDF/A-4f (the archival standard), in English. Compile with LuaLaTeX on TeX Live 2026 or later (on Overleaf: Menu, Settings, Compiler). The PDF then gets its headings, lists, tables, links, title and language tagged automatically, and the title you give \texttt{\textbackslash title} becomes the document title that screen readers announce. Note the difference: PDF/UA is about \emph{access}, PDF/A about \emph{preservation}; a PDF/A file is not accessible unless it is also tagged.
+
+\paragraph{What you still have to do.}
+\begin{enumerate}
+    \item \textbf{Describe every figure.} Put \texttt{\textbackslash Description\{...\}} as the first line of each \texttt{figure} and \texttt{figure*}. \texttt{acmart} sends it to TAPS for the HTML version; CHI Zen also uses it as the PDF alt text of the first picture in that figure. Write it from the data: the chart type, the axes and their ranges, and the values or trends a reader needs (every figure in this manual has one; look at the source of \autoref{fig:bargraph}). If a figure has a picture but no description, the log shows a \texttt{CHIZen Warning}.
+    \item \textbf{Mark the header rows of tables.} \texttt{acmart} assumes the first row of a \texttt{tabular} holds the column headers. If your table has two header rows, say so before it with \texttt{\textbackslash tagpdfsetup\{table/header-rows=\{1,2\}\}}. Keep every row the same width: add empty cells (\texttt{\&}) rather than ending a row early.
+    \item \textbf{Write meaningful link text}, such as ``the \href{https://sigchi.org/resources/guides-for-authors/accessibility/}{SIGCHI Accessibility Guide}'' rather than ``click here''.
+    \item \textbf{Get it right in black and white}: pair colour with labels, shapes or patterns, and check contrast.
+    \item \textbf{Avoid subfigures} (\texttt{subcaption}) if you need a fully valid PDF/UA file: the tagging project lists \texttt{subcaption} as not yet compatible, and figures with subfigures fail PDF/UA validation, so this manual shows related plots as separate figures. Packages such as \texttt{minted} (code) and \texttt{changes} (tracked changes) compile but are not yet tagged meaningfully.
+    \item \textbf{Check the PDF.} The free \href{https://verapdf.org}{veraPDF} validator checks PDF/UA and PDF/A, and this repository's GitHub workflow runs it on every push. A validator cannot judge whether a description is useful: read your descriptions aloud, or listen to the paper with a screen reader.
+\end{enumerate}

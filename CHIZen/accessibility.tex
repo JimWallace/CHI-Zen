@@ -1,0 +1,100 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  ACCESSIBILITY
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Tagged PDF (PDF/UA-2) and archival PDF (PDF/A-4f) are switched on by the
+% \DocumentMetadata{...} block at the very top of the main .tex file, not
+% here: it has to come before \documentclass. Compile with LuaLaTeX.
+%
+% ALT TEXT. Write ONE \Description{...} per figure (or subfigure), as the
+% first thing inside the environment, before the picture:
+%
+%   \begin{figure}
+%     \Description{A bar chart of ... Tiltcasting is fastest ...}
+%     \begin{tikzpicture} ... \end{tikzpicture}
+%     \caption{...}
+%   \end{figure}
+%
+% acmart sends \Description to ACM's TAPS, which puts it in the HTML
+% version of the paper. With tagging on, CHI Zen also uses it as the PDF
+% alt text of the first tikzpicture or \includegraphics that follows in
+% the same environment; any further pictures in that environment are
+% marked as decoration (artifacts), so a screen reader reads the
+% description once. You can still give a picture its own alt text with
+% \begin{tikzpicture}[alt={...}] or \includegraphics[alt={...}]{...}, and
+% mark a purely decorative one with [artifact].
+%
+% A figure that contains a picture but no \Description gets a warning in
+% the log, because CHI asks for a description of every figure.
+%
+% Without \DocumentMetadata (an old TeX Live, or pdfLaTeX without tagging)
+% all of this quietly does nothing beyond acmart's own \Description.
+%
+
+\makeatletter
+
+\newif\ifchizen@alt          % a \Description is waiting for its picture
+\newif\ifchizen@picture      % this float contains a picture
+\newif\ifchizen@described    % this float has a \Description
+\def\chizen@alt{}
+
+% Keep acmart's \Description (which records the text for TAPS) and also
+% remember the text for the next picture.
+\NewCommandCopy\chizen@acm@Description\Description
+\RenewDocumentCommand\Description{O{}m}{%
+  \chizen@acm@Description[#1]{#2}%
+  \global\chizen@describedtrue
+  \def\chizen@alt{#2}%
+  \chizen@alttrue
+  \ignorespaces}
+
+\IfDocumentMetadataT{%
+  % tikz: the first picture after a \Description gets it as alt text, the
+  % rest of the pictures in the float are artifacts.
+  \AddToHook{env/tikzpicture/before}{%
+    \global\chizen@picturetrue
+    \ifchizen@alt
+      \edef\chizen@tmp{\noexpand\tikzset{alt={\unexpanded\expandafter{\chizen@alt}}}}%
+      \chizen@tmp
+    \fi}%
+  \AddToHook{env/tikzpicture/after}{%
+    \ifchizen@alt
+      \chizen@altfalse
+      \tikzset{artifact}%
+    \fi}%
+  % pgfgantt draws its own tikzpicture
+  \AddToHook{env/ganttchart/before}{\global\chizen@picturetrue}%
+  % \includegraphics: same idea, using graphicx's alt key
+  \AddToHook{cmd/includegraphics/before}{%
+    \global\chizen@picturetrue
+    \ifchizen@alt
+      \edef\chizen@tmp{\noexpand\SetKeys[tag/graphic]{alt={\unexpanded\expandafter{\chizen@alt}}}}%
+      \chizen@tmp
+      \chizen@altfalse
+    \fi}%
+}
+
+% PDF/A: acmart defines its colours (e.g. the link colours of the `screen'
+% option) in CMYK, and PDF/A forbids DeviceCMYK without a CMYK output
+% intent. Redefine them in RGB.
+\IfDocumentMetadataT{%
+  \@for\chizen@c:=ACMBlue,ACMYellow,ACMOrange,ACMRed,ACMLightBlue,ACMGreen,ACMPurple,ACMDarkBlue\do{%
+    \colorlet{\chizen@c}[rgb]{\chizen@c}}%
+}
+
+% Warn about figures with a picture but no \Description.
+\def\chizen@check@description#1{%
+  \ifchizen@picture\ifchizen@described\else
+    \PackageWarning{CHIZen}{A #1 on page \thepage\space has no
+      \string\Description{...}.\MessageBreak
+      CHI asks for alt text for every figure: see the\MessageBreak
+      SIGCHI Accessibility Guide for Authors}%
+  \fi\fi
+  \global\chizen@picturefalse
+  \global\chizen@describedfalse}
+\AddToHook{env/figure/begin}{\global\chizen@picturefalse\global\chizen@describedfalse}
+\AddToHook{env/figure*/begin}{\global\chizen@picturefalse\global\chizen@describedfalse}
+\AddToHook{env/figure/end}{\chizen@check@description{figure}}
+\AddToHook{env/figure*/end}{\chizen@check@description{figure}}
+
+\makeatother

@@ -6,8 +6,17 @@
 
 
 % Katja's dashed lines in table stuff
-\usepackage{arydshln}
+% arydshln rewrites LaTeX's table code and breaks the table structure in a
+% tagged PDF (rows get the wrong number of cells, which fails PDF/UA), see
+% https://latex3.github.io/tagging-project/tagging-status/ . So it is only
+% loaded when tagging is off; with tagging on, \cdashlinelr{2-4} draws a
+% solid booktabs \cmidrule instead, and \hdashline/\cdashline are not
+% available.
 \makeatletter
+\IfDocumentMetadataTF{%
+\newcommand{\cdashlinelr}[1]{\cmidrule(lr){#1}}
+}{%
+\usepackage{arydshln}
 \def\adl@drawiv#1#2#3{%
 	\hskip.5\tabcolsep
 	\xleaders#3{#2.5\@tempdimb #1{1}#2.5\@tempdimb}%
@@ -20,4 +29,5 @@
 	\cdashline{#1}
 	\noalign{\global\let\adl@draw\@dashdrawstore
 		\vskip\belowrulesep}}
+}
 \makeatother
