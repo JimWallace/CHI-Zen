@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "chizen",
+  "displayName": "CHI Zen",
+  "description": "The Waterloo HCI lab's style guide for LaTeX research papers (ACM acmart, pgfplots): authoring rules for figures, tables, statistics, qualitative reporting, ethics and citations; the check_paper.py linter; and four read-only reviewer agents run by the review skill.",
+  "author": {
+    "name": "James R. Wallace",
+    "url": "https://github.com/JimWallace"
+  },
+  "homepage": "https://github.com/JimWallace/CHI-Zen",
+  "repository": "https://github.com/JimWallace/CHI-Zen",
+  "keywords": ["hci", "latex", "acmart", "pgfplots", "style-guide", "academic-writing", "chi"]
+}
