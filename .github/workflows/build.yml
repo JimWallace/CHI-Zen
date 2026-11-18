@@ -41,7 +41,7 @@ jobs:
 
       - name: Show LaTeX errors on failure
         if: failure()
-        run: grep -n -A8 -E '^!|^\./[^:]*:[0-9]+:' *.log || true
+        run: grep -n -A8 -E '^!|^[^ ]+:[0-9]+: ' *.log || true
 
       - name: Upload logs on failure
         if: failure()
