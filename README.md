@@ -10,8 +10,8 @@ class that SIGCHI conferences use. The repository holds two documents:
 | `CHIZen/init.tex` | Loads the CHI Zen packages: `text`, `figures`, `tables`, `stats`, `accessibility`. |
 
 `acmart` is **not** copied into this repository any more: both documents use the
-`acmart` class and `ACM-Reference-Format.bst` that come with TeX Live (and so
-with Overleaf).
+`acmart` class and its biblatex styles (`acmnumeric`, run with biber) that come
+with TeX Live (and so with Overleaf).
 
 ## Overleaf settings
 

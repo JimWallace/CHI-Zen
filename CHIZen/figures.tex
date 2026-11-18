@@ -81,7 +81,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \definecolor{RYB1}{RGB}{141, 211, 199}
-\definecolor{RYB2}{RGB}{255, 255, 179}
+\definecolor{RYB2}{RGB}{255, 255, 179} % NOTE: near-invisible on white (1.04:1); use colorbrewer-RYB (with outlines), not -plain
 \definecolor{RYB3}{RGB}{190, 186, 218}
 \definecolor{RYB4}{RGB}{251, 128, 114}
 \definecolor{RYB5}{RGB}{128, 177, 211}
@@ -154,6 +154,48 @@
 {MathDark!50!black,fill=MathDark},
 {ScienceDark!50!black,fill=ScienceDark},
 {SchoolRedDark!50!black,fill=SchoolRedDark},
+}
+
+
+%%%%%%%%%%%%%%%%%%%%
+% GREYSCALE / COLOUR-BLIND NOTES (relative luminance, WCAG 2 formula)
+%   None of the categorical palettes above is greyscale-safe: some colours
+%   have almost the same luminance and print as the same grey, e.g.
+%     waterloo-light: ArtsLight .336 vs SchoolRedLight .343,
+%                     MathLight .441 vs ScienceLight .449
+%     waterloo-dark:  AHS, Arts, Environment, Science and Math are all .17-.19
+%     colorbrewer-RYB: RYB1 .564 vs RYB6 .544; RYB2 (.960) is almost white.
+%   The colours are kept as they are because published figures use them.
+%   For colour-blind readers use okabe-ito below; for black-and-white print,
+%   also vary marks, dash patterns or hatching, or label series directly.
+%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%
+% OKABE-ITO PALETTE - colour-blind safe (Okabe & Ito, "Color Universal Design")
+%   Distinguishable with the common forms of colour blindness, but NOT in
+%   greyscale (OkabeItoOrange .416 vs OkabeItoSkyBlue .405). OkabeItoYellow
+%   is light on white (1.32:1), so the cycle list gives every fill a darker
+%   outline, like the palettes above.
+%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{OkabeItoOrange}{RGB}{230, 159, 0}
+\definecolor{OkabeItoSkyBlue}{RGB}{86, 180, 233}
+\definecolor{OkabeItoBluishGreen}{RGB}{0, 158, 115}
+\definecolor{OkabeItoYellow}{RGB}{240, 228, 66}
+\definecolor{OkabeItoBlue}{RGB}{0, 114, 178}
+\definecolor{OkabeItoVermillion}{RGB}{213, 94, 0}
+\definecolor{OkabeItoReddishPurple}{RGB}{204, 121, 167}
+\definecolor{OkabeItoBlack}{RGB}{0, 0, 0}
+
+\pgfplotscreateplotcyclelist{okabe-ito}{
+{OkabeItoOrange!50!black,fill=OkabeItoOrange},
+{OkabeItoSkyBlue!50!black,fill=OkabeItoSkyBlue},
+{OkabeItoBluishGreen!50!black,fill=OkabeItoBluishGreen},
+{OkabeItoYellow!50!black,fill=OkabeItoYellow},
+{OkabeItoBlue!50!black,fill=OkabeItoBlue},
+{OkabeItoVermillion!50!black,fill=OkabeItoVermillion},
+{OkabeItoReddishPurple!50!black,fill=OkabeItoReddishPurple},
+{OkabeItoBlack,fill=OkabeItoBlack},
 }
 
 
@@ -251,6 +293,26 @@
 
 \pgfplotscreateplotcyclelist{avatar}{Cleric_0, Monster_0}
 
+%%%%%%%%%%%%%%%%%%%%
+% LINE GRAPHS - default for IDEA line
+%   Each series differs in colour, dash pattern AND mark, so lines can be told
+%   apart when printed in black and white. Colours are the Okabe-Ito palette
+%   (colour-blind safe), ordered darkest first so thin lines stay visible;
+%   OkabeItoYellow is left out because a thin yellow line on white is too
+%   faint (1.32:1). Marks are always drawn solid. For dense data (e.g.,
+%   monthly counts) add `no markers' to the axis and rely on the dash patterns.
+%%%%%%%%%%%%%%%%%%%%
+
+\pgfplotscreateplotcyclelist{IDEA lines}{
+{OkabeItoBlue, solid, mark=*, mark options={solid}},
+{OkabeItoVermillion, dashed, mark=square*, mark options={solid}},
+{OkabeItoBluishGreen, dotted, mark=triangle*, mark options={solid}},
+{OkabeItoReddishPurple, dashdotted, mark=diamond*, mark options={solid}},
+{OkabeItoOrange, densely dashed, mark=o, mark options={solid}},
+{OkabeItoSkyBlue, densely dotted, mark=square, mark options={solid}},
+{OkabeItoBlack, loosely dashed, mark=triangle, mark options={solid}},
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Outer South Legend Hack
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -311,10 +373,9 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
   IDEA line/.style={
- 	cycle list name = avatar,
+ 	cycle list name = IDEA lines,
         width  = \columnwidth,
         height = 6cm,
-        line width=10pt,
         	axis line style = very thin,
         font = \sffamily,
         % X Axis
@@ -328,7 +389,7 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
         ymajorgrids = true,
         major tick length = -5,
         %Legend
-        legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        legend style={at={(xlabel.south)},yshift=-0.5ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
         	%legend image code/.code={%
             %        \draw[#1,fill] circle (0.075cm);
             %    },
@@ -340,8 +401,8 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
   IDEA bar/.style={
-  	cycle list name = waterloo-light,
 	ybar = 0pt,
+  	cycle list name = okabe-ito,
         width  = \columnwidth,
         height = 6cm,
         	axis line style = very thin,
@@ -350,18 +411,18 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
         	% X Axis
         	major x tick style = transparent,
         	enlarge x limits = {abs=1.5cm},
-	xlabel={a},
+        	% No default xlabel/ylabel: set them in each figure. The legend is
+        	% anchored below the x label (node `xlabel'), so set an xlabel.
         	xlabel style={name=xlabel},
 	% Y Axis
         	ymajorgrids = true,
-        	ylabel = {Selection Time (s)},
         	scaled y ticks = false,
         	separate axis lines,
 	axis lines* = left,
         	ymajorgrids = true,
         	major tick length = 0,
         %Legend
-        	legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        	legend style={at={(xlabel.south)},yshift=-0.5ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
         	legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);}
 	}
 }
@@ -372,7 +433,7 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 \pgfplotsset{
   IDEA stacked bar/.style={
   	ybar stacked,
-  	cycle list name = waterloo-light,
+  	cycle list name = okabe-ito,
         width  = \columnwidth,
         height = 6cm,
         	axis line style = very thin,
@@ -381,18 +442,18 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
         	% X Axis
         	major x tick style = transparent,
         	enlarge x limits = {abs=1.5cm},
-	xlabel={a},
+        	% No default xlabel/ylabel: set them in each figure. The legend is
+        	% anchored below the x label (node `xlabel'), so set an xlabel.
         	xlabel style={name=xlabel},
 	% Y Axis
         	ymajorgrids = true,
-        	ylabel = {Selection Time (s)},
         	scaled y ticks = false,
         	separate axis lines,
 	axis lines* = left,
         	ymajorgrids = true,
         	major tick length = 0,
         %Legend
-        	legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
+        	legend style={at={(xlabel.south)},yshift=-0.5ex, xshift=-2ex, anchor=north, legend columns = 3, draw=none, column sep = 0.25cm},
         	legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);}
 	}
 }
@@ -408,7 +469,7 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
        	bar width=5pt,
         	% X Axis
         	%major x tick style = transparent,
-	xlabel={a},
+        	% No default xlabel: set it in each figure (the legend is anchored below it).
         	xlabel style={name=xlabel},
 	xtick = {},
 	font = \sffamily,
@@ -431,8 +492,8 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
   IDEA tufte panel/.style={
-  cycle list name = waterloo-light,
  ybar, 
+  cycle list name = okabe-ito,
 	% Generic Bar Graph Options
         width = 1.1\columnwidth,
         height = .325\columnwidth,
@@ -474,48 +535,13 @@ range frame/.style={
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   Tufte Dot Dash 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\pgfplotsset{
-  dot dash plot/.style={
-    tufte scatter
-    axis line style={opacity=0},
-    tick style={thin, black},
-    major tick length=0.15cm,
-    xtick=data,
-    xticklabels={},
-    ytick=data,
-    yticklabels={},
-    extra x ticks={
-      \pgfplotsdataxmin,
-      \pgfplotsdataxmax
-    },
-    extra y ticks={
-      \pgfplotsdataymin,
-      \pgfplotsdataymax
-    },
-    extra tick style={
-      xticklabel={\pgfmathprintnumber[
-        fixed,
-        fixed zerofill,
-        precision=1
-      ]{\tick}},
-      yticklabel={\pgfmathprintnumber[
-        fixed,
-        fixed zerofill,
-        precision=1
-]{\tick}} }
-} }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Tufte Box Plot 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
   IDEA tufte box/.style={
 	% Colour Options
-	cycle list name = waterloo-light,
 	ybar = 0pt,
+	cycle list name = okabe-ito,
         width  = \columnwidth,
         height = 6cm,
         	axis line style = very thin,
@@ -569,8 +595,8 @@ range frame/.style={
 \pgfplotsset{
     IDEA box/.style={
     	% Colour Options
-	cycle list name = waterloo-light,
 	ybar = 0pt,
+	cycle list name = okabe-ito,
         width  = \columnwidth,
         height = 6cm,
         axis line style = very thin,

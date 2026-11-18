@@ -23,10 +23,15 @@
 %%   non-anonymous submission:  \documentclass[manuscript,review]{acmart}
 %%   publication (camera-ready, after acceptance): \documentclass[sigconf]{acmart}
 %% Always check the current year's call for papers before you submit.
-\documentclass[manuscript,review,anonymous]{acmart}
+%% natbib=false is ours, not CHI's: this template uses biblatex (see below).
+\documentclass[manuscript,review,anonymous,natbib=false]{acmart}
 
 % Turn on the CHIZen features
 \input{CHIZen/init.tex}
+
+% References: biblatex with ACM's styles (acmnumeric, or acmauthoryear), run with biber.
+\usepackage[datamodel=acmdatamodel, style=acmnumeric, backend=biber]{biblatex}
+\addbibresource{submission/bibliography.bib}
 
 
 %%
@@ -171,11 +176,8 @@ Hello, World!
 
 %\input{submission/09-acknowledgements.tex}
 
-%%
-%% The bibliography. Uncomment once you cite something (BibTeX stops with
-%% an error while the .bib file is empty or nothing is cited).
-%\bibliographystyle{ACM-Reference-Format}
-%\bibliography{submission/bibliography}
+\newpage
+\printbibliography
 
 %\input{submission/11-appendix.tex}
 

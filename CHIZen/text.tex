@@ -43,7 +43,7 @@
 % This package is useful for revisions! 
 \usepackage{savesym}
 \savesymbol{comment}
-\let\comment\undefined % changes v4 refuses to load if \comment exists, even as \relax
+\let\comment\undefined % savesym leaves \comment as \relax, which changes v4 treats as defined
 \usepackage{changes}
 %\usepackage[final]{changes}
 \restoresymbol{SC}{comment}
