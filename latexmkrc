@@ -8,7 +8,7 @@
 # file: Menu > Settings > Compiler > LuaLaTeX, and TeX Live version 2026 or
 # later. See the manual, Section "Overleaf Settings".
 $pdf_mode = 4;          # 4 = lualatex
-$bibtex_use = 2;        # run biber/BibTeX when needed, delete .bbl on clean
+$bibtex_use = 2;        # run BibTeX when needed, delete .bbl on clean
 
 # With LuaLaTeX, -shell-escape is not needed: minted runs `latexminted',
 # which TeX Live allows in restricted shell escape, and markdown runs its Lua
