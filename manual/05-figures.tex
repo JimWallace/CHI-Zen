@@ -383,7 +383,6 @@ Treatment    Z0_posaffect    Z0_negaffect    Z0_attentive    Z1_posaffect    Z1_
 }\SZU
 
 \begin{figure}[b!]
-\begin{subfigure}{.45\textwidth}
 \Description{Two box plots of z-scores at Baseline, Stressor and Game, each with Nature (green) and Urban (orange) boxes side by side. Heart rate: medians rise from about -0.3 at Baseline to about 0.6 at Stressor and fall to about -0.6 during the Game in both conditions. Galvanic skin response: medians rise from about -1.0 at Baseline to about 0.3 at Stressor and are about 0.1 (Nature) and 0.2 (Urban) during the Game. Nature and Urban boxes overlap at every stage.}
 \begin{tikzpicture}
 \begin{axis}[
@@ -527,12 +526,11 @@ table[y=P2_GSR] {\SPU};
         |[fill=Nature]| & |[font=\small\sffamily]|Nature & |[fill=white]| & |[fill=Urban]| & |[font=\small\sffamily]|Urban \\
     };
 \end{tikzpicture}
-\caption{A summary of Heart Rate and Galvanic Skin Response data collected during the study. Our analysis revealed a significant increase between Baseline and Stressor data, and a significant decrease between Stressor and Game data for both measures.}
+\caption{A summary of Heart Rate and Galvanic Skin Response data collected during the study. Our analysis revealed a significant increase between Baseline and Stressor data, and a significant decrease between Stressor and Game data for both measures, as anticipated from our experimental design. We found no significant differences between the Nature and Urban game settings.}
 \label{fig:physio}
+\end{figure}
 
-\end{subfigure}
-\hfill
-\begin{subfigure}{.45\textwidth}
+\begin{figure}[b!]
 \Description{Three box plots of self-reported ratings on a 1 to 5 scale at Baseline, Stressor and Game, each with Nature (green) and Urban (orange) boxes side by side. Positive affect: medians drop at Stressor (Nature from about 2.8 to 1.8, Urban from 3.0 to 1.4) and recover during the Game (about 2.4 and 3.3). Negative affect: medians rise at Stressor (Nature from about 1.1 to 1.7, Urban from 1.1 to 2.3) and return to about 1.1 during the Game. Attentiveness: medians are about 3.0, 2.3 and 3.0 for Nature and 3.5, 3.0 and 2.8 for Urban. Nature and Urban boxes overlap at every stage.}
 \begin{tikzpicture}
 \begin{axis}[
@@ -717,14 +715,8 @@ table[y=Z2_attentive] {\SZN};
    
 \end{axis}
 \end{tikzpicture}
-\caption{A summary of Positive Affect, Negative Affect, and Attentiveness self-reported ratings collected during the study. All measures were aggregated across 5-point Likert scale questions from the ZIPERS questionnaire.}
+\caption{A summary of Positive Affect, Negative Affect, and Attentiveness self-reported ratings collected during the study. All measures were aggregated across 5-point Likert scale questions from the ZIPERS questionnaire. As with the physiological measures (\autoref{fig:physio}), stress increased after the Stressor math test and decreased during gameplay, and we found no significant differences between the Nature and Urban game settings.}
 \label{fig:selfreports}
-
-\end{subfigure}
-\caption{Summary of physiological (\autoref{fig:physio}) and self-reported (\autoref{fig:selfreports}) dependent measures collected during our experiment. For both sets of measures, we observed the anticipated increase in stress following the Stressor math test followed by a decrease during gameplay. These trends are indicative of our experimental design working as intended. However, we found no significant differences between the Nature and Urban game settings for any of our measures.}
-\label{fig:summary}
-
-
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

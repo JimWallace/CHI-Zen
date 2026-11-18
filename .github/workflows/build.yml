@@ -80,10 +80,8 @@ jobs:
           java -jar verapdf-installer/*/verapdf-izpack-installer-*.jar auto-install.xml
           /opt/verapdf/verapdf --version
 
-      # The starter paper must validate. The manual must be PDF/A-4f; it is
-      # known to fail two PDF/UA rules on its two figures with subfigures
-      # (subcaption is not yet compatible with tagging), so its PDF/UA
-      # result is reported but does not fail the build.
+      # Both documents must validate as PDF/UA-2 and PDF/A-4f. (Avoid
+      # subfigures: subcaption is not yet compatible with tagging.)
       - name: Validate with veraPDF (PDF/UA-2, PDF/A-4f)
         if: matrix.engine == 'lualatex'
         run: |
@@ -101,7 +99,7 @@ jobs:
           }
           check 00-my-new-paper.pdf ua2 required
           check 00-my-new-paper.pdf 4f  required
-          check CHIZen-Manual.pdf   ua2 report
+          check CHIZen-Manual.pdf   ua2 required
           check CHIZen-Manual.pdf   4f  required
           exit $status
 

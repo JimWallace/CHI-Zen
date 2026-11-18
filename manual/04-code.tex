@@ -14,9 +14,8 @@ If you don't need an entire code block, the package also enables you to insert s
 
 
 \begin{figure}[b!]
-\Description{Two code listings side by side. Left, in a colour style similar to Visual Studio: a Python function, fibonacci(nterms), that starts a list with the terms 1 and 1, appends the sum of the previous two terms until it has nterms terms, and prints each term. Right, in a black-and-white style: a C main function that prints hello, world and returns 0. Both listings have line numbers and a rule above and below.}
+\Description{A code listing in a colour style similar to Visual Studio: a Python function, fibonacci(nterms), that starts a list with the terms 1 and 1, appends the sum of the previous two terms until it has nterms terms, and prints each term. The listing has line numbers and a rule above and below.}
     \centering
-    \begin{subfigure}{.45\textwidth}
     \usemintedstyle{vs}
     \begin{minted}[
         frame=lines,
@@ -37,10 +36,13 @@ If you don't need an entire code block, the package also enables you to insert s
     for term in terms:
         print(term)
     \end{minted}
-    \caption{Example code in Python}
-    \end{subfigure}
-    %
-    \begin{subfigure}{.45\textwidth}
+    \caption{Example Python code in \texttt{minted}, in a colour style similar to what you might see in an IDE.}
+    \label{fig:minted}
+\end{figure}
+
+\begin{figure}[b!]
+\Description{A code listing in a black-and-white style: a C main function that prints hello, world and returns 0. The listing has line numbers and a rule above and below.}
+    \centering
     \usemintedstyle{bw}
     \begin{minted}[
         frame=lines,
@@ -55,10 +57,8 @@ int main() {
 return 0;
 }
 \end{minted}
-\caption{Example code in C}
-\end{subfigure}
-    \caption{Example code fragments in \texttt{minted} for Python and C. The colour style on the left is similar to what you might see in an IDE, the one on the right is black and white, and might be better when printed. }
-    \label{fig:minted}
+\caption{Example C code in \texttt{minted}, in a black-and-white style that might be better when printed.}
+\label{fig:minted-bw}
 \end{figure}
 
 
