@@ -1,0 +1,58 @@
+# Accepted findings of check_paper.py (the CHI Zen linter) for the CHI Zen manual and
+# starter paper: what the linter found when it was added (2026-11-18). The manual
+# deliberately shows some things a paper should not do (e.g. \newpage between sections).
+# CI fails on any error or warning not listed here, and on any line here that
+# no longer occurs, so this file only shrinks. Fix the cause rather than adding
+# a line. One line per occurrence: "<code> <file>: <message>".
+E-float-caption manual/01-abstract.tex: figure 'with no caption or label' has no \caption
+W-colour manual/05-figures.tex: \definecolor{Nature}: a colour outside the CHI Zen palettes; use okabe-ito or another palette from CHIZen/figures.tex
+W-colour manual/05-figures.tex: \definecolor{Urban}: a colour outside the CHI Zen palettes; use okabe-ito or another palette from CHIZen/figures.tex
+W-colour manual/05-figures.tex: hard-coded colour 'blue!50': use a colour from the CHI Zen palettes (okabe-ito by default) or a cycle list
+W-colour manual/05-figures.tex: hard-coded colour 'blue!50': use a colour from the CHI Zen palettes (okabe-ito by default) or a cycle list
+W-float-label manual/01-abstract.tex: figure 'with no caption or label' has no \label, so the text cannot refer to it
+W-float-label manual/05-figures.tex: figure 'Number of results at each stage of the …' has no \label, so the text cannot refer to it
+W-float-unref manual/04-code.tex: figure 'fig:minted' is never referred to in the text (\ref, \autoref, \cref)
+W-float-unref manual/04-code.tex: figure 'fig:minted-bw' is never referred to in the text (\ref, \autoref, \cref)
+W-float-unref manual/05-figures.tex: figure 'fig:activity' is never referred to in the text (\ref, \autoref, \cref)
+W-float-unref manual/05-figures.tex: figure 'fig:gesture-agreement' is never referred to in the text (\ref, \autoref, \cref)
+W-float-unref manual/05-figures.tex: figure 'fig:selfreports' is never referred to in the text (\ref, \autoref, \cref)
+W-float-unref manual/05-figures.tex: figure 'gantt' is never referred to in the text (\ref, \autoref, \cref)
+W-float-unref manual/05-figures.tex: figure 'stackedpanel' is never referred to in the text (\ref, \autoref, \cref)
+W-newpage 00-my-new-paper.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage CHIZen-Manual.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/02-background.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/04-code.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/04-tables.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/05-figures.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/05-figures.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/05-figures.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/05-figures.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/05-figures.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/05-figures.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/05-figures.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/05-figures.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/06-referencing.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/06-statistics.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/08-transparency.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/10-acknowledgements.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-newpage manual/CHIZen-Paper-Checklist.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
+W-taps 00-my-new-paper.tex: \usepackage{biblatex}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen-Manual.tex: \usepackage{biblatex}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/figures.tex: \usepackage{pgfgantt}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/figures.tex: \usepackage{pgfplotstable}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/figures.tex: \usepackage{pgfplots}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/tables.tex: \usepackage{arydshln}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/tables.tex: \usepackage{longtable}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/tables.tex: \usepackage{multicol}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/text.tex: \usepackage{CJKutf8}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/text.tex: \usepackage{fontspec}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/text.tex: \usepackage{letltxmacro}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/text.tex: \usepackage{lipsum}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/text.tex: \usepackage{markdown}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/text.tex: \usepackage{minted}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/text.tex: \usepackage{paracol}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/text.tex: \usepackage{relsize}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps CHIZen/text.tex: \usepackage{savesym}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
+W-taps-acmart CHIZen/stats.tex: \usepackage{etoolbox}: acmart already loads etoolbox; ACM's TAPS list says not to include it in your LaTeX source
+W-taps-acmart CHIZen/tables.tex: \usepackage{float}: acmart already loads float; ACM's TAPS list says not to include it in your LaTeX source
+W-taps-acmart CHIZen/text.tex: \usepackage{iftex}: acmart already loads iftex; ACM's TAPS list says not to include it in your LaTeX source

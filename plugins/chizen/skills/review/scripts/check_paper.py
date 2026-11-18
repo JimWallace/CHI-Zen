@@ -1,0 +1,654 @@
+#!/usr/bin/env python3
+"""check_paper.py: deterministic checks on a LaTeX paper, after the CHI Zen guide.
+
+    python3 check_paper.py PAPER_DIR                 # human-readable report
+    python3 check_paper.py PAPER_DIR --json          # machine-readable, for Claude
+    python3 check_paper.py PAPER_DIR --main paper.tex   # name the main file(s)
+    python3 check_paper.py PAPER_DIR --prune-baseline   # drop fixed findings from the baseline
+    python3 check_paper.py PAPER_DIR --write-baseline   # accept every current finding (see below)
+
+Standard library only, so it runs anywhere Python 3.9+ does (a Claude Code
+session, GitHub Actions); no TeX needed.
+
+WHAT IT READS. Every top-level .tex file in PAPER_DIR that has an uncommented
+\\documentclass (or the files given with --main), followed through \\input,
+\\include and \\subfile. Files under CHIZen/ (the CHI Zen library itself, which
+defines the palettes) are not checked; add more with --exclude. The ACM TAPS
+package check is the exception: it covers every file TeX reads, because TAPS
+receives the whole source. Its list is CHIZen/taps-accepted-packages.txt.
+
+SEVERITIES.
+  error    the PDF is wrong or breaks a venue rule (vertical rules, a p-value with
+           a leading zero, a figure without a caption or \\Description, ...)
+  warning  worth fixing (an unreferenced figure, TODO markers, ad-hoc colours, ...)
+  style    words and phrases to avoid, from the CHI Zen checklist. Reported, never
+           fails, never baselined: they are prompts to reread a sentence.
+
+THE BASELINE. Errors and warnings fail (exit 1) unless the baseline file lists
+them; a listed finding that no longer occurs also fails until its line is
+deleted (--prune-baseline), so the file only shrinks. The default baseline is
+PAPER_DIR/chizen-baseline.txt (a missing file means an empty baseline). Each
+line identifies one occurrence without line numbers, so it survives edits
+elsewhere; a line listed twice means the finding occurs twice.
+--write-baseline accepts every current error and warning. Use it once, when an
+author adopts the checker on an existing paper, never to make a new finding go
+away.
+
+Exit status: 0 clean (after the baseline), 1 otherwise, 2 bad usage.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import sys
+from collections import Counter
+from dataclasses import dataclass, field
+from pathlib import Path
+
+BASELINE_NAME = "chizen-baseline.txt"
+DEFAULT_EXCLUDES = ("CHIZen/",)
+BASELINE_HEADER = """\
+# Accepted findings of check_paper.py (the CHI Zen linter) for this paper.
+# CI fails on any error or warning not listed here, and on any line here that
+# no longer occurs, so this file only shrinks. Fix the cause rather than adding
+# a line. One line per occurrence: "<code> <file>: <message>".
+"""
+
+# Colours defined by CHIZen/figures.tex. tests/test_check_paper.py checks that
+# this list matches that file, so keep the two in step.
+PALETTE_COLOURS = {
+    "RYB1", "RYB2", "RYB3", "RYB4", "RYB5", "RYB6", "RYB7",
+    "AHSLight", "AHSDark", "ArtsLight", "ArtsDark", "EngineeringLight", "EngineeringDark",
+    "EnvironmentLight", "EnvironmentDark", "MathLight", "MathDark", "ScienceLight",
+    "ScienceDark", "SchoolRedLight", "SchoolRedDark",
+    "OkabeItoOrange", "OkabeItoSkyBlue", "OkabeItoBluishGreen", "OkabeItoYellow",
+    "OkabeItoBlue", "OkabeItoVermillion", "OkabeItoReddishPurple", "OkabeItoBlack",
+    "Likert5_SD", "Likert5_D", "Likert5_N", "Likert5_A", "Likert5_SA",
+    "Likert5_1_SD", "Likert5_1_D", "Likert5_1_N", "Likert5_1_A", "Likert5_1_SA",
+    "Likert5_2_SD", "Likert5_2_D", "Likert5_2_N", "Likert5_2_A", "Likert5_2_SA",
+    *[f"Likert7_{i}" for i in range(7)],
+    *[f"Likert7_{k}_{i}" for k in (2, 3, 4) for i in range(7)],
+    *[f"Cleric_{i}" for i in range(7)], *[f"Monster_{i}" for i in range(7)],
+}
+# Neutral colours are always fine (axes, text, greyscale fills).
+NEUTRAL_COLOURS = {"black", "white", "gray", "grey", "darkgray", "lightgray", "none", "."}
+# xcolor's base and dvipsnames-free named colours that signal an ad-hoc data colour.
+XCOLOR_NAMES = {
+    "red", "green", "blue", "cyan", "magenta", "yellow", "brown", "lime", "olive",
+    "orange", "pink", "purple", "teal", "violet",
+}
+
+# From manual/CHIZen-Paper-Checklist.tex, "Words and Phrases to Avoid".
+AVOID_WORDS = [
+    "actually", "almost", "always", "anyway", "basically", "best", "believe", "can't",
+    "clearly", "don't", "essentially", "feel", "folks", "good", "guy", "hassle", "I",
+    "impossible", "kids", "kind of", "like", "lots", "many", "never", "nice", "obviously",
+    "OK", "of course", "pretty good", "prove", "proven", "quite", "really", "so", "stuff",
+    "thing", "totally", "user", "utilize", "various", "very", "well", "won't", "wouldn't",
+    "you",
+]
+CASE_SENSITIVE_WORDS = {"I", "OK"}
+
+# The TAPS list lives in CHIZen/taps-accepted-packages.txt. A paper made from the CHI Zen
+# template has its own copy (preferred: it matches what the paper compiles with); the
+# plugin's data/ entry is a symlink to the CHI Zen repository's copy, which Claude Code
+# dereferences when it installs the plugin.
+TAPS_NAME = "taps-accepted-packages.txt"
+TAPS_FILE = Path(__file__).parent / "data" / TAPS_NAME
+
+
+def load_taps(path: Path | None = None, paper: Path | None = None) -> tuple[set, set] | None:
+    """(accepted, included in acmart) from the TAPS list, or None if no list is found."""
+    if path is None:
+        cands = ([paper / "CHIZen" / TAPS_NAME] if paper else []) + [TAPS_FILE]
+        path = next((c for c in cands if c.is_file()), None)
+    if path is None or not path.is_file():
+        return None
+    lists: dict[str, set] = {}
+    current = None
+    for ln in path.read_text(encoding="utf-8").splitlines():
+        ln = ln.strip()
+        if not ln or ln.startswith("#"):
+            continue
+        if ln.startswith("[") and ln.endswith("]"):
+            current = lists.setdefault(ln[1:-1], set())
+        elif current is not None:
+            current.add(ln)
+    return lists.get("accepted", set()), lists.get("included-in-acmart", set())
+
+
+FLOAT_ENVS = ("figure", "figure*", "table", "table*", "wrapfigure", "wraptable")
+FIGURE_ENVS = ("figure", "figure*", "wrapfigure")
+SKIP_ENVS = ("verbatim", "verbatim*", "minted", "lstlisting", "comment", "Verbatim")
+CODE_ENVS = ("tikzpicture", "axis", "groupplot", "ganttchart", "tabular", "tabular*",
+             "tabularx", "longtable", "CCSXML", "acronym", "equation", "equation*",
+             "align", "align*", "displaymath", "math")
+PICTURE_RE = re.compile(r"\\begin\{(tikzpicture|ganttchart)\}|\\include(graphics|svg)\b")
+REF_RE = re.compile(r"\\(?:ref|autoref|Autoref|cref|Cref|vref|pageref|subref|nameref|cpageref|Cpageref)\*?\{([^}]*)\}")
+PICTURE_ENV_RE = re.compile(r"\\begin\{(tikzpicture|ganttchart)\}.*?\\end\{\1\}", re.S)
+LABEL_RE = re.compile(r"\\label\{([^}]*)\}")
+INPUT_RE = re.compile(r"\\(?:input|include|subfile)\{([^}]+)\}")
+
+
+@dataclass
+class Line:
+    file: str   # path relative to the paper directory
+    num: int    # 1-based line number in that file
+    text: str   # the line with comments removed
+    raw: str    # the original line
+
+
+@dataclass
+class Finding:
+    severity: str  # error | warning | style
+    code: str
+    file: str
+    line: int
+    msg: str       # no line numbers: it identifies the finding in the baseline
+
+    def ident(self) -> str:
+        return f"{self.code} {self.file}: {self.msg}"
+
+
+@dataclass
+class Doc:
+    main: str
+    lines: list = field(default_factory=list)
+
+
+# ------------------------------------------------------------------ reading
+
+def strip_comment(s: str) -> str:
+    """Remove a TeX comment: the first % not preceded by a backslash."""
+    out, i = [], 0
+    while i < len(s):
+        c = s[i]
+        if c == "\\" and i + 1 < len(s):
+            out.append(s[i:i + 2])
+            i += 2
+            continue
+        if c == "%":
+            break
+        out.append(c)
+        i += 1
+    return "".join(out)
+
+
+def resolve(root: Path, name: str) -> Path | None:
+    name = name.strip()
+    for cand in (name, name + ".tex"):
+        p = (root / cand)
+        if p.is_file():
+            return p
+    return None
+
+
+def rel(root: Path, p: Path) -> str:
+    try:
+        return p.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return p.as_posix()
+
+
+def excluded(relpath: str, excludes) -> bool:
+    return any(relpath == e.rstrip("/") or relpath.startswith(e.rstrip("/") + "/") for e in excludes)
+
+
+def flatten(root: Path, path: Path, excludes, seen: set, out: list) -> None:
+    """Append the lines of `path` to `out`, expanding \\input and friends in place.
+    Excluded files are expanded (they may define things) but marked as such."""
+    key = path.resolve()
+    if key in seen:
+        return
+    seen.add(key)
+    r = rel(root, path)
+    try:
+        raw_lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return
+    skip_env = None
+    for i, raw in enumerate(raw_lines, 1):
+        text = strip_comment(raw)
+        if skip_env:
+            if f"\\end{{{skip_env}}}" in text:
+                skip_env = None
+            out.append(Line(r, i, "", raw))
+            continue
+        m = re.search(r"\\begin\{(" + "|".join(re.escape(e) for e in SKIP_ENVS) + r")\}", text)
+        if m and f"\\end{{{m.group(1)}}}" not in text[m.end():]:
+            skip_env = m.group(1)
+            out.append(Line(r, i, text[:m.end()], raw))
+            continue
+        text = re.sub(r"\\(?:verb|mint\{[^}]*\})(.)(.*?)\1", " ", text)
+        out.append(Line(r, i, text, raw))
+        for inc in INPUT_RE.findall(text):
+            p = resolve(root, inc)
+            if p is not None:
+                flatten(root, p, excludes, seen, out)
+
+
+def find_mains(root: Path) -> list[Path]:
+    mains = []
+    for p in sorted(root.glob("*.tex")):
+        try:
+            txt = p.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if any(re.match(r"\s*\\documentclass", strip_comment(ln)) for ln in txt.splitlines()):
+            mains.append(p)
+    return mains
+
+
+# ------------------------------------------------------------------ helpers
+
+def env_blocks(lines: list, envs) -> list[tuple[str, int, int]]:
+    """(env, start index, end index) of each top-level environment in `envs`."""
+    pat = re.compile(r"\\(begin|end)\{(" + "|".join(re.escape(e) for e in envs) + r")\}")
+    blocks, stack = [], []
+    for idx, ln in enumerate(lines):
+        for m in pat.finditer(ln.text):
+            if m.group(1) == "begin":
+                stack.append((m.group(2), idx))
+            elif stack:
+                env, start = stack.pop()
+                if not stack:
+                    blocks.append((env, start, idx))
+    return blocks
+
+
+def balanced_arg(s: str, start: int) -> tuple[str, int] | None:
+    """The {...} argument starting at s[start] == '{'; returns (content, end index)."""
+    if start >= len(s) or s[start] != "{":
+        return None
+    depth = 0
+    for j in range(start, len(s)):
+        if s[j] == "{":
+            depth += 1
+        elif s[j] == "}":
+            depth -= 1
+            if depth == 0:
+                return s[start + 1:j], j + 1
+    return None
+
+
+def short(s: str, n: int = 60) -> str:
+    s = re.sub(r"\s+", " ", s).strip()
+    return s if len(s) <= n else s[: n - 1] + "…"
+
+
+def body_range(lines: list) -> tuple[int, int]:
+    """Indices of the document body (between \\begin{document} and \\end{document})."""
+    start, end = 0, len(lines)
+    for i, ln in enumerate(lines):
+        if "\\begin{document}" in ln.text:
+            start = i
+            break
+    for i in range(len(lines) - 1, -1, -1):
+        if "\\end{document}" in lines[i].text:
+            end = i
+            break
+    return start, end
+
+
+# ------------------------------------------------------------------ checks
+
+def check_doc(doc: Doc, root: Path, excludes, add) -> None:
+    lines = doc.lines
+    checked = [not excluded(ln.file, excludes) for ln in lines]
+    b0, b1 = body_range(lines)
+
+    def lint(i):  # a line we report on
+        return checked[i]
+
+    # Whole-document text for label references (excluded files count as references too).
+    refs = set()
+    for ln in lines:
+        for group in REF_RE.findall(ln.text):
+            refs.update(x.strip() for x in group.split(","))
+
+    # --- floats: caption, label, reference, \Description
+    for env, s, e in env_blocks(lines, FLOAT_ENVS):
+        if not lint(s):
+            continue
+        body = "\n".join(ln.text for ln in lines[s:e + 1])
+        where = lines[s]
+        # pgfplots also uses \label (for plot legends): ignore labels inside pictures.
+        outside = PICTURE_ENV_RE.sub(" ", body)
+        labels = LABEL_RE.findall(outside)
+        kind = "figure" if env in FIGURE_ENVS else "table"
+        cap = re.search(r"\\caption(of)?\b", outside)
+        captext = balanced_arg(outside, outside.find("{", cap.end())) if cap else None
+        ident = (labels[0] if labels else
+                 short(re.sub(r"\\[A-Za-z]+\*?|[{}]", "", captext[0]), 40) if captext else
+                 "with no caption or label")
+        if not cap:
+            add("error", "E-float-caption", where, f"{kind} '{ident}' has no \\caption")
+        if not labels:
+            add("warning", "W-float-label", where,
+                f"{kind} '{ident}' has no \\label, so the text cannot refer to it")
+        else:
+            first_label = outside.find("\\label{")
+            if cap and first_label < cap.start():
+                add("warning", "W-label-order", where,
+                    f"{kind} '{labels[0]}': \\label comes before \\caption, so \\ref gives the "
+                    "section number; put \\label after \\caption")
+            if not any(lb in refs for lb in labels):
+                add("warning", "W-float-unref", where,
+                    f"{kind} '{labels[0]}' is never referred to in the text (\\ref, \\autoref, \\cref)")
+        if env in FIGURE_ENVS and PICTURE_RE.search(body) and "\\Description" not in body:
+            add("error", "E-description", where,
+                f"figure '{ident}' has no \\Description{{...}} (alt text; CHI requires one per figure)")
+
+    # --- ACM TAPS: every file TeX reads counts, the CHI Zen library included
+    taps = load_taps(paper=root)
+    if taps:
+        for ln in lines:
+            check_taps(ln.text, ln, add, *taps)
+
+    # --- per-line checks in the body
+    stack: list[str] = []
+    code_pat = re.compile(r"\\(begin|end)\{(" + "|".join(re.escape(e) for e in CODE_ENVS) + r")\}")
+    for i, ln in enumerate(lines):
+        t = ln.text
+        in_body = b0 <= i <= b1
+        was_code = bool(stack)
+        for m in code_pat.finditer(t):
+            if m.group(1) == "begin":
+                stack.append(m.group(2))
+            elif stack and stack[-1] == m.group(2):
+                stack.pop()
+        if not lint(i) or not t.strip():
+            continue
+        in_code = was_code or bool(stack)
+
+        check_tabular(t, ln, add)
+        check_colour(t, ln, add, preamble=not in_body)
+        if re.search(r"\\usepackage(\[[^\]]*\])?\{[^}]*\bsubcaption\b", t):
+            add("warning", "W-subfigure", ln, "\\usepackage{subcaption}: subfigures break PDF/UA "
+                "tagging; use separate figures")
+        if re.search(r"\\usepackage(\[[^\]]*\])?\{[^}]*\barydshln\b", t) or re.search(r"\\[hc]dashline\b", t):
+            add("warning", "W-arydshln", ln, "arydshln dashed rules break PDF/UA tagging; use booktabs "
+                "(\\cmidrule) or whitespace")
+        if not in_body:
+            continue
+        if re.search(r"\\begin\{sub(figure|table)\}|\\subfloat\b", t):
+            add("warning", "W-subfigure", ln, "subfigure: subfigures break PDF/UA tagging; use "
+                "separate figures")
+        for m in re.finditer(r"\\(newpage|pagebreak)\b", t):
+            add("warning", "W-newpage", ln, f"\\{m.group(1)}: let the ACM template break pages; "
+                "a forced break leaves gaps when the text changes")
+        if not in_code:
+            check_stats(t, ln, add)
+            for m in re.finditer(r"(?<![A-Za-z])(TODO|FIXME|TBD|XXX)(?![A-Za-z])|\\todo\b", t):
+                add("warning", "W-todo", ln, f"TODO marker in the text: '{short(t[m.start():], 40)}'")
+            check_words(t, ln, add)
+
+
+def check_tabular(t: str, ln: Line, add) -> None:
+    for m in re.finditer(r"\\begin\{(tabular\*?|tabularx|tabulary|longtable)\}", t):
+        pos = m.end()
+        if m.group(1) in ("tabular*", "tabularx", "tabulary"):
+            width = balanced_arg(t, pos)
+            if width is None:
+                continue
+            pos = width[1]
+        if pos < len(t) and t[pos] == "[":
+            close = t.find("]", pos)
+            pos = close + 1 if close > 0 else pos
+        spec = balanced_arg(t, pos)
+        if spec and "|" in re.sub(r"[<>]\{[^}]*\}|@\{[^}]*\}", "", spec[0]):
+            add("error", "E-vrule", ln, f"vertical rule in column spec '{spec[0]}': drop the |, "
+                "booktabs tables use no vertical lines")
+    for m in re.finditer(r"\\(hline|cline)\b", t):
+        add("error", "E-hline", ln, f"\\{m.group(1)}: use booktabs (\\toprule, \\midrule, "
+            "\\cmidrule, \\bottomrule)")
+
+
+PACKAGE_RE = re.compile(r"\\(?:usepackage|RequirePackage)\s*(?:\[[^\]]*\])?\s*\{([^}]*)\}")
+
+
+def check_taps(t: str, ln: Line, add, accepted: set, included: set) -> None:
+    for m in PACKAGE_RE.finditer(t):
+        for pkg in (x.strip() for x in m.group(1).split(",")):
+            if not pkg:
+                continue
+            if pkg in included:
+                add("warning", "W-taps-acmart", ln, f"\\usepackage{{{pkg}}}: acmart already loads {pkg}; "
+                    "ACM's TAPS list says not to include it in your LaTeX source")
+            elif pkg not in accepted:
+                add("warning", "W-taps", ln, f"\\usepackage{{{pkg}}}: not on ACM's TAPS accepted-packages "
+                    "list (April 2025); TAPS may reject the camera-ready source")
+
+
+P_RE = re.compile(
+    r"(?<![A-Za-z\\])(?:\\(?:textit|emph|mathit|mathrm|textrm)\{\s*)?p\s*\}?\s*\$?\s*"
+    r"(=|<|>|\\leq?|\\geq?|\\lt|\\gt|≤|≥)\s*\$?\s*(0?)(\.\d+)")
+F_RE = re.compile(r"(?<![A-Za-z\\])F\s*(?:_\{?\s*[\d.]+\s*,\s*[\d.]+\s*\}?|\(\s*[\d.]+\s*,\s*[\d.]+\s*\))?"
+                  r"\s*\$?\s*=\s*\$?\s*(\d+\.\d{2,})")
+CHI_RE = re.compile(r"\\chi\^\{?2\}?\s*(?:\([^)]*\))?\s*\$?\s*=\s*\$?\s*(\d+\.\d{2,})")
+TREND_RE = re.compile(r"\b(trend(?:s|ed|ing)?\s+toward(?:s)?\s+significan\w*|marginally\s+significant"
+                      r"|approach(?:es|ed|ing)?\s+(?:statistical\s+)?significance"
+                      r"|almost\s+significant|nearly\s+significant)\b", re.I)
+
+
+def check_stats(t: str, ln: Line, add) -> None:
+    for m in P_RE.finditer(t):
+        op, zero, frac = m.group(1), m.group(2), m.group(3)
+        val = float("0" + frac)
+        shown = short(m.group(0).replace("$", ""), 30)
+        if zero:
+            add("error", "E-p-zero", ln, f"'{shown}': no leading zero on p (it cannot exceed 1): "
+                f"write p {op} {frac}, or use \\p{{{frac}}}")
+        if op in ("<", "\\lt", "\\le", "\\leq", "≤") and val < 0.001:
+            add("error", "E-p-threshold", ln, f"'{shown}': the smallest p to report is p < .001")
+        elif op == "=" and val < 0.001:
+            add("error", "E-p-threshold", ln, f"'{shown}': report p < .001, not an exact value below .001")
+        elif op == "=" and len(frac) > 3:
+            add("warning", "W-p-precision", ln, f"'{shown}': report p to two decimals "
+                "(p < .01 below .01), as \\p{} does")
+    for m in F_RE.finditer(t):
+        add("warning", "W-F-precision", ln, f"'{short(m.group(0).replace('$', ''), 30)}': report F to "
+            "one decimal, as \\F{} does")
+    for m in CHI_RE.finditer(t):
+        add("warning", "W-chisq-precision", ln, f"'{short(m.group(0).replace('$', ''), 30)}': report "
+            "chi-square to one decimal, as \\chisq{} does")
+    for m in TREND_RE.finditer(t):
+        add("warning", "W-stats-trend", ln, f"'{m.group(0)}': a result is significant at your stated "
+            "alpha or it is not; report the effect size and CI instead")
+
+
+COLOUR_KEY_RE = re.compile(r"(?<![A-Za-z])(?:draw|fill|color|colour|text|top color|bottom color)\s*=\s*"
+                           r"\{?([A-Za-z][\w!.]*)")
+COLOUR_CMD_RE = re.compile(r"\\(?:textcolor|color|colorbox|rowcolor|cellcolor|columncolor|fcolorbox)"
+                           r"(?:\[[^\]]*\])?\{([^}]*)\}")
+DEFINE_RE = re.compile(r"\\(definecolor|colorlet|providecolor)\{([^}]*)\}(?:\[[^\]]*\])?(?:\{([^}]*)\})?")
+
+
+def colour_ok(expr: str) -> bool:
+    parts = [p for p in expr.split("!") if p and not re.fullmatch(r"\d+(\.\d+)?", p)]
+    return all(p in PALETTE_COLOURS or p.lower() in NEUTRAL_COLOURS for p in parts)
+
+
+def check_colour(t: str, ln: Line, add, preamble: bool) -> None:
+    for m in DEFINE_RE.finditer(t):
+        model = (m.group(3) or "").lower()
+        if "cmyk" in model:
+            add("warning", "W-cmyk", ln, f"colour '{m.group(2)}' is defined in CMYK; PDF/A-4f needs "
+                "RGB colours")
+        add("warning", "W-colour", ln, f"\\{m.group(1)}{{{m.group(2)}}}: a colour outside the CHI Zen "
+            "palettes; use okabe-ito or another palette from CHIZen/figures.tex")
+    if re.search(r"\{cmyk\}|\[cmyk\]", t) and not DEFINE_RE.search(t):
+        add("warning", "W-cmyk", ln, "CMYK colour: PDF/A-4f needs RGB colours")
+    if preamble:
+        return
+    seen = set()
+    for m in list(COLOUR_KEY_RE.finditer(t)) + list(COLOUR_CMD_RE.finditer(t)):
+        expr = m.group(1).strip()
+        base = expr.split("!")[0]
+        if base.lower() in XCOLOR_NAMES or (("!" in expr) and not colour_ok(expr) and
+                                           any(p.lower() in XCOLOR_NAMES for p in expr.split("!"))):
+            if expr not in seen:
+                seen.add(expr)
+                add("warning", "W-colour", ln, f"hard-coded colour '{expr}': use a colour from the "
+                    "CHI Zen palettes (okabe-ito by default) or a cycle list")
+
+
+PROSE_STRIP = [
+    (re.compile(r"\$\$.*?\$\$|\$[^$]*\$|\\\(.*?\\\)|\\\[.*?\\\]"), " "),
+    (re.compile(r"\\(?:label|ref|autoref|cref|Cref|pageref|eqref|cite\w*|input|include|"
+                r"usepackage|url|includegraphics|includesvg|bibliography\w*|addbibresource|"
+                r"documentclass|begin|end|newcommand|renewcommand|definecolor|href|"
+                r"setcopyright|acm\w*|ccsdesc|keywords|Description|f|cd|ac\w*|texttt|mint)"
+                r"\*?(\[[^\]]*\])*\{[^{}]*\}"), " "),
+    (re.compile(r"\\[A-Za-z@]+\*?"), " "),
+]
+
+
+def check_words(t: str, ln: Line, add) -> None:
+    s = t
+    for pat, rep in PROSE_STRIP:
+        s = pat.sub(rep, s)
+    for w in AVOID_WORDS:
+        flags = 0 if w in CASE_SENSITIVE_WORDS else re.I
+        pat = r"(?<![\w'’-])" + re.escape(w).replace("'", "['’]").replace(r"\ ", r"\s+") + r"(?![\w'’-])"
+        for m in re.finditer(pat, s, flags):
+            add("style", "S-avoid", ln, f"'{m.group(0)}' is on the checklist's words to avoid")
+
+
+# ------------------------------------------------------------------ driver
+
+def run(root: Path, mains: list[Path], excludes) -> list[Finding]:
+    findings: dict[tuple, Finding] = {}
+
+    def add(sev, code, ln, msg):
+        f = Finding(sev, code, ln.file, ln.num, msg)
+        findings.setdefault((code, ln.file, ln.num, msg), f)
+
+    for m in mains:
+        doc = Doc(rel(root, m))
+        flatten(root, m, excludes, set(), doc.lines)
+        check_doc(doc, root, excludes, add)
+    return sorted(findings.values(), key=lambda f: (f.file, f.line, f.code, f.msg))
+
+
+def read_baseline(path: Path) -> Counter:
+    if not path.is_file():
+        return Counter()
+    return Counter(ln.rstrip() for ln in path.read_text(encoding="utf-8").splitlines()
+                   if ln.strip() and not ln.lstrip().startswith("#"))
+
+
+def write_baseline(path: Path, lines: Counter) -> None:
+    """Write the baseline, keeping the comment block at the top of an existing file."""
+    header = BASELINE_HEADER
+    if path.is_file():
+        old = []
+        for ln in path.read_text(encoding="utf-8").splitlines():
+            if not ln.startswith("#"):
+                break
+            old.append(ln + "\n")
+        header = "".join(old) or header
+    body = "".join(f"{k}\n" for k in sorted(lines.elements()))
+    path.write_text(header + body, encoding="utf-8")
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description="CHI Zen checks on a LaTeX paper")
+    ap.add_argument("paper", nargs="?", default=".", help="paper directory (default: .)")
+    ap.add_argument("--main", action="append", default=[], help="main .tex file (repeatable)")
+    ap.add_argument("--exclude", action="append", default=[], help="path prefix not to check (repeatable)")
+    ap.add_argument("--baseline", help=f"baseline file (default: PAPER/{BASELINE_NAME})")
+    ap.add_argument("--json", action="store_true")
+    ap.add_argument("--prune-baseline", action="store_true", help="delete baseline lines that no longer occur")
+    ap.add_argument("--write-baseline", action="store_true", help="accept every current error and warning")
+    args = ap.parse_args(argv)
+
+    root = Path(args.paper)
+    if not root.is_dir():
+        print(f"check_paper: {root} is not a directory", file=sys.stderr)
+        return 2
+    mains = [root / m for m in args.main] if args.main else find_mains(root)
+    missing = [str(m) for m in mains if not m.is_file()]
+    if missing or not mains:
+        print("check_paper: no main .tex file found" + (f" ({', '.join(missing)})" if missing else
+              " (none with \\documentclass in the paper directory; use --main)"), file=sys.stderr)
+        return 2
+    excludes = list(DEFAULT_EXCLUDES) + args.exclude
+    found = run(root, mains, excludes)
+
+    bpath = Path(args.baseline) if args.baseline else root / BASELINE_NAME
+    current = Counter(f.ident() for f in found if f.severity != "style")
+    if args.write_baseline:
+        write_baseline(bpath, current)
+        print(f"Wrote {sum(current.values())} line(s) to {bpath}.")
+        return 0
+    baseline = read_baseline(bpath)
+    new = current - baseline
+    stale = baseline - current
+    if args.prune_baseline:
+        write_baseline(bpath, baseline - stale)
+        print(f"Removed {sum(stale.values())} stale line(s) from {bpath}.")
+        stale = Counter()
+
+    # Mark which findings are accepted by the baseline (first occurrences first).
+    budget = Counter(baseline)
+    for f in found:
+        f.accepted = False
+        if f.severity != "style" and budget[f.ident()] > 0:
+            budget[f.ident()] -= 1
+            f.accepted = True
+
+    if args.json:
+        print(json.dumps({
+            "mains": [rel(root, m) for m in mains],
+            "findings": [dict(severity=f.severity, code=f.code, file=f.file, line=f.line, msg=f.msg,
+                              baselined=f.accepted) for f in found],
+            "new": sorted(new.elements()), "stale_baseline": sorted(stale.elements()),
+        }, indent=2, ensure_ascii=False))
+    else:
+        report(found, new, stale, bpath, mains, root)
+    return 1 if (new or stale) else 0
+
+
+def report(found, new, stale, bpath, mains, root) -> None:
+    n = Counter(f.severity for f in found)
+    out = [f"## CHI Zen check: {n['error']} error(s), {n['warning']} warning(s), {n['style']} style note(s)",
+           f"Main file(s): {', '.join(rel(root, m) for m in mains)}", ""]
+    titles = {"error": "Errors", "warning": "Warnings", "style": "Style: words to avoid (never fails)"}
+    for sev in ("error", "warning", "style"):
+        items = [f for f in found if f.severity == sev]
+        if not items:
+            continue
+        out.append(f"### {titles[sev]}")
+        if sev == "style":  # one line per source line: "file:12: like, you"
+            by_line: dict[tuple, list] = {}
+            for f in items:
+                by_line.setdefault((f.file, f.line), []).append(f.msg[1:f.msg.index("' is on")])
+            out += [f"- `{fl}:{ln}` {', '.join(ws)}" for (fl, ln), ws in by_line.items()]
+            out.append("")
+            continue
+        for f in items:
+            tag = " (baseline)" if getattr(f, "accepted", False) else ""
+            out.append(f"- `{f.file}:{f.line}` **{f.code}** {f.msg}{tag}")
+        out.append("")
+    if new:
+        out += [f"### New findings: not in {bpath.name}, so this fails",
+                "Fix the cause. Don't add the line to the baseline to make it pass.",
+                *[f"- `{x}`" for x in sorted(new.elements())], ""]
+    if stale:
+        out += [f"### Fixed findings still listed in {bpath.name}, so this fails",
+                "Run with --prune-baseline to delete them.", *[f"- `{x}`" for x in sorted(stale.elements())], ""]
+    if not new and not stale:
+        out.append("No new errors or warnings.")
+    text = "\n".join(out)
+    print(text)
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a", encoding="utf-8") as fh:
+            fh.write(text + "\n")
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -2,20 +2,19 @@
 %  HOW TO USE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Include this line at the top of your TeX  File: 
+% CHIZen/init.tex loads this file. The rules for choosing and using each
+% style (and the matplotlib/ggplot equivalents) are in the CHI Zen guide:
+%   plugins/chizen/skills/chizen/references/figures.md
 %
-% \input{IDEA_Plots.tex}
-%
-%
-% Then, add graphs to your paper using the following template: 
+% Add a graph to your paper with this template:
 %
 %\begin{tikzpicture}
-%\begin{axis}[<GRAPH TYPE>,
-%	% X Axis options (xmin, xmax, xtick={})
-%	% Y Axis options (ymin, ymax, ytick={})
+%\begin{axis}[<STYLE>,
+%	% X Axis options (xlabel, xmin, xmax, xtick={})
+%	% Y Axis options (ylabel, ymin, ymax, ytick={})
 %       ]
 %
-%    % DATA GOES IN HERE
+%    % DATA GOES IN HERE (preferably read from data/*.csv)
 %
 %\end{axis}
 %\end{tikzpicture}
@@ -31,7 +30,7 @@
 %       y descriptions at=edge left,
 %       vertical sep=0pt,
 %       horizontal sep=0pt},
-%  <GRAPH TYPE>, 
+%  <STYLE>,
 %	% X Axis options (xmin, xmax, xtick={})
 %	% Y Axis options (ymin, ymax, ytick={})
 %      ]
@@ -42,12 +41,23 @@
 %\end{tikzpicture}
 %
 %
+% The following styles are defined in this library:
 %
-% The following graph types are defined in this library:
+%   chizen bar          clustered bar graph (comparing conditions)
+%   chizen stacked bar  stacked bar graph
+%   chizen box          box plot, filled boxes with a white median (distributions)
+%   chizen tufte box    Tufte's minimal box plot (a dot for the median, no box)
+%   chizen tufte panel  bare-bones bar panel for Tufte-style stacked panels (groupplot)
+%   chizen line         line graph (trends over time)
+%   chizen Likert       diverging stacked bar for Likert responses
+%   range frame         Tufte's range frame (axis lines span the data only)
+% and the cycle lists (palettes) chizen lines, okabe-ito, waterloo-light,
+% waterloo-dark, colorbrewer-RYB and colorbrewer-RYB-plain.
 %
-% IDEA bar - A clustered bar graph, similar to Excel
-% IDEA tufte panel - a bare-bones bar graph, suitable for stacked panel graphs in Tufte's style
-% .. more that aren't listed here
+% NAMES. The styles used to be called `IDEA ...' (after the IDEA lab), e.g.
+% `IDEA bar' and the `IDEA lines' cycle list. Those names still work as
+% aliases (see the end of this file), so existing papers compile unchanged,
+% but new figures should use the `chizen ...' names.
 %
 
 
@@ -294,7 +304,7 @@
 \pgfplotscreateplotcyclelist{avatar}{Cleric_0, Monster_0}
 
 %%%%%%%%%%%%%%%%%%%%
-% LINE GRAPHS - default for IDEA line
+% LINE GRAPHS - default for chizen line
 %   Each series differs in colour, dash pattern AND mark, so lines can be told
 %   apart when printed in black and white. Colours are the Okabe-Ito palette
 %   (colour-blind safe), ordered darkest first so thin lines stay visible;
@@ -303,7 +313,7 @@
 %   monthly counts) add `no markers' to the axis and rely on the dash patterns.
 %%%%%%%%%%%%%%%%%%%%
 
-\pgfplotscreateplotcyclelist{IDEA lines}{
+\pgfplotscreateplotcyclelist{chizen lines}{
 {OkabeItoBlue, solid, mark=*, mark options={solid}},
 {OkabeItoVermillion, dashed, mark=square*, mark options={solid}},
 {OkabeItoBluishGreen, dotted, mark=triangle*, mark options={solid}},
@@ -369,11 +379,11 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   IDEA Line
+%   chizen line
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
-  IDEA line/.style={
- 	cycle list name = IDEA lines,
+  chizen line/.style={
+ 	cycle list name = chizen lines,
         width  = \columnwidth,
         height = 6cm,
         	axis line style = very thin,
@@ -397,10 +407,10 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   IDEA Bar / A Clustered Bar Graph
+%   chizen bar / A Clustered Bar Graph
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
-  IDEA bar/.style={
+  chizen bar/.style={
 	ybar = 0pt,
   	cycle list name = okabe-ito,
         width  = \columnwidth,
@@ -428,10 +438,10 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   IDEA StackedBar / A Clustered Bar Graph
+%   chizen stacked bar / A Stacked Bar Graph
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
-  IDEA stacked bar/.style={
+  chizen stacked bar/.style={
   	ybar stacked,
   	cycle list name = okabe-ito,
         width  = \columnwidth,
@@ -460,10 +470,10 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   IDEA Likhert / Divergent Bar
+%   chizen Likert / Divergent Bar
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
-  IDEA Likert/.style={
+  chizen Likert/.style={
  	xbar stacked,
         	axis line style = very thin,
        	bar width=5pt,
@@ -491,7 +501,7 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 %   Tufte Stacked Panel 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
-  IDEA tufte panel/.style={
+  chizen tufte panel/.style={
  ybar, 
   cycle list name = okabe-ito,
 	% Generic Bar Graph Options
@@ -538,7 +548,7 @@ range frame/.style={
 %   Tufte Box Plot 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
-  IDEA tufte box/.style={
+  chizen tufte box/.style={
 	% Colour Options
 	ybar = 0pt,
 	cycle list name = okabe-ito,
@@ -589,11 +599,11 @@ range frame/.style={
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   IDEA Box Plot 
+%   chizen box / Box Plot
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \pgfplotsset{
-    IDEA box/.style={
+    chizen box/.style={
     	% Colour Options
 	ybar = 0pt,
 	cycle list name = okabe-ito,
@@ -668,6 +678,33 @@ range frame/.style={
     },
     rshift scale/.initial=1em,
     lshift scale/.initial=1em,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   OLD NAMES (aliases) -- keep these: existing papers and the manual use them
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Each `IDEA ...' style is the `chizen ...' style under its old name. Use
+% the chizen names in new figures. Don't remove an alias without checking
+% that nothing in the manual or the starter paper still uses it.
+\pgfplotsset{
+  IDEA line/.style={chizen line},
+  IDEA bar/.style={chizen bar},
+  IDEA stacked bar/.style={chizen stacked bar},
+  IDEA Likert/.style={chizen Likert},
+  IDEA tufte panel/.style={chizen tufte panel},
+  IDEA tufte box/.style={chizen tufte box},
+  IDEA box/.style={chizen box},
+}
+% A cycle list cannot be aliased by name, so `IDEA lines' repeats the
+% entries of `chizen lines'. Keep the two lists identical.
+\pgfplotscreateplotcyclelist{IDEA lines}{
+{OkabeItoBlue, solid, mark=*, mark options={solid}},
+{OkabeItoVermillion, dashed, mark=square*, mark options={solid}},
+{OkabeItoBluishGreen, dotted, mark=triangle*, mark options={solid}},
+{OkabeItoReddishPurple, dashdotted, mark=diamond*, mark options={solid}},
+{OkabeItoOrange, densely dashed, mark=o, mark options={solid}},
+{OkabeItoSkyBlue, densely dotted, mark=square, mark options={solid}},
+{OkabeItoBlack, loosely dashed, mark=triangle, mark options={solid}},
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
