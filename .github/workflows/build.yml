@@ -1,0 +1,47 @@
+name: Build
+
+# Builds the CHI Zen manual and the starter paper on every push and pull
+# request, the way students compile them on Overleaf: pdfLaTeX with
+# -shell-escape (minted, markdown and svg run external programs).
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: Build PDFs
+    runs-on: ubuntu-latest
+    # Pinned TeX Live release (TL2025, frozen), close to Overleaf's current image.
+    container: texlive/texlive:TL2025-historic
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      # svg converts figures/*.svg with Inkscape; minted runs Python/Pygments.
+      - name: Install Inkscape and Python
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends inkscape python3 python3-pygments
+
+      - name: Build the manual (CHIZen-Manual-chi2022.tex)
+        run: latexmk -pdf -shell-escape -interaction=nonstopmode -halt-on-error -file-line-error CHIZen-Manual-chi2022.tex
+
+      - name: Build the starter paper (00-my-new-paper.tex)
+        run: latexmk -pdf -shell-escape -interaction=nonstopmode -halt-on-error -file-line-error 00-my-new-paper.tex
+
+      - name: Upload PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdfs
+          path: |
+            CHIZen-Manual-chi2022.pdf
+            00-my-new-paper.pdf
+          if-no-files-found: error
+
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs
+          path: '*.log'
