@@ -37,6 +37,21 @@ The following sections are framed in terms of problem/solution for common types 
 % - axes start at 0, unless explicitly justified (for a good reason!)
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Colour Palettes}
+\label{sec:palettes}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\texttt{CHIZen/figures.tex} defines several palettes as PGFPlots cycle lists (\texttt{cycle list name=...}): \texttt{okabe-ito} (the default for the bar, stacked bar, panel and box plot styles), \texttt{IDEA lines} (the Okabe--Ito colours with dash patterns and marks; the default for \texttt{IDEA line}), \texttt{waterloo-light}, \texttt{waterloo-dark}, \texttt{colorbrewer-RYB}, and \texttt{colorbrewer-RYB-plain}, plus the divergent Likert colours. To use another palette, set \texttt{cycle list name} in your figure's axis options. To \emph{get it right in black and white}, keep in mind that:
+
+\begin{itemize}
+    \item \textbf{None of the categorical palettes is greyscale-safe.} In \texttt{waterloo-light}, ArtsLight and SchoolRedLight, and MathLight and ScienceLight, print as almost the same grey; most of \texttt{waterloo-dark} prints as one mid grey; and \texttt{colorbrewer-RYB} has pairs of near-identical lightness too. In greyscale, tell series apart with marks, dash patterns, or direct labels as well as colour (\texttt{IDEA lines} varies all three).
+    \item \textbf{RYB2 (pale yellow) is almost invisible on white.} Use \texttt{colorbrewer-RYB}, which draws a darker outline around each fill, rather than \texttt{colorbrewer-RYB-plain}.
+    \item \textbf{The default, \texttt{okabe-ito}, is colour-blind safe}: the Okabe--Ito palette stays distinguishable with the common forms of colour blindness. It is not greyscale-safe either (its orange and sky blue print as the same grey), so the same advice about marks and labels applies. Its yellow is light on white, so it is drawn with a darker outline.
+\end{itemize}
+
+
+
 
 
 
@@ -59,6 +74,7 @@ Bar graphs are probably the most commonly-used data visualization at CHI. They a
         symbolic x coords={non-occluded,occluded},
         xtick = {non-occluded,occluded},
         enlarge x limits=0.5,
+        xlabel = {Occlusion},
 	    ymin = 0, ymax = 10,
         ylabel = {Selection Time (s)},
         width=\columnwidth,
@@ -100,7 +116,7 @@ coordinates {(non-occluded, 2.10)  +- (.42,.42)};
 	% X Axis options (xmin, xmax, xtick={})
     xtick={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34},
     xticklabels={Play Song, Jump to Movie, Jump to Floor Level, Play Movie, Pause Song, Replay Song, Activate Search, Zoom In, Zoom Out, Favorite Item, Activate Search, Next Movie, Previous Movie, Pan Up, Pan Down, Pan Left, Pan Right, Jump to Flight, Jump to Store, Toggle View, Home Screen, Floor Up, Floor Down, Next Song, Previous Song, Page Left, Page Right, Reset Location, Clear Filter, Show Menu, Volume up, Volume Down, Filter Delayed Flights, Jump to Menu Item},
-    %xlabel={ },
+    xlabel={Task},
     %xlabel near ticks, 
     xticklabel style={rotate=45,anchor=north east,font=\small},
 	% Y Axis options (ymin, ymax, ytick={})
@@ -113,7 +129,7 @@ coordinates {(non-occluded, 2.10)  +- (.42,.42)};
 	enlarge x limits = {abs=0.25cm},
     % legend
     legend image code/.code={\draw[#1] rectangle (0.25cm,0.25cm);},
-    legend style={at={(xlabel.south)},yshift=2ex, xshift=-2ex, anchor=north, legend columns = 4, draw=none, column sep = 0.25cm},
+    legend style={at={(xlabel.south)},yshift=-0.5ex, xshift=-2ex, anchor=north, legend columns = 4, draw=none, column sep = 0.25cm},
        ]
 
 
@@ -838,6 +854,7 @@ A \emph{lot} of HCI research involves questionnaires, and interpreting diference
 \begin{tikzpicture}[baseline]
 \begin{axis}[IDEA line,
 	% Graph Options
+	no markers, % dense monthly data: the dash pattern tells the series apart
 	width=.475*\columnwidth,
 	height=4cm,
 	title=\texttt{r/stop\-drinking},
@@ -870,6 +887,7 @@ A \emph{lot} of HCI research involves questionnaires, and interpreting diference
 \begin{tikzpicture}[baseline]
 \begin{axis}[IDEA line,
 	% Graph Options
+	no markers, % dense monthly data: the dash pattern tells the series apart
 	width=.475*\columnwidth,	
 	height=4cm,
 	title=\texttt{r/Opiates\-Recovery},
