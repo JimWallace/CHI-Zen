@@ -1,5 +1,21 @@
-%% The first command in your LaTeX source must be the \documentclass command.
-\documentclass[sigconf,manuscript,screen]{acmart}
+%%
+%% The CHI Zen manual.
+%%
+%% Compile with LuaLaTeX (Overleaf: Menu > Settings > Compiler > LuaLaTeX,
+%% TeX Live version 2026 or later). See Section "Overleaf Settings".
+%%
+%% \DocumentMetadata must come before \documentclass. It switches on a
+%% tagged (accessible) PDF that aims at PDF/UA-2, plus PDF/A-4f for
+%% archiving, as recommended by the acmart documentation (v2.17+).
+\DocumentMetadata{
+  lang          = en,
+  pdfstandard   = ua-2,
+  pdfstandard   = a-4f,
+  tagging       = on,
+  tagging-setup = {math/setup=mathml-SE},
+}
+
+\documentclass[sigconf,manuscript,screen,natbib=false]{acmart}
 
 % Load CHIZen stuff
 \input{CHIZen/init.tex}
@@ -8,17 +24,17 @@
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
   \providecommand\BibTeX{{%
-    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+    Bib\TeX}}}
 
 %% Rights management information.  This information is sent to you
 %% when you complete the rights form.  These commands have SAMPLE
 %% values in them; it is your responsibility as an author to replace
 %% the commands and values with those provided to you when you
 %% complete the rights form.
-% \setcopyright{acmcopyright}
-% \copyrightyear{2020}
-% \acmYear{2020}
-% \acmDOI{XX.XXXX/XXXXXXX.XXXXXXX}
+% \setcopyright{acmlicensed}
+% \copyrightyear{2027}
+% \acmYear{2027}
+% \acmDOI{XXXXXXX.XXXXXXX}
 
 
 %%
@@ -48,20 +64,10 @@
 %% the next command will enable that style.
 %%\citestyle{acmauthoryear}
 
-%\usepackage[utf8]{inputenc}
-% \usepackage[english]{babel}% recommended
-% \usepackage{csquotes}% recommended
-% \usepackage{xpatch}% recommended
-% \usepackage[%
-%     style=ACM-Reference-Format,
-%     backend=biber,
-%     doi=false,
-%     isbn=false,
-%     maxcitenames=2,
-%     mincitenames=1,
-%     sortcites]{biblatex}
-% \addbibresource{bibliography.bib}
-% \AtBeginBibliography{\footnotesize}
+% References: biblatex with ACM's styles, run with biber, as in the starter
+% paper. natbib=true keeps \citet and \citep working.
+\usepackage[datamodel=acmdatamodel, style=acmnumeric, backend=biber, natbib=true]{biblatex}
+\addbibresource{manual/bibliography.bib}
 
 
 %%
@@ -157,8 +163,7 @@
 \input{manual/10-acknowledgements.tex}
 
 
-\bibliographystyle{ACM-Reference-Format}
-\bibliography{manual/bibliography.bib}
+\printbibliography
 
 
 %\input{submission/11-appendix.tex}

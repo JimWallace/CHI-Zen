@@ -1,44 +1,117 @@
 name: Build
 
 # Builds the CHI Zen manual and the starter paper on every push and pull
-# request, the way students compile them on Overleaf: pdfLaTeX with
-# -shell-escape (minted, markdown and svg run external programs).
+# request, the way students should compile them on Overleaf: LuaLaTeX on
+# TeX Live 2026 (see the manual, Section "Overleaf Settings"). The PDFs are tagged (\DocumentMetadata), so
+# they are then validated with veraPDF against PDF/UA-2 (accessibility) and
+# PDF/A-4f (archiving). A second job checks that both documents still
+# compile with pdfLaTeX, Overleaf's default compiler.
 
 on:
   push:
   pull_request:
 
+env:
+  VERAPDF_VERSION: "1.30.4"
+  VERAPDF_SHA256: "04415ef3f149526a3048b9889723e81320ddf013bd891bcc7f0f297f3eadcc23"
+
 jobs:
   build:
-    name: Build PDFs
+    name: Build PDFs (${{ matrix.engine }})
     runs-on: ubuntu-latest
-    # TeX Live 2026, pinned by digest: the same snapshot as Jim's CV repo,
-    # matching what Overleaf compiles new projects with.
+    # TeX Live 2026 (2026-10-01 snapshot), pinned by digest; Overleaf is on
+    # TeX Live 2026 too.
     container: ghcr.io/xu-cheng/texlive-debian:20261001@sha256:78ac2204b8df113aca0561e8f173ad5b89ee51e90795173d2fe9bcf0fbce162e
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - engine: lualatex
+            flags: ""
+          # markdown needs shell escape under pdfLaTeX (Overleaf enables it).
+          - engine: pdflatex
+            flags: "-shell-escape"
     steps:
       - name: Check out
         uses: actions/checkout@v4
 
-      # svg converts figures/*.svg with Inkscape; minted runs Python/Pygments.
-      - name: Install Inkscape and Python
+      # minted runs Python/Pygments; veraPDF needs Java; svg would need
+      # Inkscape (not used by the documents at the moment).
+      - name: Install Python, Java and Inkscape
         run: |
           apt-get update
-          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends inkscape python3 python3-pygments
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            inkscape python3 python3-pygments python3-pip default-jre-headless unzip curl ca-certificates
 
-      - name: Build the manual (CHIZen-Manual-chi2022.tex)
-        run: latexmk -pdf -shell-escape -interaction=nonstopmode -halt-on-error -file-line-error CHIZen-Manual-chi2022.tex
+      - name: Build the manual (CHIZen-Manual.tex)
+        run: latexmk -${{ matrix.engine }} ${{ matrix.flags }} -interaction=nonstopmode -halt-on-error -file-line-error CHIZen-Manual.tex
 
       - name: Build the starter paper (00-my-new-paper.tex)
-        run: latexmk -pdf -shell-escape -interaction=nonstopmode -halt-on-error -file-line-error 00-my-new-paper.tex
+        run: latexmk -${{ matrix.engine }} ${{ matrix.flags }} -interaction=nonstopmode -halt-on-error -file-line-error 00-my-new-paper.tex
+
+      - name: List LaTeX and biber warnings
+        run: |
+          grep -h -E 'Warning|^WARN' *.log *.blg 2>/dev/null | sed 's/ on input line [0-9]*//' | sort | uniq -c | sort -rn || true
+
+      - name: Install veraPDF ${{ env.VERAPDF_VERSION }}
+        if: matrix.engine == 'lualatex'
+        run: |
+          curl -sSL -o verapdf.zip "https://software.verapdf.org/releases/1.30/verapdf-greenfield-${VERAPDF_VERSION}-installer.zip"
+          echo "${VERAPDF_SHA256}  verapdf.zip" | sha256sum -c -
+          unzip -q verapdf.zip -d verapdf-installer
+          cat > auto-install.xml <<'XML'
+          <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+          <AutomatedInstallation langpack="eng">
+            <com.izforge.izpack.panels.htmlhello.HTMLHelloPanel id="welcome"/>
+            <com.izforge.izpack.panels.target.TargetPanel id="install_dir">
+              <installpath>/opt/verapdf</installpath>
+            </com.izforge.izpack.panels.target.TargetPanel>
+            <com.izforge.izpack.panels.packs.PacksPanel id="sdk_pack_select">
+              <pack index="0" name="veraPDF GUI" selected="true"/>
+              <pack index="1" name="veraPDF Batch files" selected="true"/>
+              <pack index="2" name="veraPDF Validation model" selected="false"/>
+              <pack index="3" name="veraPDF Documentation" selected="false"/>
+              <pack index="4" name="veraPDF Sample Plugins" selected="false"/>
+            </com.izforge.izpack.panels.packs.PacksPanel>
+            <com.izforge.izpack.panels.install.InstallPanel id="install"/>
+            <com.izforge.izpack.panels.finish.FinishPanel id="finish"/>
+          </AutomatedInstallation>
+          XML
+          java -jar verapdf-installer/*/verapdf-izpack-installer-*.jar auto-install.xml
+          /opt/verapdf/verapdf --version
+
+      # Both documents must validate as PDF/UA-2 and PDF/A-4f. (Avoid
+      # subfigures: subcaption is not yet compatible with tagging.)
+      - name: Validate with veraPDF (PDF/UA-2, PDF/A-4f)
+        if: matrix.engine == 'lualatex'
+        run: |
+          status=0
+          check () {  # file flavour required
+            if /opt/verapdf/verapdf --flavour "$2" --format text "$1"; then
+              echo "::notice::$1 is valid $2"
+            elif [ "$3" = required ]; then
+              echo "::error::$1 is not valid $2"; status=1
+              /opt/verapdf/verapdf --flavour "$2" --format text -v --maxfailuresdisplayed 3 "$1" | head -60 || true
+            else
+              echo "::warning::$1 is not valid $2 (known issue: subcaption is not yet compatible with tagging)"
+              /opt/verapdf/verapdf --flavour "$2" --format text -v --maxfailuresdisplayed 3 "$1" | head -60 || true
+            fi
+          }
+          check 00-my-new-paper.pdf ua2 required
+          check 00-my-new-paper.pdf 4f  required
+          check CHIZen-Manual.pdf   ua2 required
+          check CHIZen-Manual.pdf   4f  required
+          exit $status
 
       - name: Upload PDFs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pdfs
+          name: pdfs-${{ matrix.engine }}
           path: |
-            CHIZen-Manual-chi2022.pdf
+            CHIZen-Manual.pdf
             00-my-new-paper.pdf
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Show LaTeX errors on failure
         if: failure()
@@ -49,5 +122,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: logs
-          path: '*.log'
+          name: logs-${{ matrix.engine }}
+          path: |
+            *.log
+            *.blg

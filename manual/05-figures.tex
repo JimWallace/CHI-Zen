@@ -69,6 +69,7 @@ Bar graphs are probably the most commonly-used data visualization at CHI. They a
 
 
 \begin{figure}[b!]
+\Description{Bar chart of mean selection time in seconds (y axis, 0 to 10) by occlusion (x axis: non-occluded and occluded targets), with an error bar on each bar. Non-occluded targets: Smartcasting 2.10 s and Tiltcasting 3.24 s. Occluded targets: Tiltcasting 4.0 s and Depth Cursor 6.8 s. Depth Cursor has the longest bar and the largest error bar.}
 \begin{tikzpicture}
 \begin{axis}[IDEA bar,
         symbolic x coords={non-occluded,occluded},
@@ -107,6 +108,7 @@ coordinates {(non-occluded, 2.10)  +- (.42,.42)};
 
 
 \begin{figure*}[tb!]
+\Description{Bar chart of agreement rate (y axis, 0 to 1) for each of 34 gesture tasks (x axis, labels rotated), sorted from highest to lowest agreement. Bar shade shows the agreement category: three tasks have high agreement (Play Song 0.43, Jump to Movie 0.34, Jump to Floor Level 0.30), 16 tasks from Play Movie (0.26) to Jump to Store (0.11) have medium agreement, and 15 tasks from Toggle View (0.08) to Jump to Menu Item (0.01) have low agreement. An orange segment stacked on top of each bar shows the agreement rate when gestures are grouped by type and length; it ranges from 0.03 (Play Song) to 0.61 (Jump to Flight) and is larger than the visual-trace agreement for 29 of the 34 tasks.}
 %\centerline{
 %\includegraphics[width=1.75\columnwidth]{figures/gesture-agreement.png}}
 \begin{tikzpicture}
@@ -381,7 +383,7 @@ Treatment    Z0_posaffect    Z0_negaffect    Z0_attentive    Z1_posaffect    Z1_
 }\SZU
 
 \begin{figure}[b!]
-\begin{subfigure}{.45\textwidth}
+\Description{Two box plots of z-scores at Baseline, Stressor and Game, each with Nature (green) and Urban (orange) boxes side by side. Heart rate: medians rise from about -0.3 at Baseline to about 0.6 at Stressor and fall to about -0.6 during the Game in both conditions. Galvanic skin response: medians rise from about -1.0 at Baseline to about 0.3 at Stressor and are about 0.1 (Nature) and 0.2 (Urban) during the Game. Nature and Urban boxes overlap at every stage.}
 \begin{tikzpicture}
 \begin{axis}[
     IDEA box,
@@ -524,12 +526,12 @@ table[y=P2_GSR] {\SPU};
         |[fill=Nature]| & |[font=\small\sffamily]|Nature & |[fill=white]| & |[fill=Urban]| & |[font=\small\sffamily]|Urban \\
     };
 \end{tikzpicture}
-\caption{A summary of Heart Rate and Galvanic Skin Response data collected during the study. Our analysis revealed a significant increase between Baseline and Stressor data, and a significant decrease between Stressor and Game data for both measures.}
+\caption{A summary of Heart Rate and Galvanic Skin Response data collected during the study. Our analysis revealed a significant increase between Baseline and Stressor data, and a significant decrease between Stressor and Game data for both measures, as anticipated from our experimental design. We found no significant differences between the Nature and Urban game settings.}
 \label{fig:physio}
+\end{figure}
 
-\end{subfigure}
-\hfill
-\begin{subfigure}{.45\textwidth}
+\begin{figure}[b!]
+\Description{Three box plots of self-reported ratings on a 1 to 5 scale at Baseline, Stressor and Game, each with Nature (green) and Urban (orange) boxes side by side. Positive affect: medians drop at Stressor (Nature from about 2.8 to 1.8, Urban from 3.0 to 1.4) and recover during the Game (about 2.4 and 3.3). Negative affect: medians rise at Stressor (Nature from about 1.1 to 1.7, Urban from 1.1 to 2.3) and return to about 1.1 during the Game. Attentiveness: medians are about 3.0, 2.3 and 3.0 for Nature and 3.5, 3.0 and 2.8 for Urban. Nature and Urban boxes overlap at every stage.}
 \begin{tikzpicture}
 \begin{axis}[
     IDEA box,
@@ -713,14 +715,8 @@ table[y=Z2_attentive] {\SZN};
    
 \end{axis}
 \end{tikzpicture}
-\caption{A summary of Positive Affect, Negative Affect, and Attentiveness self-reported ratings collected during the study. All measures were aggregated across 5-point Likert scale questions from the ZIPERS questionnaire.}
+\caption{A summary of Positive Affect, Negative Affect, and Attentiveness self-reported ratings collected during the study. All measures were aggregated across 5-point Likert scale questions from the ZIPERS questionnaire. As with the physiological measures (\autoref{fig:physio}), stress increased after the Stressor math test and decreased during gameplay, and we found no significant differences between the Nature and Urban game settings.}
 \label{fig:selfreports}
-
-\end{subfigure}
-\caption{Summary of physiological (\autoref{fig:physio}) and self-reported (\autoref{fig:selfreports}) dependent measures collected during our experiment. For both sets of measures, we observed the anticipated increase in stress following the Stressor math test followed by a decrease during gameplay. These trends are indicative of our experimental design working as intended. However, we found no significant differences between the Nature and Urban game settings for any of our measures.}
-\label{fig:summary}
-
-
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -737,6 +733,7 @@ table[y=Z2_attentive] {\SZN};
 A \emph{lot} of HCI research involves questionnaires, and interpreting diferences in questionnaire respones. For instance, Likert scale questions are very common. My preference for visualizing Likert scale responses is a stacked divergent bar graph (e.g., \autoref{fig:avatar_identification}), where responses are stacked into a bar, with neutral responses lined up at the graph's origin. This type of graph has a few properties that make it useful: in particular, readers can get a quick sense of `how positive' or `how negative' responses were based on the bar's position, while still being able to look at how many responses fell into each category. 
 
 \begin{figure}[b!]
+\Description{Diverging stacked bar chart of 7-point Likert responses to six avatar identification items, with two bars per item: Cleric (shades from blue for disagree to green for agree) and Monster (shades from red for disagree to purple for agree). Disagreement extends to the left of a centre line and agreement to the right, with neutral responses split across it; the x axis is the percentage of responses, 0 to 100 in each direction. Percentage agreeing, Cleric versus Monster: Connectedness 61 versus 28; Refer to avatar as we 61 versus 17; Physical similarity 22 versus 11; Personality similarity 78 versus 72; Physical ideal 44 versus 17; Ideal personality 83 versus 50. Asterisks mark Connectedness and Refer to avatar as we.}
 \begin{tikzpicture}
 \pgfplotstableread[col sep = comma]{data/Cleric_AvatarIdentificationStacked.csv}\ClericIdentificationData
 \pgfplotstableread[col sep = comma]{data/Monster_AvatarIdentificationStacked.csv}\MonsterIdentificationData
@@ -816,8 +813,8 @@ A \emph{lot} of HCI research involves questionnaires, and interpreting diference
     %\addlegendimage{only marks, mark=o}
     %\legend{Neutral, Agree, Strongly Agree, Disagree,Strongly Disagree}
     after end axis/.code={
-        \node at (axis cs:80,Ava_Conn) [anchor=east, ,font=\tiny] {\AsteriskBold};
-        \node at (axis cs:80,Ava_WE) [anchor=east, font=\tiny] {\AsteriskBold};
+        \node at (axis cs:80,Ava_Conn) [anchor=east, ,font=\tiny] {\textbf{*}};
+        \node at (axis cs:80,Ava_WE) [anchor=east, font=\tiny] {\textbf{*}};
         %\draw [white] (axis cs:0,AvaVsPersIdeal) -- (axis cs:0,Ava_Conn);
         %\draw [white] (axis cs:-50,AvaVsPersIdeal) -- (axis cs:-50,Ava_Conn);
         %\draw [white] (axis cs:50,AvaVsPersIdeal) -- (axis cs:50,Ava_Conn);
@@ -851,6 +848,7 @@ A \emph{lot} of HCI research involves questionnaires, and interpreting diference
 
 
 \begin{figure}[b!]
+\Description{Two line charts of monthly counts from January 2014 to December 2017, with distinct users as a solid blue line and active threads as a dashed orange line. r/stopdrinking (left): distinct users rise from about 1,500 to about 6,000 and active threads from about 1,500 to about 5,400. r/OpiatesRecovery (right): distinct users rise from about 360 to about 770, peaking near 810, and active threads from about 280 to about 380, peaking near 480. Both lines in both charts trend upward with month-to-month fluctuation.}
 \begin{tikzpicture}[baseline]
 \begin{axis}[IDEA line,
 	% Graph Options
@@ -934,6 +932,7 @@ A \emph{lot} of HCI research involves questionnaires, and interpreting diference
 
 
 \begin{figure*}[b!]
+\Description{Five bar-chart panels stacked vertically and sharing an x axis of years from 1990 to 2015, one panel per type of paper, each bar a count of papers. Bibliographic: 20 in 1990, then between 0 and 4. Not Empirical: highest in 1992 (55) and 1998 (54), falling to single digits after 2010 except 31 in 2011. Explanatory: 3 in 1990, rising to a peak of 29 in 2006, then between 8 and 25. Design and Evaluation, the only panel in blue: between 10 and 39 with no clear trend. Descriptive: rising from 23 in 1990 to 58 in 2015.}
 \begin{center}
 \begin{tikzpicture}
 \begin{groupplot}[
@@ -1099,6 +1098,7 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
 \pgfdeclarelayer{background}
 \pgfsetlayers{background,main}
 \begin{figure}[b!]
+\Description{PRISMA flow diagram with four stages labelled down the left side: Identification, Screening, Eligibility and Included. Records identified through database searching (N=1035) lead to records after duplicates removed (N=1030), then records screened (N=1030), of which 239 records were excluded. 791 full-text articles were assessed for eligibility, of which 731 were excluded with reasons. 60 studies were included in qualitative and quantitative synthesis.}
 {
 \footnotesize
 \begin{tikzpicture}
@@ -1147,6 +1147,7 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
 - supported by the \texttt{pgfgantt} package
 
 \begin{figure}[b!]
+\Description{Gantt chart of a research plan from May 2018 to April 2023 under five yearly headings, Year 1: 2018 -- 2019 to Year 5: 2022 -- 2023. Objective 1, Design Framework (May 2018 to April 2021): literature review, artifact review, framework development, then mentoring and publication. Objective 2, Interaction Mechanics (May 2020 to April 2022): design, development, lab study, then analysis and publication. Objective 3, In-Situ Evaluation (May 2021 to April 2023): requirements gathering, development, ecological validation, then analysis and publication. Within each objective the activities follow one another with small overlaps, and the objectives overlap by about a year.}
 \begin{ganttchart}[
     x unit=.208cm,
     y unit title=0.4cm,
@@ -1179,11 +1180,11 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
    ]{2018-05}{2023-04}
 
     
-    \gantttitle{\textbf{Year 1: 2019 -- 2020}}{12}
-    \gantttitle{\textbf{Year 2: 2020 -- 2021}}{12}
-    \gantttitle{\textbf{Year 3: 2021 -- 2022}}{12}
-    \gantttitle{\textbf{Year 4: 2022 -- 2023}}{12}
-    \gantttitle{\textbf{Year 5: 2023 -- 2024}}{12}
+    \gantttitle{\textbf{Year 1: 2018 -- 2019}}{12}
+    \gantttitle{\textbf{Year 2: 2019 -- 2020}}{12}
+    \gantttitle{\textbf{Year 3: 2020 -- 2021}}{12}
+    \gantttitle{\textbf{Year 4: 2021 -- 2022}}{12}
+    \gantttitle{\textbf{Year 5: 2022 -- 2023}}{12}
                 
 \ganttset{progress label text={}, link/.style={black, -to}}
 
