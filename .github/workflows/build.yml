@@ -22,7 +22,15 @@ jobs:
       - name: Install Inkscape and Python
         run: |
           apt-get update
-          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends inkscape python3 python3-pygments
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends inkscape python3 python3-pygments python3-pip
+
+      # minted v3 calls the `latexminted` executable, which this image does
+      # not put on PATH; install it from PyPI (Overleaf ships it).
+      - name: Install latexminted
+        run: |
+          echo "before: $(command -v latexminted || echo 'not on PATH')"
+          pip3 install --break-system-packages latexminted
+          command -v latexminted
 
       - name: Build the manual (CHIZen-Manual-chi2022.tex)
         run: latexmk -pdf -shell-escape -interaction=nonstopmode -halt-on-error -file-line-error CHIZen-Manual-chi2022.tex
