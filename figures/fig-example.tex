@@ -1,0 +1,20 @@
+% An example figure for the starter paper (made-up numbers): replace it
+% with your own. It is drawn with pgfplots in draft mode and saved as
+% figures/tikz/fig-example.pdf, which final mode includes instead. See
+% \chizenfigure in CHIZen/externalize.tex and the CHI Zen manual, Section
+% "Camera-Ready for ACM TAPS".
+\begin{tikzpicture}
+\begin{axis}[IDEA bar,
+        symbolic x coords={A,B,C},
+        xtick={A,B,C},
+        xticklabels={Condition A, Condition B, Condition C},
+        xlabel={Condition},
+        ymin=0, ymax=10,
+        ylabel={Task Time (s)},
+        width=\columnwidth,
+        height=5cm,
+]
+\addplot+[draw=none, error bars/.cd, y dir=both, y explicit, error bar style={black}]
+coordinates {(A,4.2) +- (0.6,0.6) (B,6.1) +- (0.9,0.9) (C,3.5) +- (0.5,0.5)};
+\end{axis}
+\end{tikzpicture}%

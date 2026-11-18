@@ -10,10 +10,12 @@
 $pdf_mode = 4;          # 4 = lualatex
 $bibtex_use = 2;        # run BibTeX when needed, delete .bbl on clean
 
-# With LuaLaTeX, -shell-escape is not needed: minted runs `latexminted',
-# which TeX Live allows in restricted shell escape, and markdown runs its Lua
-# code directly. pdfLaTeX needs -shell-escape for markdown (Overleaf turns
-# shell escape on anyway), and so does the svg package.
+# Shell escape: TikZ `external' needs it to save each \chizenfigure as a PDF
+# in figures/tikz/ (draft mode; see CHIZen/externalize.tex). Overleaf turns
+# it on anyway. pdfLaTeX also needs it for markdown and the svg package.
+# (minted alone would not: it runs `latexminted', which TeX Live allows in
+# restricted shell escape.)
+$lualatex = 'lualatex -shell-escape %O %S';
 $pdflatex = 'pdflatex -shell-escape %O %S';
 
 # `latexmk' with no file names builds both documents.
@@ -21,3 +23,5 @@ $pdflatex = 'pdflatex -shell-escape %O %S';
 
 # Extra files to delete on `latexmk -c'.
 $clean_ext .= ' %R.markdown.* _markdown_%R/* _minted* svg-inkscape/*';
+# TikZ `external' bookkeeping (the figure PDFs in figures/tikz/ are kept).
+$clean_ext .= ' %R.auxlock figures/tikz/*.md5 figures/tikz/*.dpth figures/tikz/*.log';

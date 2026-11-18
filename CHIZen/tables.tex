@@ -1,7 +1,21 @@
 %appendix tables
+\ifchizenfinal
+% Final mode: longtable and multicol are not on ACM's TAPS list, and acmart
+% already loads float.
+\makeatletter
+\NewDocumentEnvironment{longtable}{+b}{\PackageError{CHIZen}{longtable is
+  not available in final mode}{ACM's TAPS does not accept longtable. Use a
+  table (or table*) environment instead. See the CHI Zen manual, Section
+  "Camera-Ready for ACM TAPS".}}{}
+\NewDocumentEnvironment{multicols}{m +b}{\PackageError{CHIZen}{multicol is
+  not available in final mode}{ACM's TAPS does not accept multicol. Use
+  acmart's two-column layout or a table instead.}}{}
+\makeatother
+\else
 \usepackage{longtable}
 \usepackage{float}
 \usepackage{multicol}
+\fi
 \usepackage{colortbl}
 
 
@@ -12,8 +26,10 @@
 % loaded when tagging is off; with tagging on, \cdashlinelr{2-4} draws a
 % solid booktabs \cmidrule instead, and \hdashline/\cdashline are not
 % available.
+% arydshln is not on ACM's TAPS list either, so final mode always uses
+% the \cmidrule.
 \makeatletter
-\IfDocumentMetadataTF{%
+\ifchizenfinal\expandafter\@firstoftwo\else\expandafter\IfDocumentMetadataTF\fi{%
 \newcommand{\cdashlinelr}[1]{\cmidrule(lr){#1}}
 }{%
 \usepackage{arydshln}

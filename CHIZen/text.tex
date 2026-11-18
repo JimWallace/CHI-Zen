@@ -6,6 +6,18 @@
 % CJKutf8 only works with pdfLaTeX, so under LuaLaTeX (the engine we use
 % for tagged, accessible PDFs) CJK text is set in the Harano Aji Mincho
 % font that ships with TeX Live (and therefore with Overleaf).
+% Final mode (TAPS) loads neither iftex nor fontspec (acmart loads both
+% under LuaLaTeX) nor CJKutf8 (not on ACM's list), so there \cjk needs
+% LuaLaTeX.
+\ifchizenfinal
+\ifLuaTeX
+  \newfontfamily\chizenCJKfont{HaranoAjiMincho-Regular.otf}
+  \newcommand{\cjk}[1]{{\chizenCJKfont #1}}
+\else
+  \newcommand{\cjk}[1]{\PackageError{CHIZen}{\string\cjk\space needs LuaLaTeX in final mode}{%
+    CJKutf8 is not on ACM's TAPS list. Compile with LuaLaTeX.}}
+\fi
+\else
 \usepackage{iftex}
 \ifLuaTeX
   \usepackage{fontspec}
@@ -15,12 +27,13 @@
   \usepackage{CJKutf8}
   \newcommand{\cjk}[1]{\begin{CJK}{UTF8}{min}#1\end{CJK}}
 \fi
+\fi
 
 
 % ACCESSIBILITY
 % The old `accessibility' package is obsolete and must not be loaded.
 
-% MARKDOWN
+% MARKDOWN (draft mode only: ACM's TAPS does not accept it)
 %
 % TODO: Explore how useful this is for general-purpose HCI papers
 %       - Tables/Figures need to be a separate thing, but useful for everything else?
@@ -28,6 +41,7 @@
 % markdown v3 loads amssymb, which clashes with the newtxmath fonts that
 % acmart already loads (both define \Bbbk etc.). newtxmath provides all the
 % amssymb symbols, so tell LaTeX amssymb is already there.
+\ifchizenfinal\else
 \makeatletter
 \@ifpackageloaded{newtxmath}{\@namedef{ver@amssymb.sty}{2013/01/14 v3.01 (symbols provided by newtxmath)}}{}
 \makeatother
@@ -38,15 +52,60 @@
 
 \usepackage{paracol}
 \usepackage{minted}
+\fi
+\ifchizenfinal
+% Final mode: markdown, paracol and minted are not on ACM's TAPS list.
+% Using them stops with an error; the body of the environment is skipped
+% (with the comment package, which acmart loads, so verbatim text is fine).
+\makeatletter
+\def\chizen@textnotinfinal#1#2{%
+  \PackageError{CHIZen}{#1 is not available in final mode}{%
+    ACM's TAPS does not accept #1, so CHI Zen does not load it when the
+    paper says \string\def\string\chizenmode{final}. #2 See the CHI Zen
+    manual, Section "Camera-Ready for ACM TAPS".}}
+\excludecomment{markdown}
+\AddToHook{env/markdown/begin}{\chizen@textnotinfinal{markdown}{Rewrite
+  the Markdown block in LaTeX.}}
+\NewDocumentCommand\markdownInput{O{}m}{\chizen@textnotinfinal{markdown}{Rewrite
+  #2 in LaTeX.}}
+\excludecomment{minted}
+\AddToHook{env/minted/begin}{\chizen@textnotinfinal{minted}{Use the
+  listings package (\string\usepackage{listings} and a lstlisting
+  environment) instead.}}
+\NewDocumentCommand\mint{}{\chizen@textnotinfinal{minted (\string\mint)}{Use
+  \string\lstinline\space from the listings package instead.}}
+\NewDocumentCommand\mintinline{}{\chizen@textnotinfinal{minted (\string\mintinline)}{Use
+  \string\lstinline\space from the listings package instead.}}
+\NewDocumentCommand\inputminted{O{}mm}{\chizen@textnotinfinal{minted (\string\inputminted)}{Use
+  \string\lstinputlisting\space from the listings package instead.}}
+\NewDocumentCommand\usemintedstyle{O{}m}{}
+\NewDocumentEnvironment{paracol}{m +b}{\chizen@textnotinfinal{paracol}{Use
+  a table or acmart's two-column layout instead.}}{}
+\makeatother
+\fi
 \usepackage{fontawesome5}
 
 % This package is useful for revisions! 
+% It defines \comment, which acmart's comment package defines too: keep
+% comment's \comment and rename changes' one to \SCcomment.
+\ifchizenfinal
+% Final mode: savesym is not on ACM's TAPS list, so do the same by hand,
+% and accept every change ([final]: no colours or struck-out text in the
+% camera-ready version). commentmarkup=footnote keeps changes from loading
+% todonotes, which loads TikZ.
+\let\chizenSavedComment\comment
+\let\comment\undefined
+\usepackage[final,commentmarkup=footnote]{changes}
+\let\SCcomment\comment
+\let\comment\chizenSavedComment
+\else
 \usepackage{savesym}
 \savesymbol{comment}
 \let\comment\undefined % savesym leaves \comment as \relax, which changes v4 treats as defined
 \usepackage{changes}
 %\usepackage[final]{changes}
 \restoresymbol{SC}{comment}
+\fi
 
 
 % Mark likes to add these options to his papers .... worth considering
@@ -81,9 +140,26 @@
 % ----------------------------
 
 % scale up the sc font slightly
+\ifchizenfinal
+% Final mode: letltxmacro, lipsum and relsize are not on ACM's TAPS list.
+% \NewCommandCopy is built into LaTeX; \chizenrelscale does what
+% \relscale does.
+\makeatletter
+\NewCommandCopy{\oldscshape}{\scshape}
+\def\chizenrelscale#1{%
+  \@tempdima=#1\dimexpr\f@size pt\relax
+  \@tempdimb=#1\dimexpr\f@baselineskip\relax
+  \edef\chizen@tmp{\noexpand\fontsize{\the\@tempdima}{\the\@tempdimb}}%
+  \chizen@tmp\selectfont}
+\renewcommand{\scshape}[1]{\oldscshape\chizenrelscale{1.2}#1}
+\NewDocumentCommand\lipsum{O{}}{\PackageError{CHIZen}{\string\lipsum\space
+  is not available in final mode}{Replace the placeholder text with your own.}}
+\makeatother
+\else
 \usepackage{letltxmacro,lipsum,relsize}
 \LetLtxMacro{\oldscshape}{\scshape}
 \renewcommand{\scshape}[1]{\oldscshape\relscale{1.2}#1}
+\fi
 
 % an experiment factor/variable
 \newcommand{\f}[1]{\mbox{{\textsc{#1}}}\xspace}

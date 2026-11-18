@@ -1,0 +1,61 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  FIGURE PDFs (draft mode)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% ACM's TAPS does not accept pgfplots or TikZ in a camera-ready paper, so
+% every figure has to reach TAPS as a PDF. Write your figures with
+%
+%   \begin{figure}
+%     \Description{...alt text...}
+%     \chizenfigure{fig-bargraph}{%
+%       \begin{tikzpicture} ... \end{tikzpicture}%    (or \input{figures/fig-bargraph.tex})
+%     }
+%     \caption{...}
+%     \label{fig:bargraph}
+%   \end{figure}
+%
+% In draft mode (this file) the picture is drawn as usual, and TikZ's
+% `external' library also saves it as figures/tikz/fig-bargraph.pdf. In
+% final mode (CHIZen/final.tex) the same line includes that PDF instead,
+% with \includegraphics, so TikZ is not needed.
+%
+% Only pictures inside \chizenfigure are saved (`only named'); any other
+% tikzpicture is drawn as before, but will not work in final mode.
+%
+% Saving a picture runs LaTeX once more on the whole paper, so it needs
+% shell escape: Overleaf has it on; locally, latexmkrc turns it on. TikZ
+% runs the same engine as the paper (lualatex or pdflatex). Without shell
+% escape the figures are drawn but not saved (a warning says so).
+%
+% A figure is saved again when its code changes. TikZ does not notice
+% changes to a data file (data/*.csv) or to a style in CHIZen/figures.tex:
+% then delete figures/tikz/<name>.md5 (on Overleaf: Recompile from
+% scratch). The GitHub workflow .github/workflows/figures.yml always
+% rebuilds every figure and commits the PDFs.
+%
+
+\usetikzlibrary{external}
+
+\makeatletter
+\ifnum\pdf@shellescape=1
+  \tikzexternalize[prefix=\chizenfigurepath, only named=true]
+  \long\def\chizenfigure#1#2{\tikzsetnextfilename{#1}#2}
+  % In the run that saves a picture, LaTeX ships out exactly one page (the
+  % picture). Say so, or LaTeX adds a "Temporary page!" to the PDF to hold
+  % its end-of-document material (e.g. the tagging structure).
+  \tikzifexternalizing{\AtBeginDocument{\gdef\@abspage@last{1}}}{}
+  % Include the saved PDF with \includegraphics (TikZ uses \pgfimage), so
+  % that, as in final mode, the figure is tagged as a Figure and gets the
+  % \Description as its alt text (CHIZen/accessibility.tex).
+  \pgfkeys{/pgf/images/include external/.code={\includegraphics{#1}}}
+\else
+  \long\def\chizenfigure#1#2{%
+    \ifx\chizen@warnedshellescape\relax\else
+      \PackageWarning{CHIZen}{Shell escape is off, so the figures are
+        drawn\MessageBreak but not saved as PDFs in \chizenfigurepath.\MessageBreak
+        Compile with -shell-escape (Overleaf and\MessageBreak latexmkrc do)}%
+      \global\let\chizen@warnedshellescape\relax
+    \fi
+    #2}
+\fi
+\makeatother
