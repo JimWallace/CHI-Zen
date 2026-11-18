@@ -68,7 +68,7 @@ CHI Zen uses the \texttt{acmart} class that comes with TeX Live (it is no longer
     \item \textbf{TeX Live version: 2026 or later.} On an older TeX Live, comment out the \texttt{\textbackslash DocumentMetadata} block at the top of the main file.
     \item \textbf{Main document:} \texttt{00-my-new-paper.tex} for your paper, or \texttt{CHIZen-Manual.tex} for this manual (formerly \texttt{CHIZen-Manual-chi2022.tex}).
 \end{itemize}
-With LuaLaTeX, shell escape is not needed (\texttt{minted} runs \texttt{latexminted}, which TeX Live allows, and \texttt{markdown} runs its Lua code directly); pdfLaTeX needs it for \texttt{markdown}, and Overleaf turns it on anyway. References use Bib\TeX\ with ACM's \texttt{ACM-Reference-Format} style and \texttt{natbib} (loaded by \texttt{acmart}), as ACM's TAPS expects; Overleaf runs Bib\TeX\ automatically. The \texttt{latexmkrc} file sets the same options for local builds with \texttt{latexmk}.
+Shell escape must be on, and Overleaf turns it on: TikZ needs it to save each \texttt{\textbackslash chizenfigure} as a PDF for the camera-ready version (Section~\ref{sec:taps}), and pdfLaTeX also needs it for \texttt{markdown}. (\texttt{minted} alone would not: it runs \texttt{latexminted}, which TeX Live allows.) References use Bib\TeX\ with ACM's \texttt{ACM-Reference-Format} style and \texttt{natbib} (loaded by \texttt{acmart}), as ACM's TAPS expects; Overleaf runs Bib\TeX\ automatically. The \texttt{latexmkrc} file sets the same options for local builds with \texttt{latexmk}.
 
 % Written in LaTeX rather than Markdown because it shows LaTeX commands.
 \subsection{Accessibility}

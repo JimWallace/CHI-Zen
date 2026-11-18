@@ -1211,3 +1211,49 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
 \caption{Research activities are designed to scaffold development of a design framework and evaluation methodology, culminating in an in-situ evaluation with Homewood Research Institute.}
 \label{gantt}
 \end{figure}
+
+
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Written in LaTeX rather than Markdown because it shows LaTeX commands.
+\subsection{Camera-Ready for ACM TAPS}
+\label{sec:taps}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+After acceptance, you upload the \LaTeX\ source of your paper to ACM's production system, TAPS, which turns it into the HTML and PDF versions in the ACM Digital Library. TAPS only accepts the packages on ACM's \href{https://authors.acm.org/proceedings/production-information/accepted-latex-packages}{list of accepted \LaTeX\ packages} (last updated April 2025), and asks you not to load again the packages that \texttt{acmart} already loads (\texttt{amsmath}, \texttt{booktabs}, \texttt{caption}, \texttt{graphicx}, \texttt{hyperref}, \texttt{natbib}, \texttt{xcolor}, \dots). Most of what this manual uses for drafting is \emph{not} on the list: \texttt{pgfplots}, TikZ, \texttt{pgfgantt}, \texttt{minted}, \texttt{markdown}, \texttt{biblatex}, \texttt{paracol}, \texttt{longtable}, \texttt{multicol}, and a few more. So every figure has to reach TAPS as a PDF, and the paper must not load the drafting packages. CHI Zen does both with one switch.
+
+\paragraph{1. Write each figure with \texttt{\textbackslash chizenfigure}.} Give the figure a name and put its TikZ code (or an \texttt{\textbackslash input} of a file that holds it) in the second argument. The starter paper has an example:
+\begin{verbatim}
+\begin{figure}[tb]
+  \Description{Bar chart of mean task time ...}
+  \centering
+  \chizenfigure{fig-example}{\input{figures/fig-example.tex}}
+  \caption{An example figure ...}
+  \label{fig:example}
+\end{figure}
+\end{verbatim}
+The name must be unique in the paper and is also a file name, so use letters, digits and hyphens. \texttt{\textbackslash Description} works as before: it is the alt text of the figure in the tagged PDF, and TAPS puts it in the HTML version.
+
+\paragraph{2. Draft mode saves a PDF of each figure.} While the paper says \texttt{\textbackslash def\textbackslash chizenmode\{draft\}} (the default), each \texttt{\textbackslash chizenfigure} is drawn as usual, and TikZ's \texttt{external} library also saves it as \texttt{figures/tikz/<name>.pdf} (\texttt{CHIZen/externalize.tex}). This runs \LaTeX\ once more for each new or changed figure, so it needs shell escape: Overleaf turns it on, and \texttt{latexmkrc} does for local builds. TikZ notices when a figure's code changes, but not when its data file (\texttt{data/*.csv}) or a style in \texttt{CHIZen/figures.tex} does: then delete \texttt{figures/tikz/<name>.md5}, or on Overleaf use \emph{Recompile from scratch}. Pictures that are not in a \texttt{\textbackslash chizenfigure} are drawn as before but not saved, which is fine for this manual but not for a paper.
+
+\paragraph{3. Get the figure PDFs into your project.} On Overleaf, the PDFs that TikZ saves end up among the output files of the compile, not in the project, so they would not reach TAPS. With the project synced to GitHub, a workflow fetches them for you:
+\begin{enumerate}
+    \item In Overleaf, \emph{Menu, GitHub, Push Overleaf changes to GitHub}.
+    \item On GitHub, the \emph{Figure PDFs} workflow (\texttt{.github/workflows/figures.yml}, under \emph{Actions}) builds the paper in draft mode, as Overleaf does, and commits every figure PDF that changed to \texttt{figures/tikz/}. It runs on every push to the main branch that changes a \texttt{.tex} file, a data file or a figure, and commits nothing if no figure changed.
+    \item In Overleaf, \emph{Menu, GitHub, Pull GitHub changes into Overleaf}. The PDFs are now in \texttt{figures/tikz/}.
+\end{enumerate}
+Without GitHub: in Overleaf, open \emph{Logs and output files}, \emph{Other logs and files}, download each \texttt{figures/tikz/<name>.pdf}, and upload it to the \texttt{figures/tikz} folder of the project. Or build the paper locally with \texttt{latexmk}, which writes the PDFs straight into \texttt{figures/tikz/}, and commit them. Either way, the figure PDFs belong in the project and in the repository: final mode and TAPS need them.
+
+\paragraph{4. Switch to final mode.} Change the line before \texttt{\textbackslash input\{CHIZen/init.tex\}} to \texttt{\textbackslash def\textbackslash chizenmode\{final\}} and recompile (if you get errors about TikZ right after switching, use \emph{Recompile from scratch} once). In final mode CHI Zen loads only packages on ACM's list (\texttt{changes}, \texttt{acronym}, \texttt{siunitx}, \texttt{fontawesome5}, \texttt{colortbl}, \texttt{subcaption}, \texttt{bbding}, \texttt{svg}), nothing that \texttt{acmart} already loads, and no TikZ: each \texttt{\textbackslash chizenfigure} includes \texttt{figures/tikz/<name>.pdf} with \texttt{\textbackslash includegraphics}, and stops with an error that says what to do if the PDF is missing. The statistics macros (Section~\ref{sec:statistics}), \texttt{\textbackslash cjk} (with LuaLaTeX), the colour palettes, \texttt{\textbackslash cdashlinelr} (as a solid rule) and the \texttt{changes} commands keep working; \texttt{changes} is loaded with its \texttt{final} option, so tracked changes are accepted and their mark-up disappears. Then set the class options from your rights email (e.g. \texttt{sigconf}) and check the PDF before you upload. If you change a figure later, switch back to draft mode and repeat steps 2 to 4.
+
+\paragraph{What does not work in final mode.} These stop with an error that names the problem and the fix:
+\begin{itemize}
+    \item a \texttt{tikzpicture}, \texttt{\textbackslash tikz} or \texttt{ganttchart} outside \texttt{\textbackslash chizenfigure}: wrap it in one and build once in draft mode;
+    \item \texttt{minted}, \texttt{\textbackslash mint} and \texttt{\textbackslash inputminted}: use \texttt{listings} (Section~\ref{sec:code});
+    \item \texttt{markdown} blocks: rewrite them in \LaTeX;
+    \item \texttt{paracol}, \texttt{longtable}, \texttt{multicols} and \texttt{\textbackslash lipsum}.
+\end{itemize}
+Two things fail more quietly. A \texttt{\textbackslash ref\{plot:...\}} to a legend entry \texttt{\textbackslash label}ed inside a \texttt{pgfplots} axis, used outside the picture (e.g. in a caption; the Likert example in Figure~\ref{fig:avatar_identification} labels one as \texttt{plot:cleric6}), draws a small TikZ picture, so in final mode it prints ``??'': put such legends inside the figure. And a figure PDF always sits on the baseline, so pictures placed side by side with \texttt{[baseline]} may line up slightly differently.
+
+\paragraph{Checking.} The \emph{Build} workflow builds the starter paper in draft mode, then in final mode from the figure PDFs it just saved, validates the final PDF as PDF/UA-2 and PDF/A-4f with veraPDF, and checks that final mode loaded only packages on ACM's list (\texttt{CHIZen/taps-accepted-packages.txt}) with \texttt{.github/scripts/check\_taps\_packages.py}. You can run the same check on your own paper: compile a copy in final mode with \texttt{latexmk}, then run \texttt{python3 .github/scripts/check\_taps\_packages.py <copy>.tex}.

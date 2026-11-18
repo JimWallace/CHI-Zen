@@ -64,6 +64,19 @@ return 0;
 
 
 
+\paragraph{Code in a submitted paper: use \texttt{listings}.} ACM's TAPS, which typesets the camera-ready version, does not accept \texttt{minted} (Section~\ref{sec:taps}), so in final mode CHI Zen does not load it, and a \texttt{minted} block stops with an error. For code in a paper you will publish, use the \texttt{listings} package, which is on ACM's list: add \texttt{\textbackslash usepackage\{listings\}} to your preamble and write
+\begin{verbatim}
+\begin{lstlisting}[language=Python, numbers=left,
+    frame=lines, basicstyle=\footnotesize\ttfamily]
+def fibonacci(nterms):
+    terms = [1, 1]
+    for i in range(2, nterms):
+        terms += [terms[i-1] + terms[i-2]]
+    return terms
+\end{lstlisting}
+\end{verbatim}
+and \texttt{\textbackslash lstinline|fibonacci(100)|} for code within a sentence. Keep \texttt{minted} for drafts, slides and documents like this manual.
+
 \subsection*{Additional Resources}
 
 \begin{enumerate}
