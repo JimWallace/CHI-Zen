@@ -119,7 +119,7 @@ Summarize relevant citations, including findings from previous studies & Bauer e
 % \vspace{0.5cm}
 
 %\begin{checklist}
-% 	\item Did you use the most recent \href{https://chi2021.acm.org/for-authors/chi-publication-formats}{ACM SIGCHI Paper Format}?
+% 	\item Did you use the most recent \href{https://chi2027.acm.org/chi-publication-formats/}{ACM SIGCHI Paper Format}?
 % 	\item Are all acronyms defined on first use? 
 % \end{checklist}
 
@@ -129,6 +129,25 @@ Summarize relevant citations, including findings from previous studies & Bauer e
 % 	\item Be consistent (e.g., ``There were 23 participants who wrote CHI papers carefully, and only 2 that wrote them at the last minute'')
 % \end{checklist}
 
+
+
+\noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{\textsc{Accessibility}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{0.5cm}
+From the SIGCHI \href{https://sigchi.org/resources/guides-for-authors/accessibility/}{Accessibility Guide for Authors}, which CHI asks authors to follow (see \autoref{sec:accessibility}):
+\begin{checklist}
+    \item Does every figure have a \texttt{\textbackslash Description\{...\}}? Does it describe what the figure shows (chart type, axes, key values or trends) rather than repeat the caption? Is there no \texttt{CHIZen Warning} about a missing description in the log?
+    \item Can every figure be read without colour? (``Don't rely only on colour'': use shapes, patterns or direct labels as well.)
+    \item Is every table a real table, not an image? Are its header cells marked (the first row by default; \texttt{\textbackslash tagpdfsetup\{table/header-rows=...\}} otherwise), and does every row have the same number of cells?
+    \item Is every equation marked up as maths, not an image?
+    \item Are headings and lists made with \texttt{\textbackslash section} and \texttt{itemize}/\texttt{enumerate}, not bold text and manual numbers?
+    \item Is the document metadata right: the real title in \texttt{\textbackslash title}, and the language in \texttt{\textbackslash DocumentMetadata} (\texttt{lang = en})?
+    \item Does link text say where the link goes (not ``here'')?
+    \item Did you compile with LuaLaTeX and check the PDF with a validator (veraPDF, or Acrobat's accessibility checker)?
+    \item For the camera-ready version: did you also enter the figure descriptions in PCS?
+\end{checklist}
 
 
 \noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}

@@ -56,10 +56,32 @@ Since SIG CHI has begun transitioning its conferences to the *Proceedings of the
 
 
 
-## Accessibility
-A perennial to-do list item, and a terrible gap in academic writing. I'm currently exploring the \texttt{accessibility} package to provide some support, but it is not (yet) working with this template. We clearly need to spend more time on this over the next writing cycles.
-
-Unfortunately, the \href{https://chi2021.acm.org/for-authors/presenting/papers/guide-to-an-accessible-submission}{CHI 2021 Guide to an Accessible Submission} does not yet provide any additional resources for writing in \LaTeX. 
-
-
 \end{markdown}
+
+% Written in LaTeX rather than Markdown because it shows LaTeX commands.
+\subsection{Accessibility}
+\label{sec:accessibility}
+
+Accessibility used to be a perennial to-do item for \LaTeX\ papers: the \texttt{accessibility} package never worked with this template, and the SIGCHI guide had no \LaTeX\ advice beyond figure descriptions. That has changed. The \LaTeX\ Project's tagging project now produces tagged PDF, and \texttt{acmart} supports it (since v2.17). CHI Zen turns it on for you.
+
+\paragraph{What CHI asks for.} The CHI 2027 publication formats page states that ``The CHI conference committee requests that authors ensure basic accessibility of their submissions'', and points to the SIGCHI \href{https://sigchi.org/resources/guides-for-authors/accessibility/}{Accessibility Guide for Authors} (last updated 2024-08-15). For the camera-ready version, CHI 2025 told authors that ``An external provider will tag TAPS-produced PDFs for accessibility; however, authors must provide meaningful alt text for figures in their source files and on PCS.'' The SIGCHI guide's rules are:
+\begin{itemize}
+    \item ``Mark up content such as headings and lists'': use \texttt{\textbackslash section}, \texttt{itemize}, \texttt{enumerate}, \texttt{figure} and \texttt{table}, not bold text or manual numbering.
+    \item ``Provide a text description for all figures.'' In \LaTeX, ``you can use the \texttt{\textbackslash Description\{...\}} tag to add an image description.'' ``Figure descriptions are different to figure captions'': they ``are an alternative to seeing the figure'' and should not ``simply repeat the caption.'' The SIGACCESS \href{https://www.sigaccess.org/welcome-to-sigaccess/resources/describing-figures/}{Guide to Describing Figures} explains how to write them.
+    \item ``Don't rely only on colour'': in figures and legends, ``use different shapes and patterns to provide another way to visually distinguish elements.''
+    \item ``Create every table as a real table, not an image, and indicate which cells are headers.''
+    \item ``Create every equation as a marked-up equation, not an image of an equation.''
+    \item ``Set the metadata of your document'': its title and language.
+\end{itemize}
+
+\paragraph{What CHI Zen does.} The first line of \texttt{00-my-new-paper.tex} is a \texttt{\textbackslash DocumentMetadata} block that asks for a tagged PDF meeting PDF/UA-2 (the accessibility standard) and PDF/A-4f (the archival standard), in English. Compile with LuaLaTeX on TeX Live 2026 or later (on Overleaf: Menu, Settings, Compiler). The PDF then gets its headings, lists, tables, links, title and language tagged automatically, and the title you give \texttt{\textbackslash title} becomes the document title that screen readers announce. Note the difference: PDF/UA is about \emph{access}, PDF/A about \emph{preservation}; a PDF/A file is not accessible unless it is also tagged.
+
+\paragraph{What you still have to do.}
+\begin{enumerate}
+    \item \textbf{Describe every figure.} Put \texttt{\textbackslash Description\{...\}} as the first line of each \texttt{figure}, \texttt{figure*} and \texttt{subfigure}. \texttt{acmart} sends it to TAPS for the HTML version; CHI Zen also uses it as the PDF alt text of the first picture in that figure. Write it from the data: the chart type, the axes and their ranges, and the values or trends a reader needs (every figure in this manual has one; look at the source of \autoref{fig:bargraph}). If a figure has a picture but no description, the log shows a \texttt{CHIZen Warning}.
+    \item \textbf{Mark the header rows of tables.} \texttt{acmart} assumes the first row of a \texttt{tabular} holds the column headers. If your table has two header rows, say so before it with \texttt{\textbackslash tagpdfsetup\{table/header-rows=\{1,2\}\}}. Keep every row the same width: add empty cells (\texttt{\&}) rather than ending a row early.
+    \item \textbf{Write meaningful link text}, such as ``the \href{https://sigchi.org/resources/guides-for-authors/accessibility/}{SIGCHI Accessibility Guide}'' rather than ``click here''.
+    \item \textbf{Get it right in black and white}: pair colour with labels, shapes or patterns, and check contrast.
+    \item \textbf{Avoid subfigures} (\texttt{subcaption}) if you need a fully valid PDF/UA file: the tagging project lists \texttt{subcaption} as not yet compatible, and figures with subfigures fail PDF/UA validation (two such figures in this manual do). Packages such as \texttt{minted} (code) and \texttt{changes} (tracked changes) compile but are not yet tagged meaningfully.
+    \item \textbf{Check the PDF.} The free \href{https://verapdf.org}{veraPDF} validator checks PDF/UA and PDF/A, and this repository's GitHub workflow runs it on every push. A validator cannot judge whether a description is useful: read your descriptions aloud, or listen to the paper with a screen reader.
+\end{enumerate}
