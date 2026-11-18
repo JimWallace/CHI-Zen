@@ -296,20 +296,21 @@
 %%%%%%%%%%%%%%%%%%%%
 % LINE GRAPHS - default for IDEA line
 %   Each series differs in colour, dash pattern AND mark, so lines can be told
-%   apart when printed in black and white. Colours are the waterloo-dark
-%   palette (all at least 4.3:1 contrast against white, so thin lines stay
-%   visible). Marks are always drawn solid. For dense data (e.g., monthly
-%   counts) add `no markers' to the axis and rely on the dash patterns.
+%   apart when printed in black and white. Colours are the Okabe-Ito palette
+%   (colour-blind safe), ordered darkest first so thin lines stay visible;
+%   OkabeItoYellow is left out because a thin yellow line on white is too
+%   faint (1.32:1). Marks are always drawn solid. For dense data (e.g.,
+%   monthly counts) add `no markers' to the axis and rely on the dash patterns.
 %%%%%%%%%%%%%%%%%%%%
 
 \pgfplotscreateplotcyclelist{IDEA lines}{
-{AHSDark, solid, mark=*, mark options={solid}},
-{ArtsDark, dashed, mark=square*, mark options={solid}},
-{EngineeringDark, dotted, mark=triangle*, mark options={solid}},
-{EnvironmentDark, dashdotted, mark=diamond*, mark options={solid}},
-{MathDark, densely dashed, mark=o, mark options={solid}},
-{ScienceDark, densely dotted, mark=square, mark options={solid}},
-{SchoolRedDark, loosely dashed, mark=triangle, mark options={solid}},
+{OkabeItoBlue, solid, mark=*, mark options={solid}},
+{OkabeItoVermillion, dashed, mark=square*, mark options={solid}},
+{OkabeItoBluishGreen, dotted, mark=triangle*, mark options={solid}},
+{OkabeItoReddishPurple, dashdotted, mark=diamond*, mark options={solid}},
+{OkabeItoOrange, densely dashed, mark=o, mark options={solid}},
+{OkabeItoSkyBlue, densely dotted, mark=square, mark options={solid}},
+{OkabeItoBlack, loosely dashed, mark=triangle, mark options={solid}},
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -400,7 +401,7 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
   IDEA bar/.style={
-  	cycle list name = waterloo-light,
+  	cycle list name = okabe-ito,
 	ybar = 0pt,
         width  = \columnwidth,
         height = 6cm,
@@ -432,7 +433,7 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 \pgfplotsset{
   IDEA stacked bar/.style={
   	ybar stacked,
-  	cycle list name = waterloo-light,
+  	cycle list name = okabe-ito,
         width  = \columnwidth,
         height = 6cm,
         	axis line style = very thin,
@@ -491,7 +492,7 @@ west})!0.5!({\pgfplots@group@name\space c1r\pgfplots@group@rows.south}-|{\pgfplo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfplotsset{
   IDEA tufte panel/.style={
-  cycle list name = waterloo-light,
+  cycle list name = okabe-ito,
  ybar, 
 	% Generic Bar Graph Options
         width = 1.1\columnwidth,
@@ -573,7 +574,7 @@ range frame/.style={
 \pgfplotsset{
   IDEA tufte box/.style={
 	% Colour Options
-	cycle list name = waterloo-light,
+	cycle list name = okabe-ito,
 	ybar = 0pt,
         width  = \columnwidth,
         height = 6cm,
@@ -628,7 +629,7 @@ range frame/.style={
 \pgfplotsset{
     IDEA box/.style={
     	% Colour Options
-	cycle list name = waterloo-light,
+	cycle list name = okabe-ito,
 	ybar = 0pt,
         width  = \columnwidth,
         height = 6cm,

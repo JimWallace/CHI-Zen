@@ -42,12 +42,12 @@ The following sections are framed in terms of problem/solution for common types 
 \label{sec:palettes}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\texttt{CHIZen/figures.tex} defines several palettes as PGFPlots cycle lists (\texttt{cycle list name=...}): \texttt{waterloo-light} (the default for the bar and box plot styles), \texttt{waterloo-dark}, \texttt{colorbrewer-RYB}, \texttt{colorbrewer-RYB-plain}, \texttt{okabe-ito}, and \texttt{IDEA lines} (the default for \texttt{IDEA line}), plus the divergent Likert colours. To \emph{get it right in black and white}, keep in mind that:
+\texttt{CHIZen/figures.tex} defines several palettes as PGFPlots cycle lists (\texttt{cycle list name=...}): \texttt{okabe-ito} (the default for the bar, stacked bar, panel and box plot styles), \texttt{IDEA lines} (the Okabe--Ito colours with dash patterns and marks; the default for \texttt{IDEA line}), \texttt{waterloo-light}, \texttt{waterloo-dark}, \texttt{colorbrewer-RYB}, and \texttt{colorbrewer-RYB-plain}, plus the divergent Likert colours. To use another palette, set \texttt{cycle list name} in your figure's axis options. To \emph{get it right in black and white}, keep in mind that:
 
 \begin{itemize}
     \item \textbf{None of the categorical palettes is greyscale-safe.} In \texttt{waterloo-light}, ArtsLight and SchoolRedLight, and MathLight and ScienceLight, print as almost the same grey; most of \texttt{waterloo-dark} prints as one mid grey; and \texttt{colorbrewer-RYB} has pairs of near-identical lightness too. In greyscale, tell series apart with marks, dash patterns, or direct labels as well as colour (\texttt{IDEA lines} varies all three).
     \item \textbf{RYB2 (pale yellow) is almost invisible on white.} Use \texttt{colorbrewer-RYB}, which draws a darker outline around each fill, rather than \texttt{colorbrewer-RYB-plain}.
-    \item \textbf{For colour-blind readers, use \texttt{okabe-ito}}, the Okabe--Ito palette, which stays distinguishable with the common forms of colour blindness. It is not greyscale-safe either, so the same advice about marks and labels applies.
+    \item \textbf{The default, \texttt{okabe-ito}, is colour-blind safe}: the Okabe--Ito palette stays distinguishable with the common forms of colour blindness. It is not greyscale-safe either (its orange and sky blue print as the same grey), so the same advice about marks and labels applies. Its yellow is light on white, so it is drawn with a darker outline.
 \end{itemize}
 
 
