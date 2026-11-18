@@ -1,22 +1,40 @@
-%Robert's accented character fix
-\usepackage[utf8]{inputenc}
+% Accented characters: \usepackage[utf8]{inputenc} is no longer needed.
+% UTF-8 has been the default input encoding of LaTeX since 2018, and
+% LuaLaTeX reads UTF-8 natively.
 
-% Enables use of Chinese characters
-\usepackage{CJKutf8}
+% CJK (Chinese, Japanese, Korean) characters: \cjk{改善}
+% CJKutf8 only works with pdfLaTeX, so under LuaLaTeX (the engine we use
+% for tagged, accessible PDFs) CJK text is set in the Harano Aji Mincho
+% font that ships with TeX Live (and therefore with Overleaf).
+\usepackage{iftex}
+\ifLuaTeX
+  \usepackage{fontspec}
+  \newfontfamily\chizenCJKfont{HaranoAjiMincho-Regular.otf}
+  \newcommand{\cjk}[1]{{\chizenCJKfont #1}}
+\else
+  \usepackage{CJKutf8}
+  \newcommand{\cjk}[1]{\begin{CJK}{UTF8}{min}#1\end{CJK}}
+\fi
 
 
-% ACCESSABILITY
-% Experimental, no perfect solution yet... but need to try this
-%.     -- Not enabled for now, not playing well with other packages -- markdown? Need to investigate: JW
-%
-%\usepackage[tagged,highstructure]{accessibility}
+% ACCESSIBILITY
+% The old `accessibility' package is obsolete and must not be loaded.
 
 % MARKDOWN
 %
 % TODO: Explore how useful this is for general-purpose HCI papers
 %       - Tables/Figures need to be a separate thing, but useful for everything else?
 %
-\usepackage[footnotes,definitionLists,hashEnumerators,smartEllipses,hybrid]{markdown}
+% markdown v3 loads amssymb, which clashes with the newtxmath fonts that
+% acmart already loads (both define \Bbbk etc.). newtxmath provides all the
+% amssymb symbols, so tell LaTeX amssymb is already there.
+\makeatletter
+\@ifpackageloaded{newtxmath}{\@namedef{ver@amssymb.sty}{2013/01/14 v3.01 (symbols provided by newtxmath)}}{}
+\makeatother
+% `notes' was called `footnotes' before markdown v3.
+\usepackage[notes,definitionLists,hashEnumerators,smartEllipses,hybrid]{markdown}
+% NOTE: inside a markdown block, markdown v3 reads \& as an escaped `&' and
+% passes a bare & (an alignment tab) to TeX. Write \\& instead.
 
 \usepackage{paracol}
 \usepackage{minted}
@@ -25,6 +43,7 @@
 % This package is useful for revisions! 
 \usepackage{savesym}
 \savesymbol{comment}
+\let\comment\undefined % changes v4 refuses to load if \comment exists, even as \relax
 \usepackage{changes}
 %\usepackage[final]{changes}
 \restoresymbol{SC}{comment}

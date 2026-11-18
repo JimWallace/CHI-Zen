@@ -17,6 +17,11 @@
 %
 \input{CHIZen/figures.tex}
 
+% Under LuaLaTeX, pgfplots hands some computations to Lua. That Lua backend
+% currently fails on some box plots ("linear map received invalid input
+% domain inf:-inf"), so use the TeX code path, as pdfLaTeX does.
+\pgfplotsset{lua backend=false}
+
 % This caches the PGF Plots stuff to speed up compile times
 %\usetikzlibrary{external}
 %\tikzexternalize[prefix=submission/tikz/]
@@ -31,4 +36,3 @@
 %   Stats
 %
 \input{CHIZen/stats.tex}
-

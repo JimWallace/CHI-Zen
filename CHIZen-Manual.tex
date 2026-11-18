@@ -1,4 +1,20 @@
-%% The first command in your LaTeX source must be the \documentclass command.
+%%
+%% The CHI Zen manual.
+%%
+%% Compile with LuaLaTeX (Overleaf: Menu > Settings > Compiler > LuaLaTeX,
+%% TeX Live version 2026 or later). See README.md for details.
+%%
+%% \DocumentMetadata must come before \documentclass. It switches on a
+%% tagged (accessible) PDF that aims at PDF/UA-2, plus PDF/A-4f for
+%% archiving, as recommended by the acmart documentation (v2.17+).
+\DocumentMetadata{
+  lang          = en,
+  pdfstandard   = ua-2,
+  pdfstandard   = a-4f,
+  tagging       = on,
+  tagging-setup = {math/setup=mathml-SE},
+}
+
 \documentclass[sigconf,manuscript,screen]{acmart}
 
 % Load CHIZen stuff
@@ -8,17 +24,17 @@
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
   \providecommand\BibTeX{{%
-    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+    Bib\TeX}}}
 
 %% Rights management information.  This information is sent to you
 %% when you complete the rights form.  These commands have SAMPLE
 %% values in them; it is your responsibility as an author to replace
 %% the commands and values with those provided to you when you
 %% complete the rights form.
-% \setcopyright{acmcopyright}
-% \copyrightyear{2020}
-% \acmYear{2020}
-% \acmDOI{XX.XXXX/XXXXXXX.XXXXXXX}
+% \setcopyright{acmlicensed}
+% \copyrightyear{2027}
+% \acmYear{2027}
+% \acmDOI{XXXXXXX.XXXXXXX}
 
 
 %%
@@ -48,7 +64,6 @@
 %% the next command will enable that style.
 %%\citestyle{acmauthoryear}
 
-%\usepackage[utf8]{inputenc}
 % \usepackage[english]{babel}% recommended
 % \usepackage{csquotes}% recommended
 % \usepackage{xpatch}% recommended
