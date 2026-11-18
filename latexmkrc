@@ -10,9 +10,11 @@
 $pdf_mode = 4;          # 4 = lualatex
 $bibtex_use = 2;        # run BibTeX when needed, delete .bbl on clean
 
-# minted runs `latexminted', which TeX Live allows in restricted shell
-# escape, so -shell-escape is not needed. (Overleaf turns it on anyway; add
-# it here if you use the svg package to convert .svg files with Inkscape.)
+# With LuaLaTeX, -shell-escape is not needed: minted runs `latexminted',
+# which TeX Live allows in restricted shell escape, and markdown runs its Lua
+# code directly. pdfLaTeX needs -shell-escape for markdown (Overleaf turns
+# shell escape on anyway), and so does the svg package.
+$pdflatex = 'pdflatex -shell-escape %O %S';
 
 # `latexmk' with no file names builds both documents.
 @default_files = ('CHIZen-Manual.tex', '00-my-new-paper.tex');

@@ -24,8 +24,9 @@ everyone). Set these once per project, under **Menu > Settings**:
 | TeX Live version | **2026** (or later) | Tagging and `acmart`'s tagging support are recent. On an older TeX Live, comment out the `\DocumentMetadata{...}` block at the top of the file. |
 | Main document | `00-my-new-paper.tex` (your paper) or `CHIZen-Manual.tex` (the manual) | The manual used to be `CHIZen-Manual-chi2022.tex`. |
 
-Shell escape is not needed: `minted` runs `latexminted`, which TeX Live allows
-in restricted mode (Overleaf turns shell escape on anyway). `latexmkrc` sets
+With LuaLaTeX, shell escape is not needed: `minted` runs `latexminted`, which
+TeX Live allows in restricted mode, and `markdown` runs its Lua code directly.
+pdfLaTeX needs shell escape for `markdown`; Overleaf turns it on anyway. `latexmkrc` sets
 the same engine for local builds, but Overleaf takes the engine from the
 project settings.
 
