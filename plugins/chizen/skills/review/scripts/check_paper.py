@@ -15,7 +15,7 @@ WHAT IT READS. Every top-level .tex file in PAPER_DIR that has an uncommented
 \\include and \\subfile. Files under CHIZen/ (the CHI Zen library itself, which
 defines the palettes) are not checked; add more with --exclude. The ACM TAPS
 package check is the exception: it covers every file TeX reads, because TAPS
-receives the whole source. Its list is data/taps-accepted-packages.txt.
+receives the whole source. Its list is CHIZen/taps-accepted-packages.txt.
 
 SEVERITIES.
   error    the PDF is wrong or breaks a venue rule (vertical rules, a p-value with
@@ -91,12 +91,20 @@ AVOID_WORDS = [
 ]
 CASE_SENSITIVE_WORDS = {"I", "OK"}
 
-TAPS_FILE = Path(__file__).resolve().parent / "data" / "taps-accepted-packages.txt"
+# The TAPS list lives in CHIZen/taps-accepted-packages.txt. A paper made from the CHI Zen
+# template has its own copy (preferred: it matches what the paper compiles with); the
+# plugin's data/ entry is a symlink to the CHI Zen repository's copy, which Claude Code
+# dereferences when it installs the plugin.
+TAPS_NAME = "taps-accepted-packages.txt"
+TAPS_FILE = Path(__file__).parent / "data" / TAPS_NAME
 
 
-def load_taps(path: Path = TAPS_FILE) -> tuple[set, set] | None:
-    """(accepted, included in acmart) from the vendored TAPS list, or None if missing."""
-    if not path.is_file():
+def load_taps(path: Path | None = None, paper: Path | None = None) -> tuple[set, set] | None:
+    """(accepted, included in acmart) from the TAPS list, or None if no list is found."""
+    if path is None:
+        cands = ([paper / "CHIZen" / TAPS_NAME] if paper else []) + [TAPS_FILE]
+        path = next((c for c in cands if c.is_file()), None)
+    if path is None or not path.is_file():
         return None
     lists: dict[str, set] = {}
     current = None
@@ -286,7 +294,7 @@ def body_range(lines: list) -> tuple[int, int]:
 
 # ------------------------------------------------------------------ checks
 
-def check_doc(doc: Doc, excludes, add) -> None:
+def check_doc(doc: Doc, root: Path, excludes, add) -> None:
     lines = doc.lines
     checked = [not excluded(ln.file, excludes) for ln in lines]
     b0, b1 = body_range(lines)
@@ -334,7 +342,7 @@ def check_doc(doc: Doc, excludes, add) -> None:
                 f"figure '{ident}' has no \\Description{{...}} (alt text; CHI requires one per figure)")
 
     # --- ACM TAPS: every file TeX reads counts, the CHI Zen library included
-    taps = load_taps()
+    taps = load_taps(paper=root)
     if taps:
         for ln in lines:
             check_taps(ln.text, ln, add, *taps)
@@ -521,7 +529,7 @@ def run(root: Path, mains: list[Path], excludes) -> list[Finding]:
     for m in mains:
         doc = Doc(rel(root, m))
         flatten(root, m, excludes, set(), doc.lines)
-        check_doc(doc, excludes, add)
+        check_doc(doc, root, excludes, add)
     return sorted(findings.values(), key=lambda f: (f.file, f.line, f.code, f.msg))
 
 
