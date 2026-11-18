@@ -541,8 +541,17 @@ def read_baseline(path: Path) -> Counter:
 
 
 def write_baseline(path: Path, lines: Counter) -> None:
+    """Write the baseline, keeping the comment block at the top of an existing file."""
+    header = BASELINE_HEADER
+    if path.is_file():
+        old = []
+        for ln in path.read_text(encoding="utf-8").splitlines():
+            if not ln.startswith("#"):
+                break
+            old.append(ln + "\n")
+        header = "".join(old) or header
     body = "".join(f"{k}\n" for k in sorted(lines.elements()))
-    path.write_text(BASELINE_HEADER + body, encoding="utf-8")
+    path.write_text(header + body, encoding="utf-8")
 
 
 def main(argv=None) -> int:
