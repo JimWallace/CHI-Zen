@@ -10,7 +10,7 @@ other cloud sessions don't install plugins, not even ones a repository enables i
 
 It writes, replacing earlier copies:
     PAPER_DIR/.claude/skills/chizen/          the guide (authoring skill)
-    PAPER_DIR/.claude/skills/chizen-review/   the review skill and check_paper.py
+    PAPER_DIR/.claude/skills/chizen-review/   the review skill, check_paper.py, warning_ratchet.py
     PAPER_DIR/.claude/agents/chizen-*.md      the four reviewer agents
 Commit them; re-run after CHI Zen updates. Nothing else in .claude/ is touched.
 """

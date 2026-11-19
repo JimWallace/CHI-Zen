@@ -16,8 +16,8 @@ paper use the `chizen` plugin and their paper's own `CLAUDE.md` (template:
 | `.claude-plugin/marketplace.json` | Makes this repository the `chizen` Claude Code marketplace. |
 | `plugins/chizen/` | The plugin: `skills/chizen/` (authoring skill; **the guide** in `references/*.md`, matplotlib/ggplot styles in `styles/`), `skills/review/` (review skill; the linter `scripts/check_paper.py`), `agents/` (four read-only reviewers), `templates/` (paper `CLAUDE.md`, `settings.json`), `scripts/copy_into_paper.py`. |
 | `tests/` | Linter and copy-script tests, with fixture papers and expected output. |
-| `chizen-baseline.txt` | Linter findings accepted for the manual and starter paper. Only shrinks. |
-| `.github/workflows/build.yml` | Builds both PDFs (LuaLaTeX and pdfLaTeX, TeX Live 2026) and validates PDF/UA-2 and PDF/A-4f with veraPDF. |
+| `chizen-baseline.txt`, `chizen-warnings-baseline.txt` | Linter findings and build warnings accepted for the manual and starter paper. Both empty, and CI keeps them empty. |
+| `.github/workflows/build.yml` | Builds both PDFs (LuaLaTeX and pdfLaTeX, TeX Live 2026), validates PDF/UA-2 and PDF/A-4f with veraPDF, and fails on any LaTeX or BibTeX warning (the warning ratchet). |
 | `.github/workflows/checks.yml` | Linter tests, the linter on the manual and starter, `claude plugin validate`, the style examples. |
 
 ## Guide and gallery
@@ -60,15 +60,20 @@ python3 -m unittest discover -s tests                         # linter and copy-
 python3 plugins/chizen/skills/review/scripts/check_paper.py .  # the linter on the manual + starter
 claude plugin validate . && claude plugin validate plugins/chizen
 latexmk                                                        # both PDFs (LuaLaTeX; see latexmkrc)
+python3 plugins/chizen/skills/review/scripts/warning_ratchet.py CHIZen-Manual 00-my-new-paper 'figures/tikz/*'
 ```
 
-- A new linter finding in the manual or starter: fix it (if you own that file) rather than
-  adding a baseline line; a fixed one: `check_paper.py . --prune-baseline`.
+- **Zero errors and zero warnings**, in the linter and in every build (manual, starter in
+  draft and final mode, LuaLaTeX and pdfLaTeX). Both baselines are empty and checks.yml fails
+  if a line is added to either: fix the cause of a new finding or warning, never accept it.
+  The ratchet's only exceptions are in its `ALLOWLIST`, each with the TeX Live file and line
+  it comes from and why the document can't avoid it.
+- To check the final mode locally as CI does: `sed 's/^\\def\\chizenmode{draft}/\\def\\chizenmode{final}/'
+  00-my-new-paper.tex > 00-my-new-paper-final.tex`, `latexmk 00-my-new-paper-final.tex`, then add
+  `00-my-new-paper-final` to the ratchet's arguments (`--label lualatex` to match CI's lines).
 - A linter change: update `tests/fixtures/*/expected.txt` and say why in the commit.
 - `PALETTE_COLOURS` in `check_paper.py` must match the `\definecolor`s in `CHIZen/figures.tex`
   (a test checks).
 - `claude plugin validate` warns that the plugin has no `version`: deliberate, so installs
   follow the latest commit.
 - CI is the reference for the LaTeX build (TeX Live 2026, like Overleaf).
-- Next step (not done yet): a LaTeX/biber build-warning ratchet like the CV repository's
-  `scripts/warning_ratchet.py`.

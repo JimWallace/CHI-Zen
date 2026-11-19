@@ -26,7 +26,8 @@ it back into Overleaf. You don't need TeX on your computer.
 1. Download this repository as a ZIP (on GitHub: **Code → Download ZIP**).
 2. On Overleaf: **New Project → Upload Project**, and choose the ZIP. You can delete what a
    paper doesn't need: `manual/`, `CHIZen-Manual.tex`, `plugins/`, `tests/`, `.github/`,
-   `chizen-baseline.txt`, `CLAUDE.md` (this repository's, not your paper's).
+   `chizen-baseline.txt`, `chizen-warnings-baseline.txt`, `CLAUDE.md` (this repository's,
+   not your paper's).
 3. Set **Menu → Settings**: Compiler **LuaLaTeX**, TeX Live **2026** or later, main document
    `00-my-new-paper.tex` (see the manual, §"Overleaf Settings").
 4. Link it to GitHub: **Menu → GitHub → Create a GitHub repository**. Overleaf can create a
@@ -93,6 +94,10 @@ invents data, statistics, quotes or citations: where it needs one, it leaves a `
 The linter also runs on its own: `python3 plugins/chizen/skills/review/scripts/check_paper.py <paper-dir>`
 (Python 3.9+, no TeX needed). Errors and warnings fail unless your `chizen-baseline.txt` lists
 them; the checklist's words to avoid are shown as style notes and never fail.
+After compiling with `latexmk`, `python3 plugins/chizen/skills/review/scripts/warning_ratchet.py
+00-my-new-paper` does the same for the build: every LaTeX and BibTeX warning, undefined
+reference and overfull box fails unless your `chizen-warnings-baseline.txt` lists it. (Add
+`--dir` for logs elsewhere, e.g. Overleaf's downloaded output files.)
 
 Remember that ACM policy requires disclosing the use of generative AI as the policy and your
 venue specify: keep a note in your paper's `CLAUDE.md` of what Claude did.

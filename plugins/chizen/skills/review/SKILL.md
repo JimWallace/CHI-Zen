@@ -2,7 +2,7 @@
 description: Review a LaTeX paper against the CHI Zen lab style guide - runs the deterministic linter (check_paper.py), then four independent read-only reviewer agents in parallel (figures and tables, statistics, writing and framing incl. qualitative reporting and ethics, references and citations), merges their findings and reports them with exact suggested fixes. Read-only unless the author asks for fixes.
 when_to_use: For example "review my paper", "is my paper ready to submit", "check my draft against CHI Zen", "run the CHI Zen review", before a deadline or a co-author handoff.
 argument-hint: "[paper-dir] [figures|statistics|writing|references|all]"
-allowed-tools: Read Grep Glob Agent Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/check_paper.py *) Bash(git diff *) Bash(git log *) Bash(git status *) Bash(git show *)
+allowed-tools: Read Grep Glob Agent Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/check_paper.py *) Bash(python3 ${CLAUDE_SKILL_DIR}/scripts/warning_ratchet.py *) Bash(git diff *) Bash(git log *) Bash(git status *) Bash(git show *)
 ---
 
 # Review a paper with CHI Zen
@@ -37,6 +37,18 @@ warnings are worth fixing; style notes are the checklist's words to avoid and ne
 A `chizen-baseline.txt` in the paper directory lists findings the author has accepted; only
 new findings and stale baseline lines fail. Carry the linter's output into the report as is;
 don't re-check by hand what it checks.
+
+If the paper has been compiled (its main file's `.log` is in the paper directory, or the
+author gives you Overleaf's log), also run the build-warning ratchet on it:
+
+```
+python3 ${CLAUDE_SKILL_DIR}/scripts/warning_ratchet.py --dir <paper-dir> <main-file-without-.tex>
+```
+
+It lists every LaTeX and BibTeX warning, undefined reference and citation, overfull box and
+missing `\Description` (`CHIZen Warning`), against `chizen-warnings-baseline.txt` (add
+`'figures/tikz/*'` for the figure runs of draft mode). Report its new warnings under **Fix
+first**. Don't compile the paper yourself unless the author asks.
 
 ## 2. Independent reviewers, in parallel, in one message
 Launch these together. Give each **only**: the paper directory, the main file(s), the path
