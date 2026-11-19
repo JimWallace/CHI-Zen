@@ -1,4 +1,3 @@
-\newpage
 
 %
 % This section written in LaTeX because a lot of the graphing is untested in Markdown
@@ -11,13 +10,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{markdown}
-Figures and Tables provide your readers with a `visual abstract' of your work. They can make the (often dense) results section more accessible to readers who are unfamiliar with your research area, and are a fallback when something in the text doesn't make sense right away. That is, they're often the first impression a reader has of your paper, make your work more accessible to the general audience, and provide a second, more visual, way of explaining results to your readers.
+Figures and Tables provide your readers with a ‘visual abstract’ of your work. They can make the (often dense) results section more accessible to readers who are unfamiliar with your research area, and are a fallback when something in the text doesn't make sense right away. That is, they're often the first impression a reader has of your paper, make your work more accessible to the general audience, and provide a second, more visual, way of explaining results to your readers.
 
 A general principal that I try to embody in all of these graphs is to **show your data**. Too often, we provide only summary data like an average and a standard error value, when we could have shown the entire data set. Summary statistics are useful, but often hide important trends in the data. (We should take this to heart well before writing the paper up, this all holds true for *data analysis*). I think that in the past, tools weren't always up to the task of showing our data. Tools like Excel would help you easily produce a bar chart, but don't have a preset for box plots. Fortunately, today our tools have become much better. 
 
-I've also tried to take best practice into consideration where possible, but there's always room for improvement. \citet{munznervisualization} provides an excellent summary of best practice from the literature, and I encourage you to read Chapter 6 on Rules of Thumb in depth to start thinking about how to approach thinking about visualizations as you're working on them. In particular, tips like **get it right in black and white** and **eyes beat memory** will help to improve the readability *and* accessibility of your paper. 
+I've also tried to take best practice into consideration where possible, but there's always room for improvement. `\citet{munznervisualization}`{=tex} provides an excellent summary of best practice from the literature, and I encourage you to read Chapter 6 on Rules of Thumb in depth to start thinking about how to approach thinking about visualizations as you're working on them. In particular, tips like **get it right in black and white** and **eyes beat memory** will help to improve the readability *and* accessibility of your paper. 
 
-The following sections are framed in terms of problem/solution for common types of graphs that we see in HCI research, with examples for each. The style for each graph is informed and inspired by \citet{tufte1983visual}, who emphasizes minimalist presentation of quantitative data. I find that Tufte's principles of information visualization, and general approach to working on graphs, are largely consistent with Munzner's advice above. That said, the style cetainly isn't for everyone --- your mileage may vary, please use what you find useful.  
+The following sections are framed in terms of problem/solution for common types of graphs that we see in HCI research, with examples for each. The style for each graph is informed and inspired by `\citet{tufte1983visual}`{=tex}, who emphasizes minimalist presentation of quantitative data. I find that Tufte's principles of information visualization, and general approach to working on graphs, are largely consistent with Munzner's advice above. That said, the style cetainly isn't for everyone --- your mileage may vary, please use what you find useful.  
 
 
  \end{markdown}
@@ -56,19 +55,18 @@ The following sections are framed in terms of problem/solution for common types 
 
 
 
-\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Comparing Performance: Bar Charts}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Bar graphs are probably the most commonly-used data visualization at CHI. They are simple, easy to create, and easy to understand. And so they make comparisons between two or more variables easy, since data is presented in a side=by-side manner on a common scale (the y-axis). Because of these advantages, they are often used to make quantitative comparisons based on criteria like performance, efficiency, and error rate. A very common approach to presenting data in a bar chart is to show means and standard error  (e.g., \autoref{fig:bargraph} from \citet{pietroszek2015}).
+Bar graphs are probably the most commonly-used data visualization at CHI. They are simple, easy to create, and easy to understand. And so they make comparisons between two or more variables easy, since data is presented in a side=by-side manner on a common scale (the y-axis). Because of these advantages, they are often used to make quantitative comparisons based on criteria like performance, efficiency, and error rate. A very common approach to presenting data in a bar chart is to show means and standard error  (e.g., \autoref{fig:bargraph} from \citet{pietroszek2015}). \autoref{fig:gesture-agreement} is a larger example, with one bar per task, sorted by agreement rate and shaded by agreement category.
 
 
 
 
 
 
-\begin{figure}[b!]
+\begin{figure}[tbp]
 \Description{Bar chart of mean selection time in seconds (y axis, 0 to 10) by occlusion (x axis: non-occluded and occluded targets), with an error bar on each bar. Non-occluded targets: Smartcasting 2.10 s and Tiltcasting 3.24 s. Occluded targets: Tiltcasting 4.0 s and Depth Cursor 6.8 s. Depth Cursor has the longest bar and the largest error bar.}
 \begin{tikzpicture}
 \begin{axis}[IDEA bar,
@@ -303,7 +301,6 @@ coordinates {(non-occluded, 2.10)  +- (.42,.42)};
 
 
 
-\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Comparing Performance: Box Plots, Violin Plots, Bee Swarm Plots}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -312,6 +309,7 @@ coordinates {(non-occluded, 2.10)  +- (.42,.42)};
 - to be more accurate and descriptive, box plots are often used
 - similar to a bar graph with error bars, but also indicate quartiles and outliers 
 - typically, better practice to include a box plot when possible -- but can be substantially more difficult to create in Microsoft Word. 
+- examples: \autoref{fig:physio} (physiological data) and \autoref{fig:selfreports} (self-reported ratings) compare two conditions at three stages of a study
 
 variations: 
 - Admittedly, "Bee Swarm" plots are my personal preference for this kind of data since they "show your data" in a very clear way... but I haven't yet found a  way to generate them in \LaTeX. If you happen to work in R, there are some excellent supports for generating these graphs, and you can import those directly into this template with a little work. 
@@ -322,8 +320,7 @@ variations:
 % Gigantic Figure Starts here for physiological data... 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\definecolor{Nature}{HTML}{3AA876}
-\definecolor{Urban}{HTML}{D14820}
+% Nature and Urban: OkabeItoBluishGreen and OkabeItoVermillion (CHIZen/figures.tex)
 
 
 \pgfplotstableread{
@@ -382,7 +379,7 @@ Treatment    Z0_posaffect    Z0_negaffect    Z0_attentive    Z1_posaffect    Z1_
 1	2.25	1.00	2.50	1.50	3.22	2.00	3.75	1.00	1.50
 }\SZU
 
-\begin{figure}[b!]
+\begin{figure}[tbp]
 \Description{Two box plots of z-scores at Baseline, Stressor and Game, each with Nature (green) and Urban (orange) boxes side by side. Heart rate: medians rise from about -0.3 at Baseline to about 0.6 at Stressor and fall to about -0.6 during the Game in both conditions. Galvanic skin response: medians rise from about -1.0 at Baseline to about 0.3 at Stressor and are about 0.1 (Nature) and 0.2 (Urban) during the Game. Nature and Urban boxes overlap at every stage.}
 \begin{tikzpicture}
 \begin{axis}[
@@ -397,7 +394,7 @@ Treatment    Z0_posaffect    Z0_negaffect    Z0_attentive    Z1_posaffect    Z1_
 ]
 
 %% Baseline
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -405,7 +402,7 @@ Treatment    Z0_posaffect    Z0_negaffect    Z0_attentive    Z1_posaffect    Z1_
 table[y=P0_HR] {\SPU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -413,7 +410,7 @@ table[y=P0_HR] {\SPN};
 
 
 %% Stressor
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -421,7 +418,7 @@ table[y=P0_HR] {\SPN};
 table[y=P1_HR] {\SPU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -429,7 +426,7 @@ table[y=P1_HR] {\SPN};
 
 
 %% GAME
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -437,7 +434,7 @@ table[y=P1_HR] {\SPN};
 table[y=P2_HR] {\SPU};
 
     
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -465,7 +462,7 @@ table[y=P2_HR] {\SPN};
 ]
 
 %% Baseline
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -473,7 +470,7 @@ table[y=P2_HR] {\SPN};
 table[y=P0_GSR] {\SPU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -481,7 +478,7 @@ table[y=P0_GSR] {\SPN};
 
 
 %% Stressor
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -489,31 +486,31 @@ table[y=P0_GSR] {\SPN};
 table[y=P1_GSR] {\SPU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
 table[y=P1_GSR] {\SPN};
-%\addlegendimage{fill=Nature,draw=Nature}
+%\addlegendimage{fill=OkabeItoBluishGreen,draw=OkabeItoBluishGreen}
 %\addlegendentry{Nature}
 
 %% GAME
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     forget plot,
     boxplot,
 ]
 table[y=P2_GSR] {\SPN};
-%\fill[Nature] (0,0) circle (0.1cm);
+%\fill[OkabeItoBluishGreen] (0,0) circle (0.1cm);
 
 
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     rshift,
 ]
 table[y=P2_GSR] {\SPU};
-%\fill[Urban] (0,0) circle (0.1cm);
-%\addlegendimage{fill=Urban,draw=Urban}
+%\fill[OkabeItoVermillion] (0,0) circle (0.1cm);
+%\addlegendimage{fill=OkabeItoVermillion,draw=OkabeItoVermillion}
 %\addlegendentry{Urban}
     
     \coordinate (legend) at (axis description cs:.15,-.15);
@@ -523,14 +520,14 @@ table[y=P2_GSR] {\SPU};
     matrix of nodes, 
     every node/.style={anchor=center}, 
     ] at (legend) {
-        |[fill=Nature]| & |[font=\small\sffamily]|Nature & |[fill=white]| & |[fill=Urban]| & |[font=\small\sffamily]|Urban \\
+        |[fill=OkabeItoBluishGreen]| & |[font=\small\sffamily]|Nature & |[fill=white]| & |[fill=OkabeItoVermillion]| & |[font=\small\sffamily]|Urban \\
     };
 \end{tikzpicture}
 \caption{A summary of Heart Rate and Galvanic Skin Response data collected during the study. Our analysis revealed a significant increase between Baseline and Stressor data, and a significant decrease between Stressor and Game data for both measures, as anticipated from our experimental design. We found no significant differences between the Nature and Urban game settings.}
 \label{fig:physio}
 \end{figure}
 
-\begin{figure}[b!]
+\begin{figure}[tbp]
 \Description{Three box plots of self-reported ratings on a 1 to 5 scale at Baseline, Stressor and Game, each with Nature (green) and Urban (orange) boxes side by side. Positive affect: medians drop at Stressor (Nature from about 2.8 to 1.8, Urban from 3.0 to 1.4) and recover during the Game (about 2.4 and 3.3). Negative affect: medians rise at Stressor (Nature from about 1.1 to 1.7, Urban from 1.1 to 2.3) and return to about 1.1 during the Game. Attentiveness: medians are about 3.0, 2.3 and 3.0 for Nature and 3.5, 3.0 and 2.8 for Urban. Nature and Urban boxes overlap at every stage.}
 \begin{tikzpicture}
 \begin{axis}[
@@ -545,7 +542,7 @@ table[y=P2_GSR] {\SPU};
 ]
 
 %% Baseline
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -553,7 +550,7 @@ table[y=P2_GSR] {\SPU};
 table[y=Z0_posaffect] {\SZU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -561,7 +558,7 @@ table[y=Z0_posaffect] {\SZN};
 
 
 %% Stressor
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -569,7 +566,7 @@ table[y=Z0_posaffect] {\SZN};
 table[y=Z1_posaffect] {\SZU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -577,7 +574,7 @@ table[y=Z1_posaffect] {\SZN};
 
 
 %% GAME
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -585,7 +582,7 @@ table[y=Z1_posaffect] {\SZN};
 table[y=Z2_posaffect] {\SZU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -606,7 +603,7 @@ table[y=Z2_posaffect] {\SZN};
 ]
 
 %% Baseline
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -614,7 +611,7 @@ table[y=Z2_posaffect] {\SZN};
 table[y=Z0_negaffect] {\SZU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -622,7 +619,7 @@ table[y=Z0_negaffect] {\SZN};
 
 
 %% Stressor
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -630,7 +627,7 @@ table[y=Z0_negaffect] {\SZN};
 table[y=Z1_negaffect] {\SZU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -638,7 +635,7 @@ table[y=Z1_negaffect] {\SZN};
 
 
 %% GAME
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -646,7 +643,7 @@ table[y=Z1_negaffect] {\SZN};
 table[y=Z2_negaffect] {\SZU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -667,7 +664,7 @@ table[y=Z2_negaffect] {\SZN};
 ]
 
 %% Baseline
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -675,7 +672,7 @@ table[y=Z2_negaffect] {\SZN};
 table[y=Z0_attentive] {\SZU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -683,7 +680,7 @@ table[y=Z0_attentive] {\SZN};
 
 
 %% Stressor
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -691,7 +688,7 @@ table[y=Z0_attentive] {\SZN};
 table[y=Z1_attentive] {\SZU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -699,7 +696,7 @@ table[y=Z1_attentive] {\SZN};
 
 
 %% GAME
-\addplot[Urban, mark=*,
+\addplot[OkabeItoVermillion, mark=*,
 	boxplot,
     forget plot,
     rshift,
@@ -707,7 +704,7 @@ table[y=Z1_attentive] {\SZN};
 table[y=Z2_attentive] {\SZU};
     
 
-\addplot[Nature,mark=*,
+\addplot[OkabeItoBluishGreen,mark=*,
     lshift,
     boxplot,
 ]
@@ -725,14 +722,13 @@ table[y=Z2_attentive] {\SZN};
 
 
 
-\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Likert Scale Data: Stacked Divergent Bar Graphs}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 A \emph{lot} of HCI research involves questionnaires, and interpreting diferences in questionnaire respones. For instance, Likert scale questions are very common. My preference for visualizing Likert scale responses is a stacked divergent bar graph (e.g., \autoref{fig:avatar_identification}), where responses are stacked into a bar, with neutral responses lined up at the graph's origin. This type of graph has a few properties that make it useful: in particular, readers can get a quick sense of `how positive' or `how negative' responses were based on the bar's position, while still being able to look at how many responses fell into each category. 
 
-\begin{figure}[b!]
+\begin{figure}[tbp]
 \Description{Diverging stacked bar chart of 7-point Likert responses to six avatar identification items, with two bars per item: Cleric (shades from blue for disagree to green for agree) and Monster (shades from red for disagree to purple for agree). Disagreement extends to the left of a centre line and agreement to the right, with neutral responses split across it; the x axis is the percentage of responses, 0 to 100 in each direction. Percentage agreeing, Cleric versus Monster: Connectedness 61 versus 28; Refer to avatar as we 61 versus 17; Physical similarity 22 versus 11; Personality similarity 78 versus 72; Physical ideal 44 versus 17; Ideal personality 83 versus 50. Asterisks mark Connectedness and Refer to avatar as we.}
 \begin{tikzpicture}
 \pgfplotstableread[col sep = comma]{data/Cleric_AvatarIdentificationStacked.csv}\ClericIdentificationData
@@ -812,13 +808,12 @@ A \emph{lot} of HCI research involves questionnaires, and interpreting diference
     %\addlegendimage{only marks, mark=o}
     %\addlegendimage{only marks, mark=o}
     %\legend{Neutral, Agree, Strongly Agree, Disagree,Strongly Disagree}
-    after end axis/.code={
-        \node at (axis cs:80,Ava_Conn) [anchor=east, ,font=\tiny] {\textbf{*}};
-        \node at (axis cs:80,Ava_WE) [anchor=east, font=\tiny] {\textbf{*}};
-        %\draw [white] (axis cs:0,AvaVsPersIdeal) -- (axis cs:0,Ava_Conn);
-        %\draw [white] (axis cs:-50,AvaVsPersIdeal) -- (axis cs:-50,Ava_Conn);
-        %\draw [white] (axis cs:50,AvaVsPersIdeal) -- (axis cs:50,Ava_Conn);
-    }
+    % Significance markers (an `after end axis' key here was typeset as text)
+    \node at (axis cs:80,Ava_Conn) [anchor=east, ,font=\tiny] {\textbf{*}};
+    \node at (axis cs:80,Ava_WE) [anchor=east, font=\tiny] {\textbf{*}};
+    %\draw [white] (axis cs:0,AvaVsPersIdeal) -- (axis cs:0,Ava_Conn);
+    %\draw [white] (axis cs:-50,AvaVsPersIdeal) -- (axis cs:-50,Ava_Conn);
+    %\draw [white] (axis cs:50,AvaVsPersIdeal) -- (axis cs:50,Ava_Conn);
     \coordinate (legend) at (axis description cs:1.15,.85);
 \end{axis}
 
@@ -840,14 +835,14 @@ A \emph{lot} of HCI research involves questionnaires, and interpreting diference
 
 
 
-\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Trends over Time: Line Graph}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\autoref{fig:activity} shows monthly activity in two subreddits as line graphs, one line per measure.
 
 
-\begin{figure}[b!]
+\begin{figure}[tbp]
 \Description{Two line charts of monthly counts from January 2014 to December 2017, with distinct users as a solid blue line and active threads as a dashed orange line. r/stopdrinking (left): distinct users rise from about 1,500 to about 6,000 and active threads from about 1,500 to about 5,400. r/OpiatesRecovery (right): distinct users rise from about 360 to about 770, peaking near 810, and active threads from about 280 to about 380, peaking near 480. Both lines in both charts trend upward with month-to-month fluctuation.}
 \begin{tikzpicture}[baseline]
 \begin{axis}[IDEA line,
@@ -875,7 +870,7 @@ A \emph{lot} of HCI research involves questionnaires, and interpreting diference
     %legend image code/.code={\draw[#1] circle (0.1cm);}
 ]
 
-\pgfplotstableread[col sep = comma]{data/stopdrinking-usagebymonth.csv}\mydata;
+\pgfplotstableread[col sep = comma]{data/stopdrinking-usagebymonth.csv}\mydata
 \addplot+[draw=ScienceDark,fill=none,thick] table[x=index,y=users] {\mydata};
 \addplot+[draw=ArtsLight,fill=none,thick] table[x=index,y=threads] {\mydata};
 
@@ -909,7 +904,7 @@ A \emph{lot} of HCI research involves questionnaires, and interpreting diference
     %legend image code/.code={\draw[#1] circle (0.1cm);}
 ]
 
-\pgfplotstableread[col sep = comma]{data/opiaterecovery-usagebymonth.csv}\mydata;
+\pgfplotstableread[col sep = comma]{data/opiaterecovery-usagebymonth.csv}\mydata
 \addplot+[draw=ScienceDark,fill=none,thick] table[x=index,y=users] {\mydata};
 \addlegendentry{Distinct Users}
 \addplot+[draw=ArtsLight,fill=none,thick] table[x=index,y=threads] {\mydata};
@@ -925,13 +920,13 @@ A \emph{lot} of HCI research involves questionnaires, and interpreting diference
 
 
 
-\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Trends over Time: Stacked Bar Graph}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\autoref{stackedpanel} shows Tufte's alternative to a stacked bar graph: one panel per category, on a shared time axis.
 
-\begin{figure*}[b!]
+\begin{figure*}[tbp]
 \Description{Five bar-chart panels stacked vertically and sharing an x axis of years from 1990 to 2015, one panel per type of paper, each bar a count of papers. Bibliographic: 20 in 1990, then between 0 and 4. Not Empirical: highest in 1992 (55) and 1998 (54), falling to single digits after 2010 except 31 in 2011. Explanatory: 3 in 1990, rising to a peak of 29 in 2006, then between 8 and 25. Design and Evaluation, the only panel in blue: between 10 and 39 with no clear trend. Descriptive: rising from 23 in 1990 to 58 in 2015.}
 \begin{center}
 \begin{tikzpicture}
@@ -973,7 +968,7 @@ coordinates {(1990,3) (1992,4) (1994,5) (1996,0) (1998,0) (2000,5) (2002,15) (20
 
 % D & E
 \nextgroupplot[bar width=7pt, ymax=60, height = 3.5cm, title={Design and Evaluation}]
-\addplot+[draw=none, fill=blue!50] 
+\addplot+[draw=none, fill=OkabeItoBlue] 
 coordinates {(1990,17) (1992,13) (1994,26) (1996,22) (1998,15) (2000,27) (2002,39) (2004,35) (2006,23) (2008,19) (2010,21) (2011,10) (2012,28) (2013,26) (2014,24) (2015,22) };
 
 % Descriptive
@@ -1085,7 +1080,6 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
 
 
 
-\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{PRISMA Flow Diagram}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1093,11 +1087,12 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
 - Example provided by Katja Rogers
 - http://www.prisma-statement.org
 - ``PRISMA is an evidence-based minimum set of items for reporting in systematic reviews and meta-analyses. PRISMA focuses on the reporting of reviews evaluating randomized trials, but can also be used as a basis for reporting systematic reviews of other types of research, particularly evaluations of interventions.''
+- \autoref{fig:prisma} shows an example
 
 
 \pgfdeclarelayer{background}
 \pgfsetlayers{background,main}
-\begin{figure}[b!]
+\begin{figure}[tbp]
 \Description{PRISMA flow diagram with four stages labelled down the left side: Identification, Screening, Eligibility and Included. Records identified through database searching (N=1035) lead to records after duplicates removed (N=1030), then records screened (N=1030), of which 239 records were excluded. 791 full-text articles were assessed for eligibility, of which 731 were excluded with reasons. 60 studies were included in qualitative and quantitative synthesis.}
 {
 \footnotesize
@@ -1134,28 +1129,36 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
 \end{tikzpicture}
 }
 \caption{Number of results at each stage of the review, as represented in a PRISMA flow diagram.}
+\label{fig:prisma}
 \end{figure}
 
 
 
 
-\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Scheduling: Gantt Charts}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 - supported by the \texttt{pgfgantt} package
+- \autoref{gantt} shows a five-year research plan as a Gantt chart
 
-\begin{figure}[b!]
+\begin{figure}[tbp]
 \Description{Gantt chart of a research plan from May 2018 to April 2023 under five yearly headings, Year 1: 2018 -- 2019 to Year 5: 2022 -- 2023. Objective 1, Design Framework (May 2018 to April 2021): literature review, artifact review, framework development, then mentoring and publication. Objective 2, Interaction Mechanics (May 2020 to April 2022): design, development, lab study, then analysis and publication. Objective 3, In-Situ Evaluation (May 2021 to April 2023): requirements gathering, development, ecological validation, then analysis and publication. Within each objective the activities follow one another with small overlaps, and the objectives overlap by about a year.}
 \begin{ganttchart}[
-    x unit=.208cm,
+    x unit=.2cm,
     y unit title=0.4cm,
     y unit chart=0.3cm,
     vgrid,
     time slot format=isodate-yearmonth,
     time slot unit=month,
-    vgrid={*{3}{draw=none},dotted,*{3}{draw=none},dotted,*{3}{draw=none},*{1}{draw=gray}},
+    % One entry per vertical line (59 for 60 months): pgfgantt prints the
+    % rest of the list as stray text if the chart ends partway through it.
+    vgrid={%
+      *{3}{draw=none},dotted,*{3}{draw=none},dotted,*{3}{draw=none},*{1}{draw=gray},%
+      *{3}{draw=none},dotted,*{3}{draw=none},dotted,*{3}{draw=none},*{1}{draw=gray},%
+      *{3}{draw=none},dotted,*{3}{draw=none},dotted,*{3}{draw=none},*{1}{draw=gray},%
+      *{3}{draw=none},dotted,*{3}{draw=none},dotted,*{3}{draw=none},*{1}{draw=gray},%
+      *{3}{draw=none},dotted,*{3}{draw=none},dotted,*{3}{draw=none}},
     %
     % TITLE OPTIONS
     %
@@ -1167,7 +1170,7 @@ coordinates {(1990,23) (1992,23) (1994,36) (1996, 40) (1998,29) (2000,32) (2002,
     % BAR OPTIONS
     %
     bar height=.5,
-    bar/.append style={draw = none, fill=blue!50},
+    bar/.append style={draw = none, fill=OkabeItoSkyBlue},
     bar label font=\tiny,
     %   
     % GROUP OPTIONS
@@ -1234,7 +1237,7 @@ After acceptance, you upload the \LaTeX\ source of your paper to ACM's productio
 \end{verbatim}
 The name must be unique in the paper and is also a file name, so use letters, digits and hyphens. \texttt{\textbackslash Description} works as before: it is the alt text of the figure in the tagged PDF, and TAPS puts it in the HTML version.
 
-\paragraph{2. Draft mode saves a PDF of each figure.} While the paper says \texttt{\textbackslash def\textbackslash chizenmode\{draft\}} (the default), each \texttt{\textbackslash chizenfigure} is drawn as usual, and TikZ's \texttt{external} library also saves it as \texttt{figures/tikz/<name>.pdf} (\texttt{CHIZen/externalize.tex}). This runs \LaTeX\ once more for each new or changed figure, so it needs shell escape: Overleaf turns it on, and \texttt{latexmkrc} does for local builds. TikZ notices when a figure's code changes, but not when its data file (\texttt{data/*.csv}) or a style in \texttt{CHIZen/figures.tex} does: then delete \texttt{figures/tikz/<name>.md5}, or on Overleaf use \emph{Recompile from scratch}. Pictures that are not in a \texttt{\textbackslash chizenfigure} are drawn as before but not saved, which is fine for this manual but not for a paper.
+\paragraph{2. Draft mode saves a PDF of each figure.} While the paper says \texttt{\textbackslash def\textbackslash chizenmode\{draft\}} (the default), each \texttt{\textbackslash chizenfigure} is drawn as usual, and TikZ's \texttt{external} library also saves it as \texttt{figures/\allowbreak tikz/\allowbreak <name>.pdf} (\texttt{CHIZen/\allowbreak externalize.tex}). This runs \LaTeX\ once more for each new or changed figure, so it needs shell escape: Overleaf turns it on, and \texttt{latexmkrc} does for local builds. TikZ notices when a figure's code changes, but not when its data file (\texttt{data/*.csv}) or a style in \texttt{CHIZen/figures.tex} does: then delete \texttt{figures/tikz/<name>.md5}, or on Overleaf use \emph{Recompile from scratch}. Pictures that are not in a \texttt{\textbackslash chizenfigure} are drawn as before but not saved, which is fine for this manual but not for a paper.
 
 \paragraph{3. Get the figure PDFs into your project.} On Overleaf, the PDFs that TikZ saves end up among the output files of the compile, not in the project, so they would not reach TAPS. With the project synced to GitHub, a workflow fetches them for you:
 \begin{enumerate}
