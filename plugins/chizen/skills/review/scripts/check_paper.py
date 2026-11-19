@@ -17,6 +17,13 @@ defines the palettes) are not checked; add more with --exclude. The ACM TAPS
 package check is the exception: it covers every file TeX reads, because TAPS
 receives the whole source. Its list is CHIZen/taps-accepted-packages.txt.
 
+DRAFT AND FINAL MODE. TAPS only ever sees a paper in final mode
+(\\def\\chizenmode{final}). Packages loaded only in draft mode, i.e. in the
+\\else branch of \\ifchizenfinal ... \\else ... \\fi, or in a file that is only
+\\input there (CHIZen/figures.tex), are not TAPS problems and are not reported.
+Everything else is checked, including every package a paper loads in its own
+preamble outside such a branch, and the \\ifchizenfinal branch itself.
+
 SEVERITIES.
   error    the PDF is wrong or breaks a venue rule (vertical rules, a p-value with
            a leading zero, a figure without a caption or \\Description, ...)
@@ -138,6 +145,17 @@ class Line:
     num: int    # 1-based line number in that file
     text: str   # the line with comments removed
     raw: str    # the original line
+    # Mode of each part of the line: (start column, None | "draft" | "final"),
+    # from \ifchizenfinal ... \else ... \fi (None: both modes).
+    modes: list = field(default_factory=lambda: [(0, None)])
+
+    def mode_at(self, col: int):
+        mode = None
+        for start, m in self.modes:
+            if start > col:
+                break
+            mode = m
+        return mode
 
 
 @dataclass
@@ -196,13 +214,67 @@ def excluded(relpath: str, excludes) -> bool:
     return any(relpath == e.rstrip("/") or relpath.startswith(e.rstrip("/") + "/") for e in excludes)
 
 
-def flatten(root: Path, path: Path, excludes, seen: set, out: list) -> None:
+# TeX's conditionals (and iftex's), which end with \fi. Conditionals made with \newif
+# are added as they are read. Others, like ifthen's \ifthenelse or etoolbox's
+# \ifbool, take arguments instead and are ignored.
+TEX_IFS = {
+    "if", "ifcat", "ifnum", "ifdim", "ifodd", "ifvmode", "ifhmode", "ifmmode", "ifinner",
+    "ifvoid", "ifhbox", "ifvbox", "ifx", "ifeof", "iftrue", "iffalse", "ifcase", "ifdefined",
+    "ifcsname", "iffontchar", "ifincsname", "ifabsnum", "ifabsdim", "ifprimitive",
+    "ifpdfprimitive", "ifpdfabsnum", "ifpdfabsdim", "ifLuaTeX", "ifPDFTeX", "ifXeTeX",
+    "ifluatex", "ifpdftex", "ifxetex", "ifluahbtex", "ifpTeX", "ifupTeX", "ifeTeX",
+}
+MODE_IF = "ifchizenfinal"
+COND_RE = re.compile(r"\\newif\s*\\(if[A-Za-z@]+)|\\(if[A-Za-z@]*|else|fi)(?![A-Za-z@])")
+
+
+class Modes:
+    """Tracks \\ifchizenfinal ... \\else ... \\fi across lines (and \\input files)."""
+
+    def __init__(self, inherited=None, ifs=None):
+        self.inherited = inherited
+        self.ifs = ifs if ifs is not None else set(TEX_IFS)
+        self.stack: list = []  # one entry per open conditional: None, or [branch] for \ifchizenfinal
+
+    def current(self):
+        for entry in reversed(self.stack):
+            if entry is not None:
+                return entry[0]
+        return self.inherited
+
+    def scan(self, text: str) -> list:
+        """Update the state from one line; return its (column, mode) parts."""
+        parts = [(0, self.current())]
+        for m in COND_RE.finditer(text):
+            if m.group(1):
+                self.ifs.add(m.group(1))
+                continue
+            name = m.group(2)
+            if name == "fi":
+                if self.stack:
+                    self.stack.pop()
+            elif name == "else":
+                if self.stack and self.stack[-1] is not None:
+                    self.stack[-1][0] = "draft"
+            elif name == MODE_IF:
+                self.stack.append(["final"])
+            elif name in self.ifs:
+                self.stack.append(None)
+            else:
+                continue
+            parts.append((m.end(), self.current()))
+        return parts
+
+
+def flatten(root: Path, path: Path, excludes, seen: set, out: list, mode=None, ifs=None) -> None:
     """Append the lines of `path` to `out`, expanding \\input and friends in place.
-    Excluded files are expanded (they may define things) but marked as such."""
+    Excluded files are expanded (they may define things) but marked as such.
+    `mode` is the mode of the \\input line ("draft", "final" or None for both)."""
     key = path.resolve()
     if key in seen:
         return
     seen.add(key)
+    modes = Modes(mode, ifs)
     r = rel(root, path)
     try:
         raw_lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
@@ -214,19 +286,20 @@ def flatten(root: Path, path: Path, excludes, seen: set, out: list) -> None:
         if skip_env:
             if f"\\end{{{skip_env}}}" in text:
                 skip_env = None
-            out.append(Line(r, i, "", raw))
+            out.append(Line(r, i, "", raw, [(0, modes.current())]))
             continue
         m = re.search(r"\\begin\{(" + "|".join(re.escape(e) for e in SKIP_ENVS) + r")\}", text)
         if m and f"\\end{{{m.group(1)}}}" not in text[m.end():]:
             skip_env = m.group(1)
-            out.append(Line(r, i, text[:m.end()], raw))
+            out.append(Line(r, i, text[:m.end()], raw, modes.scan(text[:m.end()])))
             continue
         text = re.sub(r"\\(?:verb|mint\{[^}]*\})(.)(.*?)\1", " ", text)
-        out.append(Line(r, i, text, raw))
-        for inc in INPUT_RE.findall(text):
-            p = resolve(root, inc)
+        ln = Line(r, i, text, raw, modes.scan(text))
+        out.append(ln)
+        for inc in INPUT_RE.finditer(text):
+            p = resolve(root, inc.group(1))
             if p is not None:
-                flatten(root, p, excludes, seen, out)
+                flatten(root, p, excludes, seen, out, ln.mode_at(inc.start()), modes.ifs)
 
 
 def find_mains(root: Path) -> list[Path]:
@@ -341,7 +414,7 @@ def check_doc(doc: Doc, root: Path, excludes, add) -> None:
             add("error", "E-description", where,
                 f"figure '{ident}' has no \\Description{{...}} (alt text; CHI requires one per figure)")
 
-    # --- ACM TAPS: every file TeX reads counts, the CHI Zen library included
+    # --- ACM TAPS: every file TeX reads in final mode counts, the CHI Zen library included
     taps = load_taps(paper=root)
     if taps:
         for ln in lines:
@@ -411,6 +484,8 @@ PACKAGE_RE = re.compile(r"\\(?:usepackage|RequirePackage)\s*(?:\[[^\]]*\])?\s*\{
 
 def check_taps(t: str, ln: Line, add, accepted: set, included: set) -> None:
     for m in PACKAGE_RE.finditer(t):
+        if ln.mode_at(m.start()) == "draft":  # TAPS never sees draft mode
+            continue
         for pkg in (x.strip() for x in m.group(1).split(",")):
             if not pkg:
                 continue

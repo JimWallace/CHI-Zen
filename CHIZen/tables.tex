@@ -29,7 +29,10 @@
 % arydshln is not on ACM's TAPS list either, so final mode always uses
 % the \cmidrule.
 \makeatletter
-\ifchizenfinal\expandafter\@firstoftwo\else\expandafter\IfDocumentMetadataTF\fi{%
+\ifchizenfinal
+\newcommand{\cdashlinelr}[1]{\cmidrule(lr){#1}}
+\else
+\IfDocumentMetadataTF{%
 \newcommand{\cdashlinelr}[1]{\cmidrule(lr){#1}}
 }{%
 \usepackage{arydshln}
@@ -46,4 +49,5 @@
 	\noalign{\global\let\adl@draw\@dashdrawstore
 		\vskip\belowrulesep}}
 }
+\fi
 \makeatother
