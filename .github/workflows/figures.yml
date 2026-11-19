@@ -1,0 +1,113 @@
+name: Figure PDFs
+
+# Rebuilds the paper's figure PDFs (figures/tikz/*.pdf) and commits them,
+# so that a student writing on Overleaf can switch the paper to final mode
+# (\def\chizenmode{final}, for ACM's TAPS) after pulling from GitHub.
+#
+# On Overleaf, TikZ saves the figure PDFs among the compile's output files,
+# not in the project, so they never reach GitHub by themselves. This
+# workflow builds the paper in draft mode, the way Overleaf does (LuaLaTeX,
+# TeX Live 2026, shell escape), and commits every figures/tikz/*.pdf that
+# changed. See the CHI Zen manual, Section "Camera-Ready for ACM TAPS".
+#
+# It runs on pushes to the default branch (where Overleaf's GitHub sync
+# pushes), and by hand on any branch (Actions > Figure PDFs > Run workflow).
+# Its own commits do not start it again: GitHub does not run workflows for
+# pushes made with GITHUB_TOKEN, and the job also skips the bot's commits.
+# Nothing is committed when no figure changed: the PDFs are built with a
+# fixed SOURCE_DATE_EPOCH, so an unchanged figure is byte-for-byte equal.
+# PDFs of figures you deleted are not removed; delete them yourself.
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - '**.tex'
+      - 'data/**'
+      - 'CHIZen/**'
+      - 'figures/**'
+      - 'latexmkrc'
+      - '.github/workflows/figures.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: figure-pdfs-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # The paper's main file. Change it if you renamed 00-my-new-paper.tex.
+  PAPER: 00-my-new-paper.tex
+  # Fixed dates in the PDFs, so that rebuilding an unchanged figure gives
+  # the same bytes (2026-01-01T00:00:00Z; the value does not matter).
+  SOURCE_DATE_EPOCH: "1767225600"
+  FORCE_SOURCE_DATE: "1"
+
+jobs:
+  figures:
+    name: Build and commit figure PDFs
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    # The same TeX Live 2026 image as the Build workflow.
+    container: ghcr.io/xu-cheng/texlive-debian:20261001@sha256:78ac2204b8df113aca0561e8f173ad5b89ee51e90795173d2fe9bcf0fbce162e
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # git before checking out, so that actions/checkout makes a real git
+      # clone (it downloads a tarball if git is missing); minted runs
+      # Python/Pygments.
+      - name: Install Python and git
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            python3 python3-pygments git ca-certificates
+
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Check that the paper is in draft mode
+        run: |
+          if grep -Eq '^[[:space:]]*\\def\\chizenmode\{final\}' "$PAPER"; then
+            echo "::error::$PAPER is in final mode; figures are only saved in draft mode. Switch to \\def\\chizenmode{draft} to update them."
+            exit 1
+          fi
+
+      # Build from scratch: without the .md5 files TikZ saves every figure
+      # again, so a change to a data file or a style is picked up too.
+      - name: Build the paper in draft mode (saves figures/tikz/*.pdf)
+        run: |
+          rm -f figures/tikz/*.md5 figures/tikz/*.dpth
+          latexmk -lualatex -interaction=nonstopmode -halt-on-error -file-line-error "$PAPER"
+          ls -l figures/tikz/
+
+      - name: Show LaTeX errors on failure
+        if: failure()
+        run: |
+          grep -n -A8 -E '^!|^[^ ]+:[0-9]+: ' *.log figures/tikz/*.log || true
+
+      - name: Commit changed figure PDFs
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git add figures/tikz/*.pdf
+          if git diff --cached --quiet; then
+            echo "::notice::Figure PDFs are up to date; nothing to commit."
+            exit 0
+          fi
+          git diff --cached --stat
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update figure PDFs (figures/tikz) from ${GITHUB_SHA::7}" \
+                     -m "Built in draft mode by the Figure PDFs workflow, for final mode and ACM's TAPS."
+          for i in 1 2 3 4; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              echo "::notice::Committed updated figure PDFs; pull them into Overleaf before switching to final mode."
+              exit 0
+            fi
+            # The branch moved on (e.g. another Overleaf push): rebase and retry.
+            sleep $((i * 5))
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+          done
+          echo "::error::Could not push the figure PDFs"; exit 1

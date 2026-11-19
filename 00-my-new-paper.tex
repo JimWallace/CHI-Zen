@@ -24,16 +24,21 @@
 %%   non-anonymous submission:  \documentclass[manuscript,review]{acmart}
 %%   publication (camera-ready, after acceptance): \documentclass[sigconf]{acmart}
 %% Always check the current year's call for papers before you submit.
-%% natbib=false is ours, not CHI's: this template uses biblatex (see below).
-\documentclass[manuscript,review,anonymous,natbib=false]{acmart}
+\documentclass[manuscript,review,anonymous]{acmart}
+
+% CHI Zen mode: draft while you write; final for the camera-ready version
+% you upload to ACM's TAPS. Final mode loads only packages that TAPS
+% accepts and includes each \chizenfigure from its PDF in figures/tikz/
+% (build in draft mode first). See the CHI Zen manual, Section
+% "Camera-Ready for ACM TAPS".
+\def\chizenmode{draft}
 
 % Turn on the CHIZen features
 \input{CHIZen/init.tex}
 
-% References: biblatex with ACM's styles (acmnumeric, or acmauthoryear), run with biber.
-\usepackage[datamodel=acmdatamodel, style=acmnumeric, backend=biber]{biblatex}
-\addbibresource{submission/bibliography.bib}
-
+% References: BibTeX with ACM's ACM-Reference-Format style and natbib (which
+% acmart loads), as ACM's TAPS expects. The style and the .bib file are set
+% at the end of the document, where the references are printed.
 
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
@@ -147,10 +152,30 @@
 %% information and builds the first part of the formatted document.
 \maketitle
 
+% An example citation, so that BibTeX has something to do: BibTeX stops with
+% an error ("I found no \citation commands") in a paper that cites nothing.
+% Replace it, and the example entry in submission/bibliography.bib, with
+% your own references.
+This paper follows the CHI Zen template; for the kinds of contribution an HCI
+paper can make, see \citet{wobbrock2016research}.
 
-\begin{markdown}
-Hello, World!
-\end{markdown}
+% An example figure, also to replace. Write every TikZ/pgfplots figure
+% with \chizenfigure{<name>}{<code>}: in draft mode it draws the code and
+% saves figures/tikz/<name>.pdf; in final mode it includes that PDF.
+% \Description is the figure's alt text (required by CHI and TAPS).
+\autoref{fig:example} shows an example figure.
+
+\begin{figure}[tb]
+  \Description{Bar chart of mean task time in seconds (y axis, 0 to 10) for
+    three conditions, with error bars: Condition A 4.2 s, Condition B 6.1 s,
+    Condition C 3.5 s. Condition B is the slowest.}
+  \centering
+  \chizenfigure{fig-example}{\input{figures/fig-example.tex}}
+  \caption{An example figure (made-up data): mean task time by condition,
+    with error bars.}
+  \label{fig:example}
+\end{figure}
+
 
 %
 % Add files as below for each section, or just start writing here
@@ -178,7 +203,8 @@ Hello, World!
 %\input{submission/09-acknowledgements.tex}
 
 \newpage
-\printbibliography
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{submission/bibliography}
 
 %\input{submission/11-appendix.tex}
 

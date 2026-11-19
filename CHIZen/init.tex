@@ -2,14 +2,78 @@
 %  This file imports each of the separate .tex files in this directory -- feel free to enable/disable each separately as you'd like
 %
 
+%
+%   Mode: draft (the default) or final (camera-ready for ACM's TAPS).
+%       Set it in the main .tex file, BEFORE \input{CHIZen/init.tex}:
+%           \def\chizenmode{draft}    % or final
+%       draft: everything CHI Zen offers (pgfplots, TikZ, minted, markdown,
+%              ...). Figures written with \chizenfigure{name}{...} are also
+%              saved as PDFs in figures/tikz/ (see CHIZen/externalize.tex).
+%       final: only packages on ACM's TAPS accepted list are loaded, and
+%              each \chizenfigure is included from its PDF in figures/tikz/
+%              (see CHIZen/final.tex and the manual, Section "Camera-Ready
+%              for ACM TAPS").
+%
+\makeatletter
+\providecommand\chizenmode{draft}
+\newif\ifchizenfinal
+\ExplSyntaxOn
+\str_case_e:nnF { \tl_trim_spaces:e { \chizenmode } }
+  {
+    { draft } { \chizenfinalfalse }
+    { final } { \chizenfinaltrue }
+  }
+  {
+    \PackageError{CHIZen}{Unknown~mode~`\chizenmode'}{Write~\string\def\string\chizenmode{draft}~
+      or~\string\def\string\chizenmode{final}~before~\string\input{CHIZen/init.tex}.}
+  }
+\ExplSyntaxOff
+% Where the figure PDFs live (used by both modes). The folder must exist,
+% also on Overleaf.
+\providecommand\chizenfigurepath{figures/tikz/}
+\makeatother
+\ifchizenfinal
+  \typeout{CHIZen: final mode (camera-ready for ACM TAPS)}
+  % Log every package the paper itself asks for from here to
+  % \begin{document}, as
+  %   CHIZen TAPS package: [options]{name}
+  % and every package that one loads in turn, as
+  %   CHIZen TAPS dependency: {name} of {package}
+  % CI checks them against CHIZen/taps-accepted-packages.txt
+  % (.github/scripts/check_taps_packages.py).
+  \makeatletter
+  \def\chizen@sty{sty}%
+  \def\chizen@toppkg{}%
+  \let\chizen@onefilewithoptions\@onefilewithoptions
+  \def\@onefilewithoptions#1[#2][#3]#4{%
+    \edef\chizen@tmp{#4}%
+    \ifx\chizen@tmp\chizen@sty
+      \ifx\@currname\@empty
+        \typeout{CHIZen TAPS package: [\detokenize{#2}]{#1}}%
+        \def\chizen@toppkg{#1}%
+      \else
+        \typeout{CHIZen TAPS dependency: {#1} of {\chizen@toppkg}}%
+      \fi
+    \fi
+    \chizen@onefilewithoptions{#1}[{#2}][{#3}]{#4}}
+  \AddToHook{env/document/before}{\let\@onefilewithoptions\chizen@onefilewithoptions}
+  \makeatother
+\fi
 
 
 %
-%   A bunch of common includes for text formatting, features. 
+%   A bunch of common includes for text formatting, features.
 %
 \input{CHIZen/text.tex}
 
 
+\ifchizenfinal
+%
+%   Final mode: no pgfplots/TikZ. Figures come from their PDFs, the
+%   colours from CHIZen/figures.tex are still defined.
+%
+\input{CHIZen/final.tex}
+\else
 %
 %   Figures -- formerly IDEA Plots -- Wraps most features from PGFPlots
 %       * Handles common formatting, defines some common graph types
@@ -22,9 +86,10 @@
 % domain inf:-inf"), so use the TeX code path, as pdfLaTeX does.
 \pgfplotsset{lua backend=false}
 
-% This caches the PGF Plots stuff to speed up compile times
-%\usetikzlibrary{external}
-%\tikzexternalize[prefix=submission/tikz/]
+% Saves each \chizenfigure as a PDF in figures/tikz/ (TikZ `external'),
+% ready for final mode.
+\input{CHIZen/externalize.tex}
+\fi
 
 
 %
@@ -41,4 +106,3 @@
 %   Accessibility -- alt text for figures (see file for details)
 %
 \input{CHIZen/accessibility.tex}
-

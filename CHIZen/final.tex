@@ -1,0 +1,115 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  FINAL MODE (camera-ready for ACM TAPS)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Loaded instead of CHIZen/figures.tex when the main file says
+%   \def\chizenmode{final}
+% before \input{CHIZen/init.tex}.
+%
+% ACM's TAPS turns the LaTeX source into HTML and only accepts the
+% packages on its list (CHIZen/taps-accepted-packages.txt). In final mode
+% CHI Zen loads nothing else, and nothing acmart already loads:
+%   * no pgfplots, pgfplotstable, pgfgantt or TikZ: each
+%     \chizenfigure{name}{...} includes \chizenfigurepath name.pdf (by default
+%     figures/tikz/name.pdf), saved by a draft-mode build;
+%   * no minted, markdown, paracol, longtable, multicol, lipsum: using them
+%     stops with an error that says what to do instead;
+%   * the colours from CHIZen/figures.tex (palettes, Likert colours, ...)
+%     are still defined, so \textcolor{OkabeItoBlue}{...} keeps working.
+%
+% Alt text: \Description{...} works as in draft mode; it becomes the /Alt
+% of the figure's \includegraphics (CHIZen/accessibility.tex).
+%
+% What does not work in final mode:
+%   * a tikzpicture (or \tikz, ganttchart) outside \chizenfigure: it stops
+%     with an error. Wrap it in \chizenfigure and build in draft mode once.
+%   * \ref{plot:...} to a legend entry \label'ed inside a pgfplots axis,
+%     used OUTSIDE the picture (e.g. in a caption): that draws a little
+%     TikZ picture, so it prints ?? in final mode. Put the legend inside
+%     the figure instead (\addlegendentry, or a TikZ matrix).
+%   * a picture's baseline: figure PDFs sit on the baseline, so pictures
+%     placed side by side with [baseline] may line up slightly differently.
+%
+
+\makeatletter
+
+% Packages on ACM's list that CHI Zen's figures.tex also loads.
+\usepackage{subcaption}
+\usepackage{bbding}
+\usepackage{svg}
+
+% ---------------------------------------------------------------------------
+% \chizenfigure{name}{tikz code}: include the PDF, ignore the code.
+% ---------------------------------------------------------------------------
+\NewDocumentCommand\chizenfigure{m +m}{%
+  \IfFileExists{\chizenfigurepath#1.pdf}{%
+    \includegraphics{\chizenfigurepath#1.pdf}%
+  }{%
+    \PackageError{CHIZen}{Figure PDF \chizenfigurepath#1.pdf not found}{%
+      In final mode every \string\chizenfigure\space is included from its
+      PDF. Build the paper once in draft mode (\string\def\string\chizenmode{draft})
+      so that TikZ saves \chizenfigurepath#1.pdf, and make sure the file
+      is in the project: on Overleaf, pull it from GitHub after the
+      "Figure PDFs" workflow has run, or download it from Logs and output
+      files and upload it to \chizenfigurepath. See the CHI Zen manual,
+      Section "Camera-Ready for ACM TAPS".}%
+  }%
+}
+
+% ---------------------------------------------------------------------------
+% Colours: run every \definecolor line of CHIZen/figures.tex, and nothing
+% else from that file (it loads pgfplots).
+% ---------------------------------------------------------------------------
+\ExplSyntaxOn
+\ior_new:N \g__chizen_colours_ior
+\cs_new_protected:Npn \__chizen_read_colours:
+  {
+    \ior_open:Nn \g__chizen_colours_ior { CHIZen/figures.tex }
+    \ior_map_inline:Nn \g__chizen_colours_ior
+      { \tl_if_head_eq_meaning:nNT {##1} \definecolor {##1} }
+    \ior_close:N \g__chizen_colours_ior
+  }
+\cs_set_eq:NN \chizen@readcolours \__chizen_read_colours:
+\ExplSyntaxOff
+% (Called outside \ExplSyntaxOn, so the lines are read with the usual
+% catcodes.)
+\chizen@readcolours
+
+% ---------------------------------------------------------------------------
+% Drafting tools that TAPS does not accept: a clear error instead of an
+% "Undefined control sequence".
+% ---------------------------------------------------------------------------
+\def\chizen@notinfinal#1#2{%
+  \PackageError{CHIZen}{#1 is not available in final mode}{%
+    ACM's TAPS does not accept #1, so CHI Zen does not load it when the
+    paper says \string\def\string\chizenmode{final}. #2 See the CHI Zen
+    manual, Section "Camera-Ready for ACM TAPS".}}
+
+% TikZ, pgfplots, pgfgantt. The body of the environment is skipped.
+\NewDocumentEnvironment{tikzpicture}{+b}{%
+  \chizen@notinfinal{TikZ (tikzpicture)}{Wrap the picture in
+    \string\chizenfigure{name}{...} and build once in draft mode, so it is
+    included from figures/tikz/name.pdf.}}{}
+\NewDocumentEnvironment{ganttchart}{+b}{%
+  \chizen@notinfinal{pgfgantt (ganttchart)}{Wrap the chart in
+    \string\chizenfigure{name}{...} and build once in draft mode.}}{}
+\NewDocumentCommand\tikz{}{%
+  \chizen@notinfinal{TikZ (\string\tikz)}{Draw it in a
+    \string\chizenfigure, or leave it out. If it comes from a
+    \string\ref{plot:...} to a legend entry inside a figure, put the
+    legend inside the figure instead. (Right after switching from draft
+    mode, the old .aux file can cause this once: compile again, or on
+    Overleaf use Recompile from scratch.)}}
+% Settings only matter inside pictures, which are not drawn: ignore them.
+\NewDocumentCommand\tikzset{m}{}
+\NewDocumentCommand\pgfplotsset{m}{}
+\NewDocumentCommand\usetikzlibrary{m}{}
+\NewDocumentCommand\usepgfplotslibrary{m}{}
+\NewDocumentCommand\tikzsetnextfilename{m}{}
+\NewDocumentCommand\pgfdeclarelayer{m}{}
+\NewDocumentCommand\pgfsetlayers{m}{}
+\NewDocumentCommand\pgfplotstableread{O{}m}{%
+  \chizen@notinfinal{pgfplotstable}{Read tables inside the
+    \string\chizenfigure\space code.}}
+
+\makeatother

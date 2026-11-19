@@ -36,8 +36,6 @@ W-newpage manual/06-statistics.tex: \newpage: let the ACM template break pages; 
 W-newpage manual/08-transparency.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
 W-newpage manual/10-acknowledgements.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
 W-newpage manual/CHIZen-Paper-Checklist.tex: \newpage: let the ACM template break pages; a forced break leaves gaps when the text changes
-W-taps 00-my-new-paper.tex: \usepackage{biblatex}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
-W-taps CHIZen-Manual.tex: \usepackage{biblatex}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
 W-taps CHIZen/figures.tex: \usepackage{pgfgantt}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
 W-taps CHIZen/figures.tex: \usepackage{pgfplotstable}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source
 W-taps CHIZen/figures.tex: \usepackage{pgfplots}: not on ACM's TAPS accepted-packages list (April 2025); TAPS may reject the camera-ready source

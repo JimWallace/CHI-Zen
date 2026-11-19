@@ -30,3 +30,8 @@
 _markdown_*/
 _minted*/
 svg-inkscape/
+*.auxlock
+# TikZ `external' (CHIZen/externalize.tex): commit the figure PDFs in
+# figures/tikz/ (final mode and ACM's TAPS need them), not its side files.
+figures/tikz/*
+!figures/tikz/*.pdf

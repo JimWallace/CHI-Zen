@@ -15,7 +15,7 @@
   tagging-setup = {math/setup=mathml-SE},
 }
 
-\documentclass[sigconf,manuscript,screen,natbib=false]{acmart}
+\documentclass[sigconf,manuscript,screen]{acmart}
 
 % Load CHIZen stuff
 \input{CHIZen/init.tex}
@@ -64,10 +64,9 @@
 %% the next command will enable that style.
 %%\citestyle{acmauthoryear}
 
-% References: biblatex with ACM's styles, run with biber, as in the starter
-% paper. natbib=true keeps \citet and \citep working.
-\usepackage[datamodel=acmdatamodel, style=acmnumeric, backend=biber, natbib=true]{biblatex}
-\addbibresource{manual/bibliography.bib}
+% References: BibTeX with ACM's ACM-Reference-Format style and natbib (which
+% acmart loads, so \citet and \citep work), as in the starter paper. See
+% \bibliographystyle and \bibliography at the end of the document.
 
 
 %%
@@ -163,7 +162,8 @@
 \input{manual/10-acknowledgements.tex}
 
 
-\printbibliography
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{manual/bibliography}
 
 
 %\input{submission/11-appendix.tex}
