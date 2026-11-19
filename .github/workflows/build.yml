@@ -12,6 +12,9 @@ name: Build
 # ready for ACM's TAPS) from those PDFs. The final-mode PDF must pass
 # veraPDF too, and the final-mode build must load only packages on ACM's
 # accepted list (CHIZen/taps-accepted-packages.txt).
+#
+# Finally, no build may produce a LaTeX or BibTeX warning: see the
+# warning ratchet step.
 
 on:
   push:
@@ -77,10 +80,6 @@ jobs:
       - name: Check that final mode loads only TAPS-accepted packages
         run: python3 .github/scripts/check_taps_packages.py 00-my-new-paper-final.tex --engine ${{ matrix.engine }}
 
-      - name: List LaTeX and BibTeX warnings
-        run: |
-          grep -h -E 'Warning|^WARN' *.log *.blg 2>/dev/null | sed 's/ on input line [0-9]*//' | sort | uniq -c | sort -rn || true
-
       - name: Install veraPDF ${{ env.VERAPDF_VERSION }}
         if: matrix.engine == 'lualatex'
         run: |
@@ -132,6 +131,16 @@ jobs:
           check CHIZen-Manual.pdf   ua2 required
           check CHIZen-Manual.pdf   4f  required
           exit $status
+
+      # Zero warnings: every LaTeX, package, font and BibTeX warning, undefined
+      # reference and overfull box in every document and mode built above
+      # (and in the figure runs of TikZ external) fails, unless it is listed in
+      # chizen-warnings-baseline.txt, which checks.yml keeps empty. See the
+      # script's docstring for what counts and the short allowlist.
+      - name: No LaTeX or BibTeX warnings (warning ratchet)
+        run: >-
+          python3 plugins/chizen/skills/review/scripts/warning_ratchet.py --label ${{ matrix.engine }}
+          CHIZen-Manual 00-my-new-paper 00-my-new-paper-final 'figures/tikz/*'
 
       - name: Upload PDFs
         if: always()

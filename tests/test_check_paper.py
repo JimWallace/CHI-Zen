@@ -139,6 +139,60 @@ class Taps(unittest.TestCase):
         self.assertEqual(found, ["W-taps-acmart", "W-taps"])
 
 
+class TapsModes(unittest.TestCase):
+    """TAPS only sees final mode: packages in the \\else branch of \\ifchizenfinal (or in
+    files \\input only there) are not findings; everything else still is."""
+
+    MAIN = "\n".join([
+        r"\documentclass{acmart}",
+        r"\def\chizenmode{draft}",
+        r"\input{lib.tex}",
+        r"\usepackage{pgfplots}",            # the paper's own preamble: checked
+        r"\begin{document}",
+        r"\end{document}", ""])
+    LIB = "\n".join([
+        r"\newif\ifchizenfinal",
+        r"\ifchizenfinal",
+        r"\usepackage{listings}",            # final, accepted
+        r"\usepackage{tikz}",                # final, not accepted: checked
+        r"\else",
+        r"\usepackage{minted}",              # draft only
+        r"\ifnum1=1 \usepackage{lipsum}\fi",  # nested conditional, still draft
+        r"\ifthenelse{\boolean{x}}{}{}",     # no \fi: not a conditional
+        r"\input{drafty.tex}",               # a file read only in draft mode
+        r"\fi",
+        r"\ifchizenfinal\else\usepackage{etoolbox}\fi",  # draft only, on one line
+        r"\usepackage{iftex}",               # both modes: acmart loads it
+        ""])
+
+    def setUp(self):
+        self.dir = Path(tempfile.mkdtemp())
+        (self.dir / "paper.tex").write_text(self.MAIN)
+        (self.dir / "lib.tex").write_text(self.LIB)
+        (self.dir / "drafty.tex").write_text("\\usepackage{pgfgantt}\n")
+
+    def tearDown(self):
+        shutil.rmtree(self.dir)
+
+    def test_only_final_mode_packages_are_checked(self):
+        code, out = run(self.dir, "--json", "--baseline", self.dir / "none.txt")
+        taps = sorted(f"{f['code']} {f['file']}:{f['line']}" for f in json.loads(out)["findings"]
+                      if f["code"].startswith("W-taps"))
+        self.assertEqual(taps, ["W-taps lib.tex:4", "W-taps paper.tex:4", "W-taps-acmart lib.tex:12"])
+
+    def test_modes_scan(self):
+        modes = check_paper.Modes()
+        self.assertEqual(modes.scan(r"\newif\iffoo"), [(0, None)])
+        self.assertEqual(modes.scan(r"\ifchizenfinal"), [(0, None), (14, "final")])
+        self.assertEqual(modes.scan(r"\iffoo x \else y \fi"), [(0, "final"), (6, "final"),
+                                                            (14, "final"), (20, "final")])
+        self.assertEqual(modes.current(), "final")
+        modes.scan(r"\else")
+        self.assertEqual(modes.current(), "draft")
+        modes.scan(r"\fi")
+        self.assertIsNone(modes.current())
+
+
 class PaletteInStep(unittest.TestCase):
     def test_palette_matches_figures_tex(self):
         tex = (REPO / "CHIZen" / "figures.tex").read_text(encoding="utf-8")

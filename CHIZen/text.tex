@@ -46,12 +46,31 @@
 \@ifpackageloaded{newtxmath}{\@namedef{ver@amssymb.sty}{2013/01/14 v3.01 (symbols provided by newtxmath)}}{}
 \makeatother
 % `notes' was called `footnotes' before markdown v3.
-\usepackage[notes,definitionLists,hashEnumerators,smartEllipses,hybrid]{markdown}
-% NOTE: inside a markdown block, markdown v3 reads \& as an escaped `&' and
-% passes a bare & (an alignment tab) to TeX. Write \\& instead.
+% LaTeX inside a markdown block: maths between dollar signs (texMathDollars),
+% any other command as a raw span, `\citep{key}`{=tex} (rawAttribute), and
+% % comments are dropped (texComments). These replace the `hybrid' option,
+% which markdown 3.7.1 soft-deprecated. Plain text is now escaped, so write
+% & as it is (not \\&); a % still starts a comment, so write \% for a percent.
+\usepackage[notes,definitionLists,hashEnumerators,smartEllipses,rawAttribute,texMathDollars,texComments]{markdown}
 
 \usepackage{paracol}
 \usepackage{minted}
+% fvextra (under minted) moves each code line up by 0.25pt with \vspace, so
+% that background colours of adjacent lines overlap; acmart warns about any
+% \vspace in the text. Listings here have no background colour, so turn it
+% off. (With bgcolor=..., add bgcolorboxoverlap=0.25pt to that listing.)
+\fvset{backgroundcolorboxoverlap=0pt}
+% acmart's monospaced font, Inconsolata, has no italic, which minted styles
+% use for comments. Say so (set them upright, as LaTeX would after a "Font
+% shape undefined" warning). No spaces in the size specification: it is
+% read from a macro.
+\makeatletter
+\begingroup\ttfamily\endgroup % declares the font family
+\ifcsname\encodingdefault/\ttdefault/m/it\endcsname\else
+  \edef\chizen@tmp{\noexpand\DeclareFontShape{\encodingdefault}{\ttdefault}{m}{it}{<->ssub*\ttdefault/m/n}{}}%
+  \chizen@tmp
+\fi
+\makeatother
 \fi
 \ifchizenfinal
 % Final mode: markdown, paracol and minted are not on ACM's TAPS list.

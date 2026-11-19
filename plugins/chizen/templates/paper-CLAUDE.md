@@ -54,7 +54,10 @@ Menu → GitHub). Claude works on the GitHub copy.
   `.claude/skills/chizen-review/scripts/check_paper.py`). Fix new errors and warnings; don't
   add lines to `chizen-baseline.txt` to make them pass.
 - `/chizen:review` — the full review: the linter plus four independent reviewer agents.
-- The PDF compiles on Overleaf (LuaLaTeX, TeX Live 2026) without a `CHIZen Warning` in the log.
+- The PDF compiles on Overleaf (LuaLaTeX, TeX Live 2026) without warnings. After a local
+  `latexmk` (or with Overleaf's log downloaded), `python3 <path to>/warning_ratchet.py <main>`
+  (next to `check_paper.py`) lists every LaTeX/BibTeX warning, undefined reference, overfull
+  box and `CHIZen Warning`; fix them rather than adding lines to `chizen-warnings-baseline.txt`.
 
 ## Author's decisions
 

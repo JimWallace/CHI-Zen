@@ -2,9 +2,10 @@ name: Checks
 
 # The CHI Zen plugin and its paper linter, separate from build.yml (which
 # compiles and validates the PDFs):
-#   - the linter's tests, and the linter on the manual and the starter paper,
-#     with the findings accepted in chizen-baseline.txt (new findings fail,
-#     and so do baseline lines that no longer occur);
+#   - the linter's and the warning ratchet's tests, and the linter on the
+#     manual and the starter paper: any error or warning fails, since
+#     chizen-baseline.txt (and build.yml's chizen-warnings-baseline.txt) must
+#     stay empty;
 #   - `claude plugin validate` on the marketplace and the plugin;
 #   - the matplotlib and ggplot examples in the guide's styles/ folder.
 
@@ -24,10 +25,21 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Test check_paper.py and copy_into_paper.py
+      - name: Test check_paper.py, warning_ratchet.py and copy_into_paper.py
         run: python3 -m unittest discover -s tests -v
-      - name: Lint the manual and the starter paper (errors and warnings beyond chizen-baseline.txt fail)
+      - name: Lint the manual and the starter paper (any error or warning fails)
         run: python3 plugins/chizen/skills/review/scripts/check_paper.py .
+      # The baselines exist for students' papers. CHI Zen itself has no
+      # accepted findings or build warnings, and keeps it that way.
+      - name: The linter and build-warning baselines are empty
+        run: |
+          status=0
+          for f in chizen-baseline.txt chizen-warnings-baseline.txt; do
+            if [ -f "$f" ] && grep -v '^[[:space:]]*\(#\|$\)' "$f"; then
+              echo "::error file=$f::$f must stay empty: fix the cause instead of accepting it"; status=1
+            fi
+          done
+          exit $status
 
   plugin:
     name: Plugin validation
