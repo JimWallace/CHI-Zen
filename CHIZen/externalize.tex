@@ -39,7 +39,20 @@
 \makeatletter
 \ifnum\pdf@shellescape=1
   \tikzexternalize[prefix=\chizenfigurepath, only named=true]
+  % Tagged PDF under pdfLaTeX: tagpdf records every marked-content id as a
+  % label (mcid-1, mcid-2, ...), and TikZ copies the labels of the run that
+  % saves a picture into the paper's .aux (`aux in dpth'), where they clash
+  % with the paper's own ("Label `mcid-18' multiply defined"). Don't copy
+  % them. A \label inside a saved picture (e.g. \label{plot:...}) is then
+  % not seen outside it, as in final mode. LuaLaTeX needs no labels for this.
+  \ifLuaTeX\else\IfDocumentMetadataT{\tikzset{external/aux in dpth=false}}\fi
   \long\def\chizenfigure#1#2{\tikzsetnextfilename{#1}#2}
+  % In the run that saves a picture, mark where it starts and ends in the
+  % log, so that warning_ratchet.py can tell the picture's own warnings
+  % from those about the rest of the paper.
+  \tikzifexternalizing{%
+    \long\def\chizenfigure#1#2{\typeout{CHIZen figure: #1}%
+      \tikzsetnextfilename{#1}#2\typeout{CHIZen figure end: #1}}}{}
   % In the run that saves a picture, LaTeX ships out exactly one page (the
   % picture). Say so, or LaTeX adds a "Temporary page!" to the PDF to hold
   % its end-of-document material (e.g. the tagging structure).
