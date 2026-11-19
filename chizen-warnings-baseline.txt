@@ -1,0 +1,7 @@
+# Accepted LaTeX/BibTeX build warnings: the baseline of warning_ratchet.py
+# (plugins/chizen/skills/review/scripts/) for the CHI Zen manual and starter
+# paper. Empty, and CI (checks.yml) keeps it empty: any build warning in any
+# document, mode or engine fails build.yml. Fix the cause. (A student's paper
+# may list accepted warnings here, one per line: "<label> <file>: <warning>";
+# a listed warning that no longer occurs fails until it is deleted with
+# --prune-baseline.)
