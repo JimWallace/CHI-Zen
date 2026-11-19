@@ -307,7 +307,8 @@ def allowlisted(line: str) -> str | None:
 
 def report(new, stale, errors, allowed, skipped, current, bpath: Path, logs) -> str:
     total = sum(current.values())
-    out = [f"## Build warnings: {total} warning(s) in {len(logs)} log(s), "
+    allowed_n = sum(current[w] for w, _ in allowed)
+    out = [f"## Build warnings: {total - allowed_n} warning(s) and {allowed_n} allowlisted in {len(logs)} log(s), "
            f"{len(new)} new, {len(stale)} fixed but still in the baseline, {len(errors)} error(s)", ""]
     if errors:
         out += ["### Errors", *[f"- `{e}`" for e in errors], ""]
