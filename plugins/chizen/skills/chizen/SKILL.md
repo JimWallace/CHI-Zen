@@ -19,6 +19,7 @@ you explain a change.
 | Ethics: REB, consent, online and health data, quoting posts | [references/ethics.md](references/ethics.md) |
 | Open materials, data, preregistration, anonymising | [references/transparency.md](references/transparency.md) |
 | Citations and the bibliography | [references/references.md](references/references.md) |
+| Finding related work (candidates to read) | the `related-work` skill; rules in [references/references.md](references/references.md), REF-13 |
 | Framing, contributions, prose, words to avoid | [references/writing.md](references/writing.md) |
 | Alt text and the tagged PDF | [references/accessibility.md](references/accessibility.md) |
 | Before submission, camera-ready and TAPS | [references/checklist.md](references/checklist.md) |

@@ -11,6 +11,7 @@ other cloud sessions don't install plugins, not even ones a repository enables i
 It writes, replacing earlier copies:
     PAPER_DIR/.claude/skills/chizen/          the guide (authoring skill)
     PAPER_DIR/.claude/skills/chizen-review/   the review skill, check_paper.py, warning_ratchet.py
+    PAPER_DIR/.claude/skills/chizen-related-work/   the related-work skill, find_papers.py
     PAPER_DIR/.claude/agents/chizen-*.md      the four reviewer agents
 Commit them; re-run after CHI Zen updates. Nothing else in .claude/ is touched.
 """
@@ -26,6 +27,7 @@ PLUGIN = Path(__file__).resolve().parent.parent
 COPIES = [  # (source in the plugin, destination under PAPER_DIR/.claude)
     (PLUGIN / "skills" / "chizen", Path("skills") / "chizen"),
     (PLUGIN / "skills" / "review", Path("skills") / "chizen-review"),
+    (PLUGIN / "skills" / "related-work", Path("skills") / "chizen-related-work"),
 ]
 IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", "*.pdf")
 

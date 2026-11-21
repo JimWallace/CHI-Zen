@@ -22,6 +22,9 @@ author, a friend, or the `chizen` reviewer agents).
 - [ ] ⚙ *p* without a leading zero and nothing below *p* < .001; *F* and χ² to one decimal
       (STAT-11); no "trending toward significance" (STAT-9).
 - [ ] Significant differences are marked on the figures and tables (FIG-7, STAT-13).
+- [ ] ⚙ Every number in the abstract, introduction and conclusion matches the results, tables
+      and figures, and the participant flow adds up (WRT-14; the linter checks the abstract's
+      counts and percentages).
 
 ## Figures and tables ([figures.md](figures.md), [tables.md](tables.md))
 - [ ] Each figure and table highlights the relevant information and can be (mostly)
@@ -48,7 +51,8 @@ author, a friend, or the `chizen` reviewer agents).
 - [ ] Quotes from public online posts are protected from being searched back (ETH-3, ETH-4);
       every quote and description is de-identified (ETH-5).
 - [ ] Materials, data and code are shared, or the paper says why not (TRN-1, TRN-2).
-- [ ] Everything, including supplementary material, is anonymised for review (TRN-5).
+- [ ] ⚙ Everything, including supplementary material, is anonymised for review (TRN-5,
+      REF-12); the linter checks the paper's source, not faces in figures or supplements.
 - [ ] Generative-AI use is disclosed as ACM policy and the venue require (WRT-13).
 
 ## Venue

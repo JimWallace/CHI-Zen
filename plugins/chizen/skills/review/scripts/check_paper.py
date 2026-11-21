@@ -24,6 +24,16 @@ DRAFT AND FINAL MODE. TAPS only ever sees a paper in final mode
 Everything else is checked, including every package a paper loads in its own
 preamble outside such a branch, and the \\ifchizenfinal branch itself.
 
+ANONYMOUS SUBMISSIONS. With acmart's `anonymous` class option, the W-anon-* and
+E-anon-ref checks (guide: TRN-5, REF-12) look for what the option doesn't hide: author and
+institution names (from \\author and \\institution) in the body, first-person
+self-citation, ethics and grant numbers, acknowledgments outside the acks environment, a
+hand-set pdfauthor, an author in an included PDF's metadata, OSF links without view_only,
+GitHub/GitLab links in a sentence that says "our", and .bib entries by "Anonymous". Text
+inside \\anon{...} is hidden by acmart and not reported. One-word names, and phrases like
+"our previous study" without a citation in the sentence, are left alone: they too often
+refer to something else.
+
 SEVERITIES.
   error    the PDF is wrong or breaks a venue rule (vertical rules, a p-value with
            a leading zero, a figure without a caption or \\Description, ...)
@@ -458,6 +468,12 @@ def check_doc(doc: Doc, root: Path, excludes, add) -> None:
                 add("warning", "W-todo", ln, f"TODO marker in the text: '{short(t[m.start():], 40)}'")
             check_words(t, ln, add)
 
+    # --- whole-document checks on the body text
+    text, starts = joined(lines)
+    if is_anonymous(lines):
+        check_anonymity(lines, text, starts, checked, root, add)
+    check_abstract_numbers(lines, text, starts, checked, add)
+
 
 def check_tabular(t: str, ln: Line, add) -> None:
     for m in re.finditer(r"\\begin\{(tabular\*?|tabularx|tabulary|longtable)\}", t):
@@ -590,6 +606,346 @@ def check_words(t: str, ln: Line, add) -> None:
         pat = r"(?<![\w'’-])" + re.escape(w).replace("'", "['’]").replace(r"\ ", r"\s+") + r"(?![\w'’-])"
         for m in re.finditer(pat, s, flags):
             add("style", "S-avoid", ln, f"'{m.group(0)}' is on the checklist's words to avoid")
+
+
+# ------------------------------------------------------------------ anonymity (TRN-5)
+
+def joined(lines: list) -> tuple[str, list]:
+    """The comment-stripped text of all lines, one per row, and each line's start offset."""
+    starts, pos = [], 0
+    for ln in lines:
+        starts.append(pos)
+        pos += len(ln.text) + 1
+    return "\n".join(ln.text for ln in lines), starts
+
+
+def line_at(starts: list, offset: int) -> int:
+    lo, hi = 0, len(starts) - 1
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if starts[mid] <= offset:
+            lo = mid
+        else:
+            hi = mid - 1
+    return lo
+
+
+def is_anonymous(lines: list) -> bool:
+    """True when the acmart class options include `anonymous` (or anonymous=true)."""
+    for ln in lines:
+        m = re.search(r"\\documentclass\s*\[([^\]]*)\]", ln.text)
+        if m:
+            opts = [o.strip().replace(" ", "") for o in m.group(1).split(",")]
+            return "anonymous" in opts or "anonymous=true" in opts
+    return False
+
+
+def blank(text: str, spans) -> str:
+    """`text` with each (start, end) span replaced by spaces (newlines kept, so offsets still
+    map to lines)."""
+    chars = list(text)
+    for a, b in spans:
+        for k in range(a, b):
+            if chars[k] != "\n":
+                chars[k] = " "
+    return "".join(chars)
+
+
+def command_spans(text: str, names) -> list[tuple[int, int, str]]:
+    """(start, end, first argument) of each \\name[opt]{arg}..., for the given commands."""
+    out = []
+    pat = re.compile(r"\\(" + "|".join(names) + r")\*?(?![A-Za-z@])")
+    for m in pat.finditer(text):
+        pos = m.end()
+        while True:
+            while pos < len(text) and text[pos] in " \t\n":
+                pos += 1
+            if pos < len(text) and text[pos] == "[":
+                close = text.find("]", pos)
+                if close < 0:
+                    break
+                pos = close + 1
+                continue
+            break
+        arg = balanced_arg(text, pos)
+        if arg is not None:
+            out.append((m.start(), arg[1], arg[0]))
+    return out
+
+
+# acmart drops these in anonymous mode (\author's names, \thanks, the acks and anonsuppress
+# environments, \anon{...}), or they are citations and labels rather than prose.
+ANON_HIDDEN_CMDS = ("author", "affiliation", "institution", "department", "streetaddress",
+                    "city", "state", "postcode", "country", "email", "orcid", "thanks",
+                    "additionalaffiliation", "anon", "shortauthors", "authorsaddresses",
+                    "cite[A-Za-z]*", "label", "ref", "autoref", "cref", "Cref", "url",
+                    "href", "input", "include", "includegraphics", "bibliography",
+                    "addbibresource", "title", "grantsponsor", "grantnum")
+ANON_HIDDEN_ENVS = ("acks", "anonsuppress")
+NAME_CMDS = ("author", "institution")
+# First person about the authors' earlier publications: always self-citation.
+SELF_CITE_RE = re.compile(
+    r"\b(?:our|my)\s+(?:own\s+)?(?:prior|previous|past|earlier|former)\s+(?:published\s+)?"
+    r"(?:work|works|paper|papers|publication|publications|research)\b", re.I)
+# Phrases that can also refer to this paper ("our previous study" may be Study 1): only
+# self-citation when the same sentence cites something.
+SELF_CITE_WEAK_RE = re.compile(
+    r"\b(?:our|my)\s+(?:own\s+)?(?:prior|previous|past|former)\s+(?:study|studies|system|"
+    r"systems|tool|tools|survey|findings|results)\b"
+    r"|\bwe\s+(?:have\s+)?(?:previously|earlier|already)\s+(?:showed|shown|found|reported|"
+    r"developed|proposed|built|published|presented|introduced|described|studied|designed|"
+    r"demonstrated)\b"
+    r"|\b(?:in|see|from)\s+our\s+(?:own\s+)?(?:work|study|paper|research)\b", re.I)
+ETHICS_ID_RE = re.compile(
+    r"\b(?:REB|IRB|ORE|HREB|ethics(?:\s+(?:board|committee|clearance|approval))?)\b"
+    r"[^.;]{0,40}?(?:\#|\\\#|\bno\.?|\bnumber|\bprotocol|\bfile)\s*:?\s*[A-Z]*-?\d{3,}", re.I)
+GRANT_ID_RE = re.compile(r"\bgrants?\s+(?:\#|\\\#|no\.?|number|ID)\s*:?\s*[A-Z0-9][A-Z0-9-]{3,}", re.I)
+LINK_RE = re.compile(r"(?:https?://)?(?:www\.)?(github\.com|gitlab\.com|bitbucket\.org|"
+                     r"huggingface\.co|osf\.io)/[^\s}{\\]+", re.I)
+ACK_HEADING_RE = re.compile(r"\\(?:section|subsection|paragraph)\*?\s*\{\s*acknowledge?ments?\b", re.I)
+
+
+SENTENCE_END_RE = re.compile(r"[.!?](?=\s)|\n\s*\n")
+
+
+def sentence_at(text: str, offset: int) -> str:
+    """The sentence of `text` around `offset`: from the last full stop (or blank line) before
+    it to the next one. Abbreviations ("et al.") end it early, which only makes it shorter."""
+    window = text[max(0, offset - 600):offset]
+    starts = [m.end() for m in SENTENCE_END_RE.finditer(window)]
+    a = offset - len(window) + (starts[-1] if starts else 0)
+    m = SENTENCE_END_RE.search(text, offset)
+    return text[a:m.start() if m else len(text)]
+
+
+def anon_mask(text: str, cmds=ANON_HIDDEN_CMDS) -> str:
+    """The text with what acmart hides in anonymous mode (and, by default, citations and other
+    non-prose arguments) blanked out."""
+    spans = [(m.start(), m.end()) for env in ANON_HIDDEN_ENVS for m in re.finditer(
+        r"\\begin\{" + env + r"\}.*?(?:\\end\{" + env + r"\}|\Z)", text, re.S)]
+    spans += [(a, b) for a, b, _ in command_spans(text, cmds)]
+    text = blank(text, spans)
+    return text
+
+
+def identity_names(text: str) -> list[str]:
+    """Author names and institutions from \\author{} and \\institution{}, as they'd appear in
+    prose. acmart hides these in the header; the body must not repeat them."""
+    names = set()
+    for _, _, arg in command_spans(text, NAME_CMDS):
+        arg = re.sub(r"\\[A-Za-z@]+\*?(\[[^\]]*\])?(\{[^{}]*\})?|[{}~]", " ", arg)
+        arg = re.sub(r"\s+", " ", arg).strip(" ,")
+        # One-word names ("Google") are too often a product or a place, not the authors.
+        if len(arg.split()) >= 2 and not re.search(r"anonym", arg, re.I):
+            names.add(arg)
+    return sorted(names, key=len, reverse=True)
+
+
+def check_anonymity(lines: list, text: str, starts: list, checked: list, root: Path, add) -> None:
+    """TRN-5: what acmart's `anonymous` option doesn't hide (CHI anonymization policy)."""
+    b0, b1 = body_range(lines)
+    body0 = starts[b0]
+    body1 = starts[b1] + len(lines[b1].text) if b1 < len(lines) else len(text)
+    names = identity_names(text)
+    prose = anon_mask(text)
+
+    def report(sev, code, offset, msg):
+        i = line_at(starts, offset)
+        if checked[i] and body0 <= offset <= body1:
+            add(sev, code, lines[i], msg)
+
+    for name in names:
+        pat = re.compile(r"(?<![\w-])" + re.escape(name).replace(r"\ ", r"\s+") + r"(?![\w-])", re.I)
+        for m in pat.finditer(prose):
+            report("warning", "W-anon-name", m.start(), f"'{short(m.group(0), 40)}' (an author or "
+                   "institution) in an anonymous submission: wrap it in \\anon{...}, which acmart "
+                   "hides until camera-ready")
+    selfcites = list(SELF_CITE_RE.finditer(prose)) + [
+        m for m in SELF_CITE_WEAK_RE.finditer(prose)
+        if re.search(r"\\cite|\\citet|\\citep", sentence_at(text, m.start()))]
+    for m in sorted(selfcites, key=lambda m: m.start()):
+        report("warning", "W-anon-selfcite", m.start(), f"'{short(m.group(0), 40)}': cite your own work "
+               "in the third person in an anonymous submission (\"Chetty et al. [10] showed\")")
+    for m in ETHICS_ID_RE.finditer(prose):
+        report("warning", "W-anon-id", m.start(), f"'{short(m.group(0), 40)}': an ethics approval number "
+               "identifies the institution; wrap it in \\anon{...} until camera-ready")
+    for m in GRANT_ID_RE.finditer(prose):
+        report("warning", "W-anon-id", m.start(), f"'{short(m.group(0), 40)}': a grant number identifies "
+               "the authors; put it in the acks environment or \\anon{...}")
+    for m in ACK_HEADING_RE.finditer(prose):
+        report("warning", "W-anon-acks", m.start(), "acknowledgments in a \\section: put them in the "
+               "acks environment, which acmart leaves out of anonymous submissions")
+    for m in re.finditer(r"pdfauthor\s*=\s*\{?\s*([^,}\s][^,}]*)", text):
+        i = line_at(starts, m.start())
+        if checked[i] and not re.search(r"anonym|\\authors\b", m.group(1), re.I):
+            add("warning", "W-anon-metadata", lines[i], "pdfauthor is set by hand: in an anonymous "
+                "submission let acmart set it (to \"Anonymous Author(s)\")")
+    # Links: GitHub and the like name the owner; an OSF project link shows its contributors.
+    shown = anon_mask(text, ("anon",))
+    for m in LINK_RE.finditer(shown):
+        url = m.group(0)
+        if m.group(1).lower() == "osf.io" and "view_only" in url:
+            continue
+        # A GitHub link to someone else's tool is fine; flag it when the sentence says "our".
+        if m.group(1).lower() != "osf.io" and not re.search(
+                r"\b(?:our|my)\b", sentence_at(shown, m.start()), re.I):
+            continue
+        what = ("an OSF link without view_only shows the project's contributors; use an "
+                "anonymised view-only link" if m.group(1).lower() == "osf.io" else
+                f"a {m.group(1)} link names its owner; link an anonymised copy for review")
+        report("warning", "W-anon-link", m.start(), f"'{short(url, 40)}': {what}")
+    check_anon_bib(lines, root, add)
+    check_anon_figures(lines, starts, checked, text, root, add)
+
+
+def bib_files(lines: list, root: Path) -> list[Path]:
+    out = []
+    for ln in lines:
+        for m in re.finditer(r"\\(bibliography|addbibresource)\s*(?:\[[^\]]*\])?\{([^}]*)\}", ln.text):
+            for name in m.group(2).split(","):
+                name = name.strip()
+                for cand in (name, name + ".bib"):
+                    p = root / cand
+                    if cand.endswith(".bib") and p.is_file() and p not in out:
+                        out.append(p)
+    return out
+
+
+def check_anon_bib(lines: list, root: Path, add) -> None:
+    """CHI: "the use of any references marked 'anonymous' is grounds for desk rejection"."""
+    for p in bib_files(lines, root):
+        try:
+            raw = p.read_text(encoding="utf-8", errors="replace").splitlines()
+        except OSError:
+            continue
+        key = None
+        for i, s in enumerate(raw, 1):
+            m = re.match(r"\s*@\w+\s*[{(]\s*([^,\s]+)", s)
+            if m:
+                key = m.group(1)
+            if re.match(r"\s*author\s*=\s*[{\"]\s*\{?\s*anonymous\b", s, re.I):
+                add("error", "E-anon-ref", Line(rel(root, p), i, s, s),
+                    f"'{key}' is a reference marked anonymous: CHI desk-rejects these; cite your "
+                    "own work normally, in the third person")
+
+
+PDF_AUTHOR_RE = re.compile(rb"/Author\s*(\((?:\\.|[^\\)])*\)|<[0-9A-Fa-f\s]*>)")
+XMP_CREATOR_RE = re.compile(rb"<dc:creator>\s*<rdf:Seq>(.*?)</rdf:Seq>", re.S)
+
+
+def pdf_author(path: Path) -> str | None:
+    """The author in a PDF's (uncompressed) Info dictionary or XMP metadata, if any. Best
+    effort: an Info dictionary inside a compressed object stream is not read."""
+    try:
+        data = path.read_bytes()
+    except OSError:
+        return None
+    for m in PDF_AUTHOR_RE.finditer(data):
+        v = m.group(1)
+        if v.startswith(b"<"):
+            h = re.sub(rb"\s", b"", v[1:-1])
+            try:
+                b = bytes.fromhex(h.decode())
+                s = b[2:].decode("utf-16-be") if b[:2] == b"\xfe\xff" else b.decode("latin-1")
+            except ValueError:
+                continue
+        else:
+            b = v[1:-1]
+            s = (b[2:].decode("utf-16-be", "replace") if b[:2] == b"\xfe\xff"
+                 else b.decode("latin-1"))
+        s = s.strip()
+        if s and not re.search(r"anonym", s, re.I):
+            return s
+    for m in XMP_CREATOR_RE.finditer(data):
+        for li in re.findall(rb"<rdf:li[^>]*>(.*?)</rdf:li>", m.group(1), re.S):
+            s = li.decode("utf-8", "replace").strip()
+            if s and not re.search(r"anonym", s, re.I):
+                return s
+    return None
+
+
+def check_anon_figures(lines: list, starts: list, checked: list, text: str, root: Path, add) -> None:
+    """pdfTeX and LuaTeX copy an included PDF's Info dictionary into the paper's PDF."""
+    seen = set()
+    for a, _, arg in command_spans(text, ("includegraphics", "chizenfigure")):
+        i = line_at(starts, a)
+        if not checked[i]:
+            continue
+        name = arg.strip()
+        cands = ([root / "figures" / "tikz" / f"{name}.pdf"] if text[a:a + 13] == "\\chizenfigure"
+                 else [root / name, root / f"{name}.pdf"])
+        p = next((c for c in cands if c.suffix.lower() == ".pdf" and c.is_file()), None)
+        if p is None or p in seen:
+            continue
+        seen.add(p)
+        who = pdf_author(p)
+        if who:
+            add("warning", "W-anon-metadata", lines[i], f"{rel(root, p)} names an author in its PDF "
+                f"metadata ('{short(who, 30)}'), which the paper's PDF carries; clear the Author field")
+
+
+
+# ------------------------------------------------------------------ numbers (WRT-14)
+
+NUMBER_WORDS = {w: i for i, w in enumerate(
+    "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen "
+    "fifteen sixteen seventeen eighteen nineteen".split())}
+NUMBER_WORDS.update({w: 10 * i for i, w in enumerate(
+    "_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()) if w != "_"})
+NUM_WORD_RE = (r"(?:(?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(?:[- ](?:one|two|"
+               r"three|four|five|six|seven|eight|nine))?|" + "|".join(
+                   w for w in NUMBER_WORDS if w != "zero") + r"|\d{1,3}(?:,\d{3})*|\d+)")
+PEOPLE = (r"(?:participants?|people|persons|users|respondents|interviewees|informants|students|"
+          r"workers|employees|clinicians|nurses|physicians|doctors|patients|caregivers|carers|"
+          r"adults|children|teens|teenagers|adolescents|parents|experts|designers|developers|"
+          r"practitioners|researchers|teachers|volunteers|subjects|players|members|individuals)")
+COUNT_RE = re.compile(r"(?<![\w.,])(" + NUM_WORD_RE + r")(?!\s*(?:hundred|thousand|million|billion|"
+                      r"[kKMB]\b|\.\d))(?:\s+[A-Za-z-]+){0,3}?\s+" + PEOPLE + r"\b"
+                      r"|\b[Nn]\s*\$?\s*=\s*\$?\s*(\d{1,3}(?:,\d{3})*|\d+)\b", re.I)
+PERCENT_RE = re.compile(r"(?<![\w.])(\d+(?:\.\d+)?)\s*(?:\\,|~)?\s*(?:\\%|\\percent\b|percent\b)"
+                        r"|\\(?:SI|qty)\s*\{\s*(\d+(?:\.\d+)?)\s*\}\s*\{\s*\\percent\s*\}", re.I)
+
+
+def number_value(s: str) -> int | None:
+    s = s.lower().replace(",", "").strip()
+    if s.isdigit():
+        return int(s)
+    total = 0
+    for part in re.split(r"[- ]", s):
+        if part not in NUMBER_WORDS:
+            return None
+        total += NUMBER_WORDS[part]
+    return total
+
+
+def check_abstract_numbers(lines: list, text: str, starts: list, checked: list, add) -> None:
+    """WRT-14: a participant count or a percentage in the abstract should appear in the body,
+    so a reader (and a reviewer) can find where it comes from. Rounding is allowed: an abstract's
+    "35%" matches the body's "34.8%"."""
+    m = re.search(r"\\begin\{abstract\}(.*?)\\end\{abstract\}", text, re.S)
+    if not m:
+        return
+    abstract, a0 = m.group(1), m.start(1)
+    body = anon_mask(blank(text, [(m.start(), m.end())]), ("cite[A-Za-z]*", "label", "ref", "autoref", "cref", "Cref"))
+    counts = {number_value(x.group(1) or x.group(2)) for x in COUNT_RE.finditer(body)}
+    percents = [x.group(1) or x.group(2) for x in PERCENT_RE.finditer(body)]
+
+    def rounds_to(shown: str, value: str) -> bool:
+        places = len(shown.split(".")[1]) if "." in shown else 0
+        return abs(round(float(value), places) - float(shown)) < 1e-9
+
+    for x in COUNT_RE.finditer(abstract):
+        n = number_value(x.group(1) or x.group(2))
+        i = line_at(starts, a0 + x.start())
+        if n is not None and n not in counts and checked[i]:
+            add("warning", "W-abstract-number", lines[i], f"the abstract's '{short(x.group(0), 40)}' "
+                "appears nowhere else as a count of people: check it matches the method and results")
+    for x in PERCENT_RE.finditer(abstract):
+        v = x.group(1) or x.group(2)
+        i = line_at(starts, a0 + x.start())
+        if not any(rounds_to(v, b) for b in percents) and checked[i]:
+            add("warning", "W-abstract-number", lines[i], f"the abstract's '{short(x.group(0).replace(chr(92), ''), 30)}' "
+                "appears nowhere else in the paper: check it matches the results")
 
 
 # ------------------------------------------------------------------ driver

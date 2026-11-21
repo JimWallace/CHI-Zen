@@ -1,0 +1,15 @@
+# check_paper.py findings expected for this fixture: severity code file:line
+# An anonymous submission (TRN-5) and an abstract whose numbers the body doesn't repeat (WRT-14).
+warning W-anon-metadata paper.tex:2
+warning W-abstract-number paper.tex:11
+warning W-abstract-number paper.tex:11
+warning W-anon-id paper.tex:15
+warning W-anon-name paper.tex:15
+warning W-anon-selfcite paper.tex:16
+warning W-anon-selfcite paper.tex:17
+warning W-anon-link paper.tex:18
+warning W-anon-link paper.tex:18
+warning W-anon-id paper.tex:21
+warning W-anon-metadata paper.tex:28
+warning W-anon-acks paper.tex:32
+error E-anon-ref refs.bib:2

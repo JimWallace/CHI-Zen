@@ -59,14 +59,33 @@ conference papers and `@article` for journals, including PACM.
 your OSF project), with versions.
 
 **REF-12. Follow the venue's anonymity policy for review.** CHI 2027 requires anonymised
-submissions, including supplementary material [CHI2027]; how to cite your own prior work
-under that policy is set in the venue's instructions. `TODO(Jim): source for CHI's rule on
-self-citation in anonymous submissions (not on the CHI 2027 papers page).`
+submissions, including supplementary material [CHI2027]. Its anonymization policy asks
+authors to cite their own work in the third person and leave those references unanonymised,
+so reviewers can see that the prior work was considered: "As described by Chetty et al.
+[10]", not "As described in our previous work [10]". A reference marked "anonymous" is
+grounds for desk rejection [CHI2027-Anon]. `check_paper.py` flags first-person
+self-citation (`W-anon-selfcite`) and `.bib` entries by "Anonymous" (`E-anon-ref`) when the
+class option `anonymous` is on. See TRN-5 for the rest of the policy.
+
+**REF-13. Find related work from records, then read it.** Search scholarly databases with
+the field's terms and their synonyms, and snowball from the papers you already know are
+central: "using the references and the citations respectively is referred to as backward
+and forward snowballing" [Wohlin2014]. Forward snowballing finds recent work that a keyword
+search ranks low. A list of candidates from a search, or from an agent, is a reading list:
+cite a paper only for what you have read it say (the rule at the top of this file). The
+`related-work` skill runs these searches (Crossref, Semantic Scholar, OpenAlex, doi.org) and
+returns candidates with DOIs; it doesn't write the section (WRT-4 is the author's work).
 
 ## Sources
 
+- [Wohlin2014] Claes Wohlin. 2014. Guidelines for snowballing in systematic literature
+  studies and a replication in software engineering. *EASE '14*: 1–10.
+  https://doi.org/10.1145/2601248.2601268 (quote from the author's copy,
+  http://www.wohlin.eu/ease14.pdf, retrieved 2026-11-21)
 - [CHI2027] ACM CHI 2027. Papers (call for papers). https://chi2027.acm.org/authors/papers/
   (retrieved 2026-11-18)
+- [CHI2027-Anon] ACM CHI 2027. CHI Anonymization Policy.
+  https://chi2027.acm.org/chi-anonymization-policy/ (retrieved 2026-11-21)
 - CHI Zen checklist, "References" (`manual/CHIZen-Paper-Checklist.tex`).
 - acmart's bibliography setup: `\bibliographystyle{ACM-Reference-Format}` with natbib, as
   acmart provides (Jim's decision, 2026-11-18; the manual and starter paper still use

@@ -11,7 +11,8 @@ the author talks to the REB.
 
 **ETH-1. State the ethics review.** Say which board reviewed the study and its decision:
 "This study was reviewed and received ethics clearance through a University of Waterloo
-Research Ethics Board (REB #NNNNN)", or, for work that was exempt, why. In Canada, research
+Research Ethics Board (REB #NNNNN)", or, for work that was exempt, why. In an anonymous
+submission, wrap the board's name and number in `\anon{...}` (TRN-5). In Canada, research
 that relies only on information that is in the public domain, where the people it refers to
 have no reasonable expectation of privacy, does not require REB review (TCPS 2, Article
 2.2); but online groups with restricted membership carry a stronger expectation of privacy,

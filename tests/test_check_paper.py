@@ -41,6 +41,11 @@ class Fixtures(unittest.TestCase):
                     if ln and not ln.startswith("#")]
         self.assertEqual(findings(FIXTURES / "bad-paper"), expected)
 
+    def test_anon_paper_matches_expected(self):
+        expected = [ln for ln in (FIXTURES / "anon-paper" / "expected.txt").read_text().splitlines()
+                    if ln and not ln.startswith("#")]
+        self.assertEqual(findings(FIXTURES / "anon-paper"), expected)
+
     def test_comments_are_ignored(self):
         # paper.tex line 8 has "TODO" and "p = 0.05" in a comment
         self.assertFalse([f for f in findings(FIXTURES / "bad-paper") if f.endswith("paper.tex:8")])
@@ -191,6 +196,80 @@ class TapsModes(unittest.TestCase):
         self.assertEqual(modes.current(), "draft")
         modes.scan(r"\fi")
         self.assertIsNone(modes.current())
+
+
+class Anonymity(unittest.TestCase):
+    """The W-anon-*/E-anon-* checks run only when acmart's `anonymous` option is on."""
+
+    def setUp(self):
+        self.dir = Path(tempfile.mkdtemp())
+        shutil.copytree(FIXTURES / "anon-paper", self.dir / "p")
+        self.paper = self.dir / "p"
+
+    def tearDown(self):
+        shutil.rmtree(self.dir)
+
+    def test_not_anonymous_no_anon_findings(self):
+        p = self.paper / "paper.tex"
+        p.write_text(p.read_text().replace("[manuscript,review,anonymous]", "[sigconf]"))
+        codes = {f.split()[1] for f in findings(self.paper)}
+        self.assertFalse({c for c in codes if "-anon-" in c}, codes)
+        self.assertIn("W-abstract-number", codes)  # not an anonymity check
+
+    def test_self_citation(self):
+        strong, weak = check_paper.SELF_CITE_RE, check_paper.SELF_CITE_WEAK_RE
+        for text, hit in [("as in our previous work [3]", "strong"), ("our own prior research", "strong"),
+                          ("our previous study", "weak"), ("We previously showed that", "weak"),
+                          ("we have already reported", "weak"), ("in our work", "weak"),
+                          ("Bauer et al. previously showed", None), ("our study found", None),
+                          ("our pilot study", None), ("our earlier analysis", None)]:
+            got = "strong" if strong.search(text) else "weak" if weak.search(text) else None
+            self.assertEqual(got, hit, text)
+
+    def test_weak_self_citation_needs_a_cite(self):
+        p = self.paper / "paper.tex"
+        p.write_text(p.read_text().replace("logging works~\\cite{anonymous2026}.", "logging works."))
+        self.assertNotIn("warning W-anon-selfcite paper.tex:17", findings(self.paper))
+
+    def test_ids(self):
+        for text, hit in [("REB \\#41234", True), ("ORE file 45678", True), ("the IRB approved", False),
+                          ("ethics clearance (protocol 2023-117)", True)]:
+            self.assertEqual(bool(check_paper.ETHICS_ID_RE.search(text)), hit, text)
+
+    def test_pdf_author_hex_and_xmp(self):
+        f = self.paper / "x.pdf"
+        f.write_bytes(b"%PDF-1.4\n<< /Author <FEFF004100640061> >>\n%%EOF\n")
+        self.assertEqual(check_paper.pdf_author(f), "Ada")
+        f.write_bytes(b"%PDF-1.4\n<< /Author () >><dc:creator><rdf:Seq><rdf:li>Ada</rdf:li>"
+                      b"</rdf:Seq></dc:creator>\n%%EOF\n")
+        self.assertEqual(check_paper.pdf_author(f), "Ada")
+        f.write_bytes(b"%PDF-1.4\n<< /Author (Anonymous Author\\(s\\)) >>\n%%EOF\n")
+        self.assertIsNone(check_paper.pdf_author(f))
+
+
+class AbstractNumbers(unittest.TestCase):
+    def test_number_words(self):
+        for s, n in [("24", 24), ("twenty-four", 24), ("Twelve", 12), ("1,200", 1200), ("ninety", 90),
+                     ("lots", None)]:
+            self.assertEqual(check_paper.number_value(s), n, s)
+
+    def test_rounding_and_counts(self):
+        def run_doc(abstract, body):
+            lines = [check_paper.Line("p.tex", i, t, t) for i, t in enumerate(
+                ["\\begin{document}", "\\begin{abstract}", abstract, "\\end{abstract}", body,
+                 "\\end{document}"], 1)]
+            text, starts = check_paper.joined(lines)
+            found = []
+            check_paper.check_abstract_numbers(lines, text, starts, [True] * len(lines),
+                                               lambda *a: found.append(a[3]))
+            return found
+        self.assertEqual(run_doc("35\\% of them", "34.8\\% did"), [])
+        self.assertEqual(len(run_doc("35.0\\% of them", "34.8\\% did")), 1)
+        self.assertEqual(run_doc("\\qty{12}{\\percent} did", "12\\%"), [])
+        self.assertEqual(run_doc("We interviewed 18 nurses", "the eighteen participants"), [])
+        self.assertEqual(run_doc("with N = 40", "40 adults took part"), [])
+        self.assertEqual(len(run_doc("We interviewed 18 nurses", "the 17 participants"
+                                     " \\cite{smith18}")), 1)
 
 
 class PaletteInStep(unittest.TestCase):

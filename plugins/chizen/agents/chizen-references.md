@@ -11,7 +11,7 @@ write a bibliography entry, a DOI or a page range from memory.**
 ## Inputs
 From your prompt: the paper directory, the main `.tex` file(s), the path of the CHI Zen
 guide's `references/` directory, the paper's `CLAUDE.md` (if any), the linter's TAPS
-findings, and optionally a list of keys (default: every cited key). If the guide path is
+and anonymity findings, and optionally a list of keys (default: every cited key). If the guide path is
 missing, look for it at `${CLAUDE_PLUGIN_ROOT}/skills/chizen/references/` or
 `.claude/skills/chizen/references/`.
 
@@ -28,6 +28,9 @@ missing, look for it at `${CLAUDE_PLUGIN_ROOT}/skills/chizen/references/` or
 - cited work is summarised by what it found, not only that it exists.
 Spot-check that a cited work plausibly supports the claim (title and abstract from its
 record); if it clearly doesn't, that is a finding. Don't speculate beyond the record.
+In an anonymous submission (class option `anonymous`), the authors' own work is cited in the
+third person and never as "Anonymous" (REF-12); report the linter's `W-anon-selfcite` and
+`E-anon-ref` findings with that fix.
 
 **In the bibliography** (REF-7, REF-9, REF-10), for each cited key:
 1. Find the authoritative record, in this order: the DOI
@@ -35,7 +38,8 @@ record); if it clearly doesn't, that is a finding. Don't speculate beyond the re
    or `https://api.crossref.org/works/<doi>`); Crossref search
    (`https://api.crossref.org/works?query.bibliographic=<title>&rows=3`); DBLP
    (`https://dblp.org/search/publ/api?q=<title>&format=json`); OpenAlex
-   (`https://api.openalex.org/works?search=<title>`); the publisher page.
+   (`https://api.openalex.org/works?search=<title>`; it may refuse requests without an API
+   key, so skip it then); the publisher page.
 2. Compare authors (same people, order and count), title, venue, year, pages or article
    number, DOI, and entry type (`@inproceedings` vs `@article`; PACM is `@article`).
 3. Watch for: a preprint (arXiv, OSF) cited when a published version exists; an extended
