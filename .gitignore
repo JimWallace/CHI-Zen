@@ -35,3 +35,4 @@ svg-inkscape/
 # figures/tikz/ (final mode and ACM's TAPS need them), not its side files.
 figures/tikz/*
 !figures/tikz/*.pdf
+__pycache__/

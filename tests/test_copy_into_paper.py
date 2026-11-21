@@ -33,6 +33,7 @@ class CopyIntoPaper(unittest.TestCase):
         c = self.paper / ".claude"
         self.assertTrue((c / "skills" / "chizen" / "references" / "figures.md").is_file())
         self.assertTrue((c / "skills" / "chizen-review" / "scripts" / "check_paper.py").is_file())
+        self.assertTrue((c / "skills" / "chizen-related-work" / "scripts" / "find_papers.py").is_file())
         for name in ("figures", "statistics", "writing", "references"):
             self.assertTrue((c / "agents" / f"chizen-{name}.md").is_file())
         taps = c / "skills" / "chizen-review" / "scripts" / "data" / "taps-accepted-packages.txt"

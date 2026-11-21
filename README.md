@@ -10,8 +10,9 @@ paper template. CHI Zen has three parts:
 - **A manual** (`CHIZen-Manual.tex`): a gallery of worked examples, ending with the CHI paper
   checklist.
 - **A Claude Code plugin** (`chizen`) for students' AI agents: the style guide as Markdown
-  rules, a paper linter (`check_paper.py`) and four read-only reviewer agents for figures and
-  tables, statistics, writing (including qualitative reporting and ethics) and references.
+  rules, a paper linter (`check_paper.py`), four read-only reviewer agents for figures and
+  tables, statistics, writing (including qualitative reporting and ethics) and references, and
+  a related-work skill that finds candidate papers from Crossref and other records.
   The guide is in [`plugins/chizen/skills/chizen/references/`](plugins/chizen/skills/chizen/references/)
   and readable on GitHub without Claude.
 
@@ -72,7 +73,8 @@ git add .claude && git commit -m "Add CHI Zen skills and agents"
 ```
 
 You can ask Claude in a cloud session to run those commands. The copy puts the guide in
-`.claude/skills/chizen/`, the review skill and linter in `.claude/skills/chizen-review/` and the
+`.claude/skills/chizen/`, the review skill and linter in `.claude/skills/chizen-review/`, the
+related-work skill in `.claude/skills/chizen-related-work/` and the
 reviewers in `.claude/agents/`.
 
 ### 3. Write with it
@@ -81,6 +83,12 @@ Ask Claude for what you need ("make a box plot of `data/time.csv` by condition",
 ANOVA", "format Table 2", "write up the REB statement"). The `chizen` skill loads the relevant
 part of the guide and proposes changes as diffs, citing rule IDs (e.g. `FIG-3`). It never
 invents data, statistics, quotes or citations: where it needs one, it leaves a `TODO` for you.
+
+For related work, ask "find related work on …" or "snowball from my key papers"
+(`/chizen:related-work`). It searches Crossref, follows the reference lists of the papers you
+already cite and the papers that cite them since, and returns a reading list with DOIs and
+abstracts, marking what your `.bib` already has. It doesn't write the section: read the
+papers, then cite them for what they say.
 
 ### 4. Review before a deadline
 
