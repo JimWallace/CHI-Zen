@@ -89,6 +89,16 @@ venue's call for papers before submitting;
 when in doubt, disclose (in the acknowledgements, or the methods section for research use).
 `TODO(Jim): confirm the current ACM policy text; acm.org refused automated requests.`
 
+**WRT-14. Report the same numbers everywhere.** The numbers in the abstract, the
+introduction, the contribution list, the discussion and the conclusion (participants,
+headline percentages, effects) match the method, the results, the tables, the figures and
+their `\Description`s, at the same precision (STAT-11). The participant flow adds up
+(recruited, excluded, analysed), and degrees of freedom fit the *n* (STAT checks). A number
+the paper repeats can be defined once, e.g. `\newcommand{\nparticipants}{24}`, so an edit
+changes it everywhere. `check_paper.py` warns when a count of people or a percentage in the
+abstract appears nowhere else in the paper (`W-abstract-number`; rounding is allowed); the
+statistics reviewer checks the rest.
+
 ## Sources
 
 - [Wobbrock2016] Jacob O. Wobbrock, Julie A. Kientz. 2016. Research contributions in

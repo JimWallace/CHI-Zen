@@ -40,8 +40,13 @@ for your codes. If the guide path is missing, look for it at
   `< .001`; no leading zero on values bounded by 1.
 - **Likert data** (STAT-14, STAT-15): single items treated as ordinal (medians, distributions,
   nonparametric tests or ordinal models); validated scales scored as published.
-- **Consistency**: the same result reported identically in the text, tables and figures;
-  degrees of freedom consistent with the stated *n* and design. You may recompute *p* from a
+- **Consistency** (WRT-14): the same result reported identically in the text, tables and
+  figures; degrees of freedom consistent with the stated *n* and design. Compare every
+  number in the abstract, introduction, contribution list, discussion and conclusion with the
+  method and results, and every value in a figure's `\Description` with the figure's data
+  or the text; check that the participant flow adds up (recruited, excluded, analysed, per
+  condition). The linter's `W-abstract-number` only checks the abstract's counts and
+  percentages. You may recompute *p* from a
   reported test statistic and its degrees of freedom to check that they agree (as statcheck
   does); a mismatch is a QUESTION for the author, never a corrected value in the fix.
 

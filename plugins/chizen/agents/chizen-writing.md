@@ -43,6 +43,12 @@ path is missing, look for it at `${CLAUDE_PLUGIN_ROOT}/skills/chizen/references/
   FAIL); de-identification; sensitive-data handling; content notes for distressing content.
 - **Transparency** (TRN-1 to TRN-6): availability statement, or a reason for not sharing;
   preregistration cited for confirmatory work; anonymised for review.
+- **Anonymity** (TRN-5), when the class options include `anonymous`: the linter's `W-anon-*`
+  findings cover names, ethics and grant numbers, links, acknowledgments and metadata in the
+  source. Read for what it can't see: the study site or the lab described in other words
+  ("at our university's hospital"), figures or videos showing the authors' faces,
+  screenshots with names or accounts, and supplementary files listed in the paper. Suggest
+  `\anon{...}` as the fix.
 - **Venue**: length within the limit in `CLAUDE.md` (count words in the body roughly with
   `detex`/`wc` if available, and say how you counted); abstract length.
 - **Generative AI** (WRT-13): if the paper or `CLAUDE.md` mentions AI assistance, check that

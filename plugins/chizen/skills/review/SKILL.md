@@ -59,9 +59,9 @@ paper: they are useful because they read it fresh.
 | Agent | Scope | Linter codes to pass on |
 |---|---|---|
 | `chizen:chizen-figures` | every figure and table | E-vrule, E-hline, E-float-caption, E-description, W-float-*, W-label-order, W-colour, W-cmyk, W-subfigure, W-arydshln |
-| `chizen:chizen-statistics` | every quantitative result | E-p-*, W-p-precision, W-F-precision, W-chisq-precision, W-stats-trend |
-| `chizen:chizen-writing` | framing, contribution, prose, qualitative reporting, ethics, transparency | S-avoid (summary only), W-todo, W-newpage |
-| `chizen:chizen-references` | citations and the bibliography | W-taps, W-taps-acmart (camera-ready only) |
+| `chizen:chizen-statistics` | every quantitative result, and numbers that must agree across the paper | E-p-*, W-p-precision, W-F-precision, W-chisq-precision, W-stats-trend, W-abstract-number |
+| `chizen:chizen-writing` | framing, contribution, prose, qualitative reporting, ethics, transparency, anonymity | S-avoid (summary only), W-todo, W-newpage, W-anon-name, W-anon-id, W-anon-link, W-anon-acks, W-anon-metadata |
+| `chizen:chizen-references` | citations and the bibliography | W-taps, W-taps-acmart (camera-ready only), W-anon-selfcite, E-anon-ref |
 
 With a narrower scope argument, launch only that reviewer. Agent names: in a paper repository
 that has the agents copied into `.claude/agents/`, they are `chizen-figures`, etc., without

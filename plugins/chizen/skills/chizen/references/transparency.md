@@ -34,10 +34,33 @@ label unplanned analyses as exploratory (STAT-3).
 **TRN-5. Anonymise everything for double-blind review.** CHI requires that "all video
 figures and supplementary material must be anonymized throughout the review process", and
 papers that violate the policy, including in supplementary material, can be rejected
-[CHI2027]. Use OSF's view-only links with anonymisation for review, remove names from file
-metadata, code comments and repository histories, and replace self-identifying text
-(lab names, REB numbers, grant numbers) until camera-ready. `TODO(Jim): source for OSF's
-anonymised view-only links, if we want to cite OSF's help page.`
+[CHI2027]. CHI's anonymization policy [CHI2027-Anon] asks authors to:
+- remove author and institution names from the title and header; changing their text colour
+  is not enough. acmart's `anonymous` class option does this, and also leaves out `\thanks`,
+  `\email`, `\orcid` and the `acks` environment [acmart];
+- cite their own work in the third person ("As described by Chetty et al. [10]", not "As
+  described in our previous work [10]"), without anonymising the reference; a reference
+  marked "anonymous" is grounds for desk rejection (REF-12);
+- leave out details that easily reveal who they are, such as where a study was run, where
+  its approvals were obtained, or figures that show the authors' faces;
+- keep grant details and partner organisations out of the acknowledgments;
+- keep identifying information out of the document's metadata.
+
+Wrap identifying text in acmart's `\anon{...}`, which prints "ANONYMIZED" in an anonymous
+submission and the text itself once the option is removed [acmart]: `\anon{University of
+Waterloo}`, `\anon{REB \#12345}`. Use OSF's view-only links with anonymisation for review,
+remove names from file metadata (including the PDFs and images a figure includes, whose
+metadata pdfTeX and LuaTeX copy into the paper's PDF), code comments and repository
+histories, and replace self-identifying text (lab names, REB numbers, grant numbers) until
+camera-ready. `TODO(Jim): source for OSF's anonymised view-only links, if we want to cite
+OSF's help page.`
+
+`check_paper.py` checks an anonymous submission for what it can find: author and institution
+names in the body, first-person self-citation, ethics and grant numbers, acknowledgments in a
+`\section`, a hand-set `pdfauthor`, an author in an included PDF's metadata, GitHub, GitLab
+and non-view-only OSF links (`W-anon-*`), and `.bib` entries by "Anonymous" (`E-anon-ref`).
+Faces in figures, study sites described in other words, and supplementary material need a
+person to check.
 
 **TRN-6. Make the analysis reproducible from the shared files**: a README that says how to
 run it, software versions (R/Python and package versions), and seeds for anything random.
@@ -51,6 +74,11 @@ shared data.
   *CHI 2020*: 1–14. https://doi.org/10.1145/3313831.3376448
 - [CHI2027] ACM CHI 2027. Papers (call for papers). https://chi2027.acm.org/authors/papers/
   (retrieved 2026-11-18)
+- [CHI2027-Anon] ACM CHI 2027. CHI Anonymization Policy.
+  https://chi2027.acm.org/chi-anonymization-policy/ (retrieved 2026-11-21)
+- [acmart] Boris Veytsman. The acmart class documentation (`acmart.dtx`): the `anonymous`
+  option, the `acks` and `anonsuppress` environments and `\anon` (added in v1.82).
+  https://github.com/borisveytsman/acmart (retrieved 2026-11-21)
 - [Cockburn2018] Andy Cockburn, Carl Gutwin, Alan Dix. 2018. HARK No More: On the
   Preregistration of CHI Experiments. *CHI 2018*. https://doi.org/10.1145/3173574.3173715
 - [Nosek2018] Brian A. Nosek, Charles R. Ebersole, Alexander C. DeHaven, David T. Mellor. 2018.
