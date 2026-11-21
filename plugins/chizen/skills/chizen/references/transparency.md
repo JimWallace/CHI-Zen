@@ -57,8 +57,9 @@ OSF's help page.`
 
 `check_paper.py` checks an anonymous submission for what it can find: author and institution
 names in the body, first-person self-citation, ethics and grant numbers, acknowledgments in a
-`\section`, a hand-set `pdfauthor`, an author in an included PDF's metadata, GitHub, GitLab
-and non-view-only OSF links (`W-anon-*`), and `.bib` entries by "Anonymous" (`E-anon-ref`).
+`\section`, a hand-set `pdfauthor`, an author in an included PDF's metadata, OSF links
+without `view_only`, GitHub and GitLab links in a sentence about "our" code or data
+(`W-anon-*`), and `.bib` entries by "Anonymous" (`E-anon-ref`).
 Faces in figures, study sites described in other words, and supplementary material need a
 person to check.
 

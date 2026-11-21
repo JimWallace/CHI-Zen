@@ -10,6 +10,6 @@ warning W-anon-selfcite paper.tex:17
 warning W-anon-link paper.tex:18
 warning W-anon-link paper.tex:18
 warning W-anon-id paper.tex:21
-warning W-anon-metadata paper.tex:26
-warning W-anon-acks paper.tex:30
+warning W-anon-metadata paper.tex:28
+warning W-anon-acks paper.tex:32
 error E-anon-ref refs.bib:2

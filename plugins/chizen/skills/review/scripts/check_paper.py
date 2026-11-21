@@ -28,8 +28,11 @@ ANONYMOUS SUBMISSIONS. With acmart's `anonymous` class option, the W-anon-* and
 E-anon-ref checks (guide: TRN-5, REF-12) look for what the option doesn't hide: author and
 institution names (from \\author and \\institution) in the body, first-person
 self-citation, ethics and grant numbers, acknowledgments outside the acks environment, a
-hand-set pdfauthor, an author in an included PDF's metadata, GitHub/GitLab/OSF links, and
-.bib entries by "Anonymous". Text inside \\anon{...} is hidden by acmart and not reported.
+hand-set pdfauthor, an author in an included PDF's metadata, OSF links without view_only,
+GitHub/GitLab links in a sentence that says "our", and .bib entries by "Anonymous". Text
+inside \\anon{...} is hidden by acmart and not reported. One-word names, and phrases like
+"our previous study" without a citation in the sentence, are left alone: they too often
+refer to something else.
 
 SEVERITIES.
   error    the PDF is wrong or breaks a venue rule (vertical rules, a p-value with
@@ -680,14 +683,19 @@ ANON_HIDDEN_CMDS = ("author", "affiliation", "institution", "department", "stree
                     "addbibresource", "title", "grantsponsor", "grantnum")
 ANON_HIDDEN_ENVS = ("acks", "anonsuppress")
 NAME_CMDS = ("author", "institution")
+# First person about the authors' earlier publications: always self-citation.
 SELF_CITE_RE = re.compile(
-    r"\b(?:our|my)\s+(?:own\s+)?(?:(?:prior|previous|earlier|past|recent|preliminary|pilot|"
-    r"former)\s+)+(?:work|works|study|studies|paper|papers|research|findings|results|system|"
-    r"systems|tool|survey|analysis|publication|publications)\b"
-    r"|\bwe\s+(?:have\s+)?(?:previously|earlier|recently|already)\s+(?:showed|shown|found|"
-    r"reported|developed|proposed|built|published|presented|introduced|described|studied|"
-    r"designed|demonstrated)\b"
-    r"|\b(?:in|see|from)\s+our\s+(?:own\s+)?(?:work|study|paper|research)\s*(?:\\cite|\[)", re.I)
+    r"\b(?:our|my)\s+(?:own\s+)?(?:prior|previous|past|earlier|former)\s+(?:published\s+)?"
+    r"(?:work|works|paper|papers|publication|publications|research)\b", re.I)
+# Phrases that can also refer to this paper ("our previous study" may be Study 1): only
+# self-citation when the same sentence cites something.
+SELF_CITE_WEAK_RE = re.compile(
+    r"\b(?:our|my)\s+(?:own\s+)?(?:prior|previous|past|former)\s+(?:study|studies|system|"
+    r"systems|tool|tools|survey|findings|results)\b"
+    r"|\bwe\s+(?:have\s+)?(?:previously|earlier|already)\s+(?:showed|shown|found|reported|"
+    r"developed|proposed|built|published|presented|introduced|described|studied|designed|"
+    r"demonstrated)\b"
+    r"|\b(?:in|see|from)\s+our\s+(?:own\s+)?(?:work|study|paper|research)\b", re.I)
 ETHICS_ID_RE = re.compile(
     r"\b(?:REB|IRB|ORE|HREB|ethics(?:\s+(?:board|committee|clearance|approval))?)\b"
     r"[^.;]{0,40}?(?:\#|\\\#|\bno\.?|\bnumber|\bprotocol|\bfile)\s*:?\s*[A-Z]*-?\d{3,}", re.I)
@@ -695,6 +703,19 @@ GRANT_ID_RE = re.compile(r"\bgrants?\s+(?:\#|\\\#|no\.?|number|ID)\s*:?\s*[A-Z0-
 LINK_RE = re.compile(r"(?:https?://)?(?:www\.)?(github\.com|gitlab\.com|bitbucket\.org|"
                      r"huggingface\.co|osf\.io)/[^\s}{\\]+", re.I)
 ACK_HEADING_RE = re.compile(r"\\(?:section|subsection|paragraph)\*?\s*\{\s*acknowledge?ments?\b", re.I)
+
+
+SENTENCE_END_RE = re.compile(r"[.!?](?=\s)|\n\s*\n")
+
+
+def sentence_at(text: str, offset: int) -> str:
+    """The sentence of `text` around `offset`: from the last full stop (or blank line) before
+    it to the next one. Abbreviations ("et al.") end it early, which only makes it shorter."""
+    window = text[max(0, offset - 600):offset]
+    starts = [m.end() for m in SENTENCE_END_RE.finditer(window)]
+    a = offset - len(window) + (starts[-1] if starts else 0)
+    m = SENTENCE_END_RE.search(text, offset)
+    return text[a:m.start() if m else len(text)]
 
 
 def anon_mask(text: str, cmds=ANON_HIDDEN_CMDS) -> str:
@@ -714,7 +735,8 @@ def identity_names(text: str) -> list[str]:
     for _, _, arg in command_spans(text, NAME_CMDS):
         arg = re.sub(r"\\[A-Za-z@]+\*?(\[[^\]]*\])?(\{[^{}]*\})?|[{}~]", " ", arg)
         arg = re.sub(r"\s+", " ", arg).strip(" ,")
-        if len(arg) >= 4 and not re.search(r"anonym", arg, re.I):
+        # One-word names ("Google") are too often a product or a place, not the authors.
+        if len(arg.split()) >= 2 and not re.search(r"anonym", arg, re.I):
             names.add(arg)
     return sorted(names, key=len, reverse=True)
 
@@ -738,7 +760,10 @@ def check_anonymity(lines: list, text: str, starts: list, checked: list, root: P
             report("warning", "W-anon-name", m.start(), f"'{short(m.group(0), 40)}' (an author or "
                    "institution) in an anonymous submission: wrap it in \\anon{...}, which acmart "
                    "hides until camera-ready")
-    for m in SELF_CITE_RE.finditer(prose):
+    selfcites = list(SELF_CITE_RE.finditer(prose)) + [
+        m for m in SELF_CITE_WEAK_RE.finditer(prose)
+        if re.search(r"\\cite|\\citet|\\citep", sentence_at(text, m.start()))]
+    for m in sorted(selfcites, key=lambda m: m.start()):
         report("warning", "W-anon-selfcite", m.start(), f"'{short(m.group(0), 40)}': cite your own work "
                "in the third person in an anonymous submission (\"Chetty et al. [10] showed\")")
     for m in ETHICS_ID_RE.finditer(prose):
@@ -760,6 +785,10 @@ def check_anonymity(lines: list, text: str, starts: list, checked: list, root: P
     for m in LINK_RE.finditer(shown):
         url = m.group(0)
         if m.group(1).lower() == "osf.io" and "view_only" in url:
+            continue
+        # A GitHub link to someone else's tool is fine; flag it when the sentence says "our".
+        if m.group(1).lower() != "osf.io" and not re.search(
+                r"\b(?:our|my)\b", sentence_at(shown, m.start()), re.I):
             continue
         what = ("an OSF link without view_only shows the project's contributors; use an "
                 "anonymised view-only link" if m.group(1).lower() == "osf.io" else
@@ -870,7 +899,8 @@ PEOPLE = (r"(?:participants?|people|persons|users|respondents|interviewees|infor
           r"workers|employees|clinicians|nurses|physicians|doctors|patients|caregivers|carers|"
           r"adults|children|teens|teenagers|adolescents|parents|experts|designers|developers|"
           r"practitioners|researchers|teachers|volunteers|subjects|players|members|individuals)")
-COUNT_RE = re.compile(r"(?<![\w.,])(" + NUM_WORD_RE + r")(?:\s+[A-Za-z-]+){0,3}?\s+" + PEOPLE + r"\b"
+COUNT_RE = re.compile(r"(?<![\w.,])(" + NUM_WORD_RE + r")(?!\s*(?:hundred|thousand|million|billion|"
+                      r"[kKMB]\b|\.\d))(?:\s+[A-Za-z-]+){0,3}?\s+" + PEOPLE + r"\b"
                       r"|\b[Nn]\s*\$?\s*=\s*\$?\s*(\d{1,3}(?:,\d{3})*|\d+)\b", re.I)
 PERCENT_RE = re.compile(r"(?<![\w.])(\d+(?:\.\d+)?)\s*(?:\\,|~)?\s*(?:\\%|\\percent\b|percent\b)"
                         r"|\\(?:SI|qty)\s*\{\s*(\d+(?:\.\d+)?)\s*\}\s*\{\s*\\percent\s*\}", re.I)

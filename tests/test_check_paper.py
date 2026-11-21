@@ -217,11 +217,19 @@ class Anonymity(unittest.TestCase):
         self.assertIn("W-abstract-number", codes)  # not an anonymity check
 
     def test_self_citation(self):
-        for text, hit in [("as in our previous work [3]", True), ("our own prior studies", True),
-                          ("We previously showed that", True), ("we have already reported", True),
-                          ("Bauer et al. previously showed", False), ("our study found", False),
-                          ("in our work \\cite{x}", True), ("our participants previously", False)]:
-            self.assertEqual(bool(check_paper.SELF_CITE_RE.search(text)), hit, text)
+        strong, weak = check_paper.SELF_CITE_RE, check_paper.SELF_CITE_WEAK_RE
+        for text, hit in [("as in our previous work [3]", "strong"), ("our own prior research", "strong"),
+                          ("our previous study", "weak"), ("We previously showed that", "weak"),
+                          ("we have already reported", "weak"), ("in our work", "weak"),
+                          ("Bauer et al. previously showed", None), ("our study found", None),
+                          ("our pilot study", None), ("our earlier analysis", None)]:
+            got = "strong" if strong.search(text) else "weak" if weak.search(text) else None
+            self.assertEqual(got, hit, text)
+
+    def test_weak_self_citation_needs_a_cite(self):
+        p = self.paper / "paper.tex"
+        p.write_text(p.read_text().replace("logging works~\\cite{anonymous2026}.", "logging works."))
+        self.assertNotIn("warning W-anon-selfcite paper.tex:17", findings(self.paper))
 
     def test_ids(self):
         for text, hit in [("REB \\#41234", True), ("ORE file 45678", True), ("the IRB approved", False),
